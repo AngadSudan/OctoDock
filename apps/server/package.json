@@ -10,10 +10,23 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@prisma/client": "^6.11.0",
+    "@types/cookie-parser": "^1.4.9",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/express-rate-limit": "^6.0.2",
+    "@types/helmet": "^4.0.0",
+    "@types/hpp": "^0.2.6",
+    "@types/morgan": "^1.9.10",
     "body-parser": "^2.2.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "octokit": "^5.0.3"
+    "express-rate-limit": "^7.5.1",
+    "helmet": "^8.1.0",
+    "hpp": "^0.2.3",
+    "morgan": "^1.10.0",
+    "octokit": "^5.0.3",
+    "prisma": "^6.11.0"
   }
 }
