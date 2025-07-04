@@ -11,14 +11,12 @@ import cookieParser from "cookie-parser";
 import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
 import hpp from "hpp";
-import {
-  codeRouter,
-  githubRouter,
-  projectRouter,
-  userRouter,
-} from "./route/index";
+import { projectRouter, userRouter } from "./route/index";
 const app = express();
 import "dotenv/config";
+import passport from "passport";
+import "./utils/passport";
+import session from "express-session";
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
   limit: 200,
@@ -30,6 +28,15 @@ app.use(helmet());
 // app.use(mogoSanitize());
 app.use("/api", limiter);
 app.use(hpp());
+app.use(
+  require("express-session")({
+    secret: "TTL",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 //express middlewares
 app.use(express.json({ limit: "50mb" }));
@@ -108,8 +115,6 @@ app.get("/", (req, res) => {
     FRONTEND_URL: process.env.FRONTEND_URL,
   });
 });
-// app.use(errorHandler);
-
 app.get("/health", async (req, res) => {
   res.status(200).json({
     success: true,
@@ -122,6 +127,23 @@ app.get("/health", async (req, res) => {
   });
 });
 
+// OAuth Routes
+app.get(
+  "/auth/github",
+  passport.authenticate("github", { scope: ["user:email"] })
+);
+app.get(
+  "/oauth/redirect/github",
+  passport.authenticate("github", {
+    failureRedirect: "http://localhost:3000/auth/error",
+    successRedirect: "http://localhost:3000",
+  }),
+  function (req, res) {
+    console.log(req);
+    res.redirect("/");
+  }
+);
+
 app.use((req, res) => {
   res.status(404).json({
     status: "error",
@@ -131,7 +153,7 @@ app.use((req, res) => {
 
 console.log("database  url is ", process.env.DATABASE_URL!);
 
-app.listen(Bun.env.PORT, () => {
+app.listen(Bun.env.PORT || 8000, () => {
   console.log(
     `Server is running on port ${8000} and the enviornment is ${process.env.NODE_ENV} mode`
   );

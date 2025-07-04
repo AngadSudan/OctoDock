@@ -13,3 +13,8 @@ datasource db {
   provider = "mongodb"
   url      = env("MONGODB_URI")
 }
+
+model user{
+  id   String @id @map("_id")
+
+}
