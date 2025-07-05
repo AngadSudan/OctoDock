@@ -4,7 +4,7 @@ import { Octokit } from "octokit";
 import type { Request, Response } from "express";
 class githubController {
   octokit = new Octokit({
-    auth: Bun.env.GITHUBTOKEN!,
+    auth: process.env.GITHUBTOKEN!,
   });
 
   async createRepository(req: Request, res: Response): Promise<any> {

@@ -11,12 +11,14 @@ import cookieParser from "cookie-parser";
 import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
 import hpp from "hpp";
-import { projectRouter, userRouter } from "./route/index";
-const app = express();
+import createApolloServer from "./graphql/index";
 import "dotenv/config";
 import passport from "passport";
 import "./utils/passport";
 import session from "express-session";
+import type { Express } from "express";
+
+const app: Express = express();
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
   limit: 200,
@@ -25,9 +27,8 @@ const limiter = rateLimit({
 
 //websecurity
 app.use(helmet());
-// app.use(mogoSanitize());
 app.use("/api", limiter);
-app.use(hpp());
+app.use(hpp() as any);
 app.use(
   require("express-session")({
     secret: "TTL",
@@ -35,7 +36,7 @@ app.use(
     saveUninitialized: false,
   })
 );
-app.use(passport.initialize());
+app.use(passport.initialize() as any);
 app.use(passport.session());
 
 //express middlewares
@@ -151,12 +152,17 @@ app.use((req, res) => {
   });
 });
 
-console.log("database  url is ", process.env.DATABASE_URL!);
-
-app.listen(Bun.env.PORT || 8000, () => {
-  console.log(
-    `Server is running on port ${8000} and the enviornment is ${process.env.NODE_ENV} mode`
-  );
-});
+createApolloServer(app)
+  .then(() => {
+    app.listen(process.env.PORT || 8000, () => {
+      console.log(
+        `Server is running on port ${8000} and the enviornment is ${process.env.NODE_ENV} mode`
+      );
+    });
+  })
+  .catch((err: any) => {
+    console.log(err);
+    process.exit();
+  });
 
 export { app as default };
