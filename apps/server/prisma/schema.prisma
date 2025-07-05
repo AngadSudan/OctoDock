@@ -3,6 +3,20 @@
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+enum VALIDATION {
+  VALID
+  INVALID
+}
+
+enum STATUS {
+  PUBLISHED
+  NOT_PUBLISHED
+}
+
+enum SUCCESS {
+  SUCCESS
+  NOT_SUCCESS
+}
 
 generator client {
   provider = "prisma-client-js"
@@ -11,10 +25,47 @@ generator client {
 
 datasource db {
   provider = "mongodb"
-  url      = env("MONGODB_URI")
+  url      = env("DATABSE_URL")
 }
 
-model user{
-  id   String @id @map("_id")
+model user {
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  username      String     @unique
+  email         String     @unique
+  password      String
+  generatedSalt String
+  githubToken   String?
+  profileImage  String?
+  bannerImage   String?
+  description   String?
+  isValid       VALIDATION @default(VALID)
+  project       project[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @default(now())
+}
 
+model project {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  description     String
+  generatedPrompt String
+  githubUrl       String?  @unique
+  status          STATUS   @default(NOT_PUBLISHED)
+  createdBy       String   @db.ObjectId
+  user            user     @relation(references: [id], fields: [createdBy], onDelete: Cascade)
+  prompts         prompt[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now())
+}
+
+model prompt {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  userPrompt      String
+  generatedPrompt String
+  sucessResponse  SUCCESS  @default(NOT_SUCCESS)
+  projectId       String   @db.ObjectId
+  project         project  @relation(references: [id], fields: [projectId], onDelete: Cascade)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now())
 }

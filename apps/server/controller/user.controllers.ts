@@ -1,68 +1,29 @@
 import prisma from "../utils/prisma";
 import ApiResponse from "../utils/apiResposne";
 import type { Request, Response } from "express";
+import asyncHandler from "../utils/asyncHandler";
 class userController {
   // create a user
-  async registerUser(req: Request, res: Response) {
-    try {
-    } catch (error: any) {
-      console.log(error);
-      return res
-        .status(200)
-        .json(
-          new ApiResponse(500, error.message || "Internal Server error", null)
-        );
-    }
+  async registerUser() {
+    await asyncHandler(async () => {});
   }
 
   // login the user
-  async loginUser(req: Request, res: Response) {
-    try {
-    } catch (error: any) {
-      console.log(error);
-      return res
-        .status(200)
-        .json(
-          new ApiResponse(500, error.message || "Internal Server error", null)
-        );
-    }
+  async loginUser() {
+    await asyncHandler(async () => {});
   }
 
   // login via OAuth Using githubOnly
-  async OAuthLogin(req: Request, res: Response) {
-    try {
-    } catch (error: any) {
-      console.log(error);
-      return res
-        .status(200)
-        .json(
-          new ApiResponse(500, error.message || "Internal Server error", null)
-        );
-    }
+  async OAuthLogin() {
+    await asyncHandler(async () => {});
   }
 
-  async getUserProfile(req: Request, res: Response) {
-    try {
-    } catch (error: any) {
-      console.log(error);
-      return res
-        .status(200)
-        .json(
-          new ApiResponse(500, error.message || "Internal Server error", null)
-        );
-    }
+  async getUserProfile() {
+    await asyncHandler(async () => {});
   }
 
-  async verifyUser(req: Request, res: Response) {
-    try {
-    } catch (error: any) {
-      console.log(error);
-      return res
-        .status(200)
-        .json(
-          new ApiResponse(500, error.message || "Internal Server error", null)
-        );
-    }
+  async verifyUser() {
+    await asyncHandler(async () => {});
   }
 }
 export default new userController();

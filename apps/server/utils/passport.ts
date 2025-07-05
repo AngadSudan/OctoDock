@@ -1,5 +1,6 @@
 import passport from "passport";
 import { Strategy as GitHubStrategy } from "passport-github2";
+import prisma from "./prisma";
 
 passport.serializeUser(function (user, done) {
   done(null, user);
@@ -18,7 +19,7 @@ passport.use(
       passReqToCallback: true,
       scope: ["user:email"],
     },
-    function (
+    async function (
       req: any,
       accessToken: string,
       refreshToken: string,
@@ -27,8 +28,21 @@ passport.use(
     ) {
       //TODO: just complete the user authentication with the controller
       const email = profile.emails?.[0]?.value;
-      console.log("accessToken" + accessToken);
 
+      //CHECK FOR USER EXISTENCE IS YES THEN LOGIN ELSE SIGNUP
+      const dbUser = await prisma.user.findUnique({
+        where: {
+          email,
+        },
+      });
+
+      if (dbUser) {
+        // login()
+      } else {
+        // signup()
+      }
+      console.log("accessToken" + accessToken);
+      
       return done(null, profile);
     }
   )
