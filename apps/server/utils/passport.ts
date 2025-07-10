@@ -2,6 +2,8 @@ import passport from "passport";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import prisma from "./prisma";
 import githubControllers from "../controller/github.controllers";
+import { isNamedType } from "graphql";
+import userControllers from "../controller/user.controllers";
 passport.serializeUser(function (user, done) {
   done(null, user);
 });
@@ -27,21 +29,30 @@ passport.use(
       done: any
     ) {
       //TODO: just complete the user authentication with the controller
-      const email = profile.emails?.[0]?.value;
 
-      //CHECK FOR USER EXISTENCE IS YES THEN LOGIN ELSE SIGNUP
+      // console.log(JSON.stringify(profile, null, 2));
+      console.log(profile);
+      console.log(profile.username);
+      const username = profile.username || profile._json.login;
+      const email = profile.emails?.[0]?.value;
+      const name = profile._json.name;
+
       const dbUser = await prisma.user.findUnique({
         where: {
           email,
         },
       });
-
+      console.log("db user is ", dbUser);
       if (dbUser) {
-        // login()
+        const userLogin = await userControllers.OAuthLogin(email, accessToken);
+        if (userLogin) {
+          console.log("user loggedin ");
+        }
       } else {
-        // signup()
+        await userControllers.OAuthRegister(username, email, accessToken, name);
+        console.log("user created");
       }
-      console.log("accessToken" + accessToken);
+
       return done(null, profile);
     }
   )

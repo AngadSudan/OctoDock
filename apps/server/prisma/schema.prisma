@@ -28,20 +28,20 @@ datasource db {
 }
 
 model user {
-  id            String     @id @default(auto()) @map("_id") @db.ObjectId
-  name          String
-  username      String     @unique
-  email         String     @unique
-  password      String
-  generatedSalt String
-  githubToken   String?
-  profileImage  String?
-  bannerImage   String?
-  description   String?
-  isValid       VALIDATION @default(VALID)
-  project       project[]
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @default(now())
+  id             String     @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  username       String     @unique
+  email          String     @unique
+  githubUsername String     @unique
+  password       String?
+  githubToken    String?
+  profileImage   String?
+  bannerImage    String?
+  description    String?
+  isValid        VALIDATION @default(VALID)
+  project        project[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @default(now())
 }
 
 model project {
