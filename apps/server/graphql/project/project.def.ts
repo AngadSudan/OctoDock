@@ -1,5 +1,4 @@
 export const projectDef = `#graphql
-    scalar Date
     
     enum STATUS {
         PUBLISHED

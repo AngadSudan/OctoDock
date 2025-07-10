@@ -12,6 +12,7 @@ import { Prompt } from "./prompt";
 
 const createApolloServer = async (app: Express) => {
   const typeDefs = gql(`
+        scalar Date
 
         ${User.userDef}
         ${Project.projectDef}

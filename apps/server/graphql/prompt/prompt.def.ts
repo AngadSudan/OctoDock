@@ -1,6 +1,5 @@
 export const promptDef = `#graphql
     
-    scalar Date 
 
     enum SUCCESS {
         SUCCESS

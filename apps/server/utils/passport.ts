@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import prisma from "./prisma";
-
+import githubControllers from "../controller/github.controllers";
 passport.serializeUser(function (user, done) {
   done(null, user);
 });
@@ -17,7 +17,7 @@ passport.use(
       clientSecret: process.env.GITHUB_OAUTH_SECRET!,
       callbackURL: "http://localhost:8000/oauth/redirect/github",
       passReqToCallback: true,
-      scope: ["user:email"],
+      scope: ["user", "repo"],
     },
     async function (
       req: any,
@@ -42,7 +42,6 @@ passport.use(
         // signup()
       }
       console.log("accessToken" + accessToken);
-      
       return done(null, profile);
     }
   )

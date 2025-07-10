@@ -1,6 +1,4 @@
 export const userDef = `#graphql
-    scalar Date
-
     enum VALIDATION {
         VALID
         INVALID

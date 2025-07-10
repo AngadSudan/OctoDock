@@ -64,6 +64,47 @@ app.use(morgan("dev"));
 
 //error handling
 
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Welcome to the Backend of the dr. web application API ",
+    version: "1.0.0",
+    timestamp: new Date(),
+    environment: process.env.NODE_ENV,
+    memory: process.memoryUsage(),
+    uptime: process.uptime(),
+    FRONTEND_URL: process.env.FRONTEND_URL,
+  });
+});
+app.get("/health", async (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Server is healthy!",
+    timestamp: new Date(),
+    environment: process.env.NODE_ENV,
+    memory: process.memoryUsage(),
+    uptime: process.uptime(),
+    FRONTEND_URL: process.env.FRONTEND_URL,
+  });
+});
+
+// OAuth Routes
+app.get(
+  "/auth/github",
+  passport.authenticate("github", { scope: ["user", "repo"] })
+);
+app.get(
+  "/oauth/redirect/github",
+  passport.authenticate("github", {
+    failureRedirect: "http://localhost:3000/auth/error",
+    successRedirect: "http://localhost:3000",
+  }),
+  function (req, res) {
+    console.log(req);
+    res.redirect("/");
+  }
+);
+
 const errorHandler = (
   error: any,
   req: Request,
@@ -104,47 +145,6 @@ const errorHandler = (
   });
 };
 
-app.get("/", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Welcome to the Backend of the dr. web application API ",
-    version: "1.0.0",
-    timestamp: new Date(),
-    environment: process.env.NODE_ENV,
-    memory: process.memoryUsage(),
-    uptime: process.uptime(),
-    FRONTEND_URL: process.env.FRONTEND_URL,
-  });
-});
-app.get("/health", async (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Server is healthy!",
-    timestamp: new Date(),
-    environment: process.env.NODE_ENV,
-    memory: process.memoryUsage(),
-    uptime: process.uptime(),
-    FRONTEND_URL: process.env.FRONTEND_URL,
-  });
-});
-
-// OAuth Routes
-app.get(
-  "/auth/github",
-  passport.authenticate("github", { scope: ["user:email"] })
-);
-app.get(
-  "/oauth/redirect/github",
-  passport.authenticate("github", {
-    failureRedirect: "http://localhost:3000/auth/error",
-    successRedirect: "http://localhost:3000",
-  }),
-  function (req, res) {
-    console.log(req);
-    res.redirect("/");
-  }
-);
-
 app.use((req, res) => {
   res.status(404).json({
     status: "error",
@@ -165,4 +165,9 @@ createApolloServer(app)
     process.exit();
   });
 
+// app.listen(process.env.PORT || 8000, () => {
+//   console.log(
+//     `Server is running on port ${8000} and the enviornment is ${process.env.NODE_ENV} mode`
+//   );
+// });
 export { app as default };
