@@ -11,22 +11,20 @@ import { Project } from "./project";
 import { Prompt } from "./prompt";
 
 const createApolloServer = async (app: Express) => {
+  // add prompt things later
   const typeDefs = gql(`
         scalar Date
 
         ${User.userDef}
         ${Project.projectDef}
-        ${Prompt.promptDef}
 
         type Query {
             ${User.userQueries}
             ${Project.projectQueries}
-            ${Prompt.promptQueries}
         }
 
         type Mutation {
             ${User.userMutations}
-            ${Prompt.promptMutation}
             ${Project.projectMutation}
         }
     `);
@@ -34,12 +32,12 @@ const createApolloServer = async (app: Express) => {
     Query: {
       ...User.userResolver.queries,
       ...Project.projectResolver.queries,
-      ...Prompt.promptResolver.queries,
+      // ...Prompt.promptResolver.queries,
     },
     Mutation: {
       ...User.userResolver.mutation,
       ...Project.projectResolver.mutations,
-      ...Prompt.promptResolver.mutations,
+      // ...Prompt.promptResolver.mutations,
     },
   };
   const server = new ApolloServer({

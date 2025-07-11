@@ -14,6 +14,7 @@ export const userDef = `#graphql
         githubToken: String
         profileImage:String
         bannerImage:String
+        accessToken: String
         isValid:VALIDATION
         project:[ID!]
         createdAt:Date

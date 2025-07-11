@@ -1,5 +1,4 @@
 import prisma from "../utils/prisma";
-import ApiResponse from "../utils/apiResposne";
 import { Octokit } from "octokit";
 class githubController {
   token: string;

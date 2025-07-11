@@ -1,9 +1,6 @@
 import prisma from "../utils/prisma";
-import ApiResponse from "../utils/apiResposne";
-import type { Request, Response } from "express";
 import aiGenerations from "./AiFeatures.controllers";
 import githubController from "./github.controllers";
-
 class projectController {
   async createNewProject(userId: string, name: string, description: string) {
     try {
@@ -189,4 +186,4 @@ class projectController {
     }
   }
 }
-export default projectController;
+export default new projectController();

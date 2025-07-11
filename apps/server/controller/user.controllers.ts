@@ -3,19 +3,13 @@ import crypto, { randomBytes } from "node:crypto";
 import jwt from "jsonwebtoken";
 class userController {
   // create a user
-  async registerUser({
-    name,
-    username,
-    githubUsername,
-    email,
-    password,
-  }: {
-    name: string;
-    username: string;
-    githubUsername: string;
-    email: string;
-    password: string;
-  }) {
+  async registerUser(
+    name: string,
+    username: string,
+    githubUsername: string,
+    email: string,
+    password: string
+  ) {
     try {
       const dbUser = await prisma.user.findFirst({
         where: {
@@ -52,7 +46,7 @@ class userController {
     return token;
   }
 
-  async loginUser(email, password) {
+  async loginUser(email: string, password: string) {
     const dbUser = await prisma.user.findUnique({
       where: {
         email: email,
