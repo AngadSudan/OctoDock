@@ -2,7 +2,6 @@ import prisma from "../utils/prisma";
 import ApiResponse from "../utils/apiResposne";
 import type { Request, Response } from "express";
 class codeOperationController {
-  // generate the folder structure for the project with some defaults added ourselves
   async createProjectFileStructure(req: Request, res: Response) {
     try {
     } catch (error: any) {

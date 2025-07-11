@@ -18,6 +18,11 @@ enum SUCCESS {
   NOT_SUCCESS
 }
 
+enum ACTIVE {
+  ACTIVE
+  NOT_ACTIVE
+}
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -51,6 +56,7 @@ model project {
   generatedPrompt String
   githubUrl       String?  @unique
   status          STATUS   @default(NOT_PUBLISHED)
+  isActive        ACTIVE   @default(ACTIVE)
   createdBy       String   @db.ObjectId
   user            user     @relation(references: [id], fields: [createdBy], onDelete: Cascade)
   prompts         prompt[]

@@ -1,7 +1,6 @@
 import prisma from "../utils/prisma";
 import ApiResponse from "../utils/apiResposne";
 import { Octokit } from "octokit";
-import type { Request, Response } from "express";
 class githubController {
   token: string;
   octokit: Octokit;
@@ -12,27 +11,61 @@ class githubController {
       auth: token,
     });
   }
-  async createRepository(req: Request, res: Response): Promise<any> {
+  async createRepository(name: string, description: string): Promise<any> {
     try {
-      const { name, description } = req.body;
-
       const newRepo = await this.octokit.rest.repos.createForAuthenticatedUser({
         name,
         headers: {
           authorization: `Authorization: Bearer ${this.token}`,
         },
       });
-      console.log("repo has been created", newRepo);
+      console.log("repo has been created", JSON.stringify(newRepo, null, 2));
+      const repoInformation = {
+        url: newRepo.url,
+        name: newRepo.data.name,
+        userInfo: newRepo.data.owner,
+      };
+      return repoInformation;
     } catch (error: any) {
       console.log(error);
-      return res
-        .status(200)
-        .json(
-          new ApiResponse(500, error.message || "Internal Server error", null)
-        );
+      return null;
     }
   }
+  async archiveRepository(owner: string, url: string) {
+    try {
+      const projectData = await this.octokit.rest.repos.update({
+        owner,
+        repo: url,
+        archived: true,
+      });
 
+      if (!projectData) throw new Error("project couldn't be initialized");
+      return "";
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+  async updateRepository(
+    owner: string,
+    url: string,
+    name: string,
+    description
+  ) {
+    try {
+      const projectData = await this.octokit.rest.repos.update({
+        owner,
+        repo: url,
+        name,
+        description,
+      });
+
+      if (!projectData) throw new Error("project couldn't be initialized");
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
   //NOTE: EITHER USE STACKBLITZ TO PUSH TO GITHUB OR TRY TO IMPLEMENT THIS LATER ON NOT NOW
   async commitCodeToGithub({
     projectId,
@@ -44,18 +77,6 @@ class githubController {
     try {
     } catch (error: any) {
       console.log(error);
-    }
-  }
-
-  async deleteRepository(req: Request, res: Response): Promise<any> {
-    try {
-    } catch (error: any) {
-      console.log(error);
-      return res
-        .status(200)
-        .json(
-          new ApiResponse(500, error.message || "Internal Server error", null)
-        );
     }
   }
 }

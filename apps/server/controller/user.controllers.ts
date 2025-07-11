@@ -1,8 +1,5 @@
 import prisma from "../utils/prisma";
-import ApiResponse from "../utils/apiResposne";
-import type { Request, Response } from "express";
 import crypto, { randomBytes } from "node:crypto";
-import asyncHandler from "../utils/asyncHandler";
 import jwt from "jsonwebtoken";
 class userController {
   // create a user

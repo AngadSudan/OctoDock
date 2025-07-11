@@ -15,6 +15,7 @@
     "@apollo/server": "^4.12.2",
     "@apollo/subgraph": "^2.11.2",
     "@as-integrations/express5": "^1.1.1",
+    "@google/generative-ai": "^0.24.1",
     "@prisma/client": "^6.11.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/passport": "^1.0.17",
