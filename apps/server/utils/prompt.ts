@@ -81,3 +81,49 @@ Write your answer in clear, organized sections with headings. Provide relevant d
 
 THIS IS THE USER PROMPT {user_description}
 `;
+
+export const generateFileStructurePrompt = `
+You are given an SRS (Software Requirements Specification) document. Based on that SRS, generate the full backend project folder and file structure that implements it.
+
+Please return the entire result as a single JSON object in the following format:
+
+js
+Copy
+Edit
+const files = {
+  // This is a directory - provide its name as a key
+  src: {
+    // Because it's a directory, add the "directory" key
+    directory: {
+      // This is a file - provide its path as a key:
+      'main.js': {
+        // Because it's a file, add the "file" key
+        file: {
+          contents: \`
+            console.log('Hello from WebContainers!')
+          \`,
+        },
+      },
+    },
+  },
+};
+Rules:
+
+The top-level must be an object with one or more directories (e.g. src).
+
+Each directory has a "directory" key whose value is an object of files and subdirectories.
+
+Each file has a "file" key with a "contents" field (a string with the code).
+
+Nest subfolders as needed for good project organization (e.g. controllers, routes, models, middleware, utils).
+
+Include realistic placeholder or starter code for each file (e.g. Express server setup, Mongoose models, routes).
+
+Use best practices for Node.js backend structure.
+
+Return only the JSON object in the response — no extra text, no explanation.
+
+The goal is to produce a complete, realistic, production-ready backend project structure that can be imported into StackBlitz or WebContainers directly.
+
+Here's the SRS {detailed_project_planning}
+`;

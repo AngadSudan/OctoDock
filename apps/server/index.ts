@@ -152,7 +152,7 @@ app.use((req, res) => {
   });
 });
 
-createApolloServer(app)
+createApolloServer()
   .then(() => {
     app.listen(process.env.PORT || 8000, () => {
       console.log(

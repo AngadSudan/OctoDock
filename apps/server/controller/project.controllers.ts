@@ -1,6 +1,8 @@
 import prisma from "../utils/prisma";
+import AiFeaturesControllers from "./AiFeatures.controllers";
 import aiGenerations from "./AiFeatures.controllers";
 import githubController from "./github.controllers";
+import gptFeaturesControllers from "./gptFeatures.controllers";
 class projectController {
   async createNewProject(userId: string, name: string, description: string) {
     try {
@@ -26,6 +28,19 @@ class projectController {
       const generatedPrompt =
         await aiGenerations.enhanceUserGivenDescription(description);
 
+      // const generatedFileStructure =
+      //   await gptFeaturesControllers.generateProjectFolderStructure(
+      //     generatedPrompt
+      //   );
+      const generatedFileStructure =
+        await AiFeaturesControllers.generateProjectFileStructure(
+          generatedPrompt
+        );
+
+      if (!generatedFileStructure)
+        throw new Error("error in creating folder structure for your project");
+
+      // const generatedFolderStructure = await
       const createdProject = await prisma.project.create({
         data: {
           name,
@@ -33,6 +48,7 @@ class projectController {
           generatedPrompt,
           githubUrl: createRepository.url,
           createdBy: dbUser.id,
+          folderStructure: JSON.stringify(generatedFileStructure),
         },
       });
 

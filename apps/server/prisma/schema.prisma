@@ -54,6 +54,7 @@ model project {
   name            String
   description     String
   generatedPrompt String
+  folderStructure String
   githubUrl       String?  @unique
   status          STATUS   @default(NOT_PUBLISHED)
   isActive        ACTIVE   @default(ACTIVE)

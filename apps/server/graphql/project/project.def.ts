@@ -11,6 +11,7 @@ export const projectDef = `#graphql
         description:String!
         generatedPrompt:String!
         githubUrl:String!
+        folderStructure:String
         status:STATUS
         createdBy:User
         prompts:[ID!]
