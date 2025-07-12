@@ -16,6 +16,7 @@ import "dotenv/config";
 import passport from "passport";
 import "./utils/passport";
 import session from "express-session";
+import { createProxyMiddleware } from "http-proxy-middleware";
 import type { Express } from "express";
 
 const app: Express = express();
@@ -61,7 +62,13 @@ app.use(
 );
 
 app.use(morgan("dev"));
-
+app.use(
+  "/graphql",
+  createProxyMiddleware({
+    target: "http://localhost:4000",
+    changeOrigin: true,
+  })
+);
 //error handling
 
 app.get("/", (req, res) => {
@@ -155,13 +162,11 @@ app.use((req, res) => {
 createApolloServer()
   .then(() => {
     app.listen(process.env.PORT || 8000, () => {
-      console.log(
-        `Server is running on port ${8000} and the enviornment is ${process.env.NODE_ENV} mode`
-      );
+      console.log(`🚀 Server ready at http://localhost:8000/`);
     });
   })
-  .catch((err: any) => {
-    console.log(err);
+  .catch((error: any) => {
+    console.log(error);
     process.exit();
   });
 
