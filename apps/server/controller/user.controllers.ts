@@ -1,5 +1,5 @@
 import prisma from "../utils/prisma";
-import crypto, { randomBytes } from "node:crypto";
+import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
 class userController {
   // create a user
