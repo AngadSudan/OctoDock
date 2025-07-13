@@ -15,6 +15,7 @@ class githubController {
     try {
       const newRepo = await this.octokit.rest.repos.createForAuthenticatedUser({
         name,
+        auto_init: true,
         headers: {
           authorization: `Authorization: Bearer ${this.token}`,
         },

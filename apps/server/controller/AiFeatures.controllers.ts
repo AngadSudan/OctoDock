@@ -75,6 +75,13 @@ class GeminiAiFeatures {
 
     return response.text;
   }
+
+  async enhanceFeedbackPrompt(
+    enahcedProjectDescription: string,
+    userDescription: string
+  ) {
+    return "a";
+  }
 }
 
 export default new GeminiAiFeatures();

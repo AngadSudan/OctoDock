@@ -69,6 +69,7 @@ model prompt {
   id              String   @id @default(auto()) @map("_id") @db.ObjectId
   userPrompt      String
   generatedPrompt String
+  reportedAnswer  String?
   sucessResponse  SUCCESS  @default(NOT_SUCCESS)
   projectId       String   @db.ObjectId
   project         project  @relation(references: [id], fields: [projectId], onDelete: Cascade)
