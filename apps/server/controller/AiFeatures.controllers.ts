@@ -29,52 +29,33 @@ class GeminiAiFeatures {
   }
 
   async generateProjectFileStructure(enhancedPrompt: string) {
-    const prompt = generateFileStructurePrompt.replace(
-      "{detailed_project_planning}",
-      enhancedPrompt
-    );
-    const response = await this.jsonModel.models.generateContent({
-      model: "gemini-2.0-flash",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
+  const prompt = generateFileStructurePrompt.replace(
+    "{detailed_project_planning}",
+    enhancedPrompt
+  );
+
+  const response = await this.jsonModel.models.generateContent({
+    model: "gemini-2.0-flash",
+    contents: prompt,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.ARRAY,
+        items: {
           type: Type.OBJECT,
           properties: {
-            root: {
-              type: Type.OBJECT,
-              properties: {
-                directory: {
-                  type: Type.OBJECT,
-                  additionalProperties: {
-                    type: Type.OBJECT,
-                    properties: {
-                      file: {
-                        type: Type.OBJECT,
-                        properties: {
-                          contents: {
-                            type: Type.STRING,
-                          },
-                        },
-                      },
-                      directory: {
-                        type: Type.OBJECT,
-                        additionalProperties: {}, // recursive nesting allowed
-                      },
-                    },
-                    propertyOrdering: ["file", "directory"],
-                  },
-                },
-              },
-              propertyOrdering: ["directory"],
-            },
+            path: { type: Type.STRING },
+            content: { type: Type.STRING },
           },
+          required: ["path", "content"],
         },
       },
-    });
+    },
+  });
 
-    return response.text;
-  }
+  return response.text;
+}
+
 
   async enhanceFeedbackPrompt(
     enahcedProjectDescription: string,

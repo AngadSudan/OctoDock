@@ -68,7 +68,7 @@ class githubController {
     }
   }
   //NOTE: Change the complete github tree by fetching from stackblitz
-  async commitCodeToGithub({ projectId }: { projectId: string }): Promise<any> {
+  async commitCodeToGithub(projectId:string): Promise<any> {
     try {
       const dbProject = await prisma.project.findUnique({
         where: {
