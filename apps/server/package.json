@@ -48,6 +48,7 @@
     "openai": "^5.9.0",
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
-    "prisma": "^6.11.0"
+    "prisma": "^6.11.0",
+    "tsup": "^8.5.0"
   }
 }

@@ -1,8 +1,17 @@
 import prisma from "../utils/prisma";
 class codeOperationController {
-  async createProjectFileStructure() {
+  async createProjectFileStructure(projectId : string ) {
     try {
       // Your logic here
+      const dbProject = await prisma.project.findUnique({
+        where:{
+          id: projectId
+        }
+      }
+
+      // const folderStructure = dbProject;
+    
+      )
     } catch (error: any) {
       console.log(error);
       // Removed return statement
