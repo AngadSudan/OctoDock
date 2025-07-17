@@ -1,6 +1,11 @@
 import prisma from "../utils/prisma";
+/**
+ * checkout the AIFeatures & CustomAiFeatures & GPTFeatures
+ * and implement the folderstructure generation in all three of these
+ * then given these inputs adjust them to the
+ */
 class codeOperationController {
-  async createProjectFileStructure() {
+  async createProjectFileStructure(description: string) {
     try {
       // Your logic here
     } catch (error: any) {
@@ -9,7 +14,11 @@ class codeOperationController {
     }
   }
 
-  async writeCodeFiles() {
+  async writeCodeFiles(
+    originalProjectDescription: string,
+    originalFolderStructure: string[],
+    newDescription: string
+  ) {
     try {
       // Your logic here
     } catch (error: any) {
@@ -18,7 +27,11 @@ class codeOperationController {
     }
   }
 
-  async writeCodeFile() {
+  async writeCodeFile(
+    originalProjectDescription: string,
+    originalFolderStructure: string[],
+    fileName: string
+  ) {
     try {
       // Your logic here
     } catch (error: any) {
@@ -27,7 +40,12 @@ class codeOperationController {
     }
   }
 
-  async updateCodeInFile() {
+  async updateCodeInFile(
+    originalProjectDescription: string,
+    originalFolderStructure: string[],
+    newDescription: string,
+    fileName: string
+  ) {
     try {
       // Your logic here
     } catch (error: any) {
