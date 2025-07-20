@@ -23,7 +23,6 @@ class codeAIController {
     }
   }
 
-  
   // Generate multiple code files based on a list of features
   
   async writeCodeFiles(srs: string, features: string[], gitSummary: string) {
@@ -59,10 +58,8 @@ class codeAIController {
     }
   }
 
-  
-  // Update or fix buggy code in an existing file
-  
   async updateCodeInFile(srs: string, buggyCode: string, gitSummary: string) {
+
     try {
       if (!srs || !buggyCode) throw new Error("Missing SRS or buggy code");
 
@@ -81,3 +78,4 @@ class codeAIController {
 }
 
 export default new codeAIController();
+
