@@ -1,65 +1,83 @@
 import gemini from "./AiFeatures.controllers";
-import ollama from "./customAIFeatures.controllers";
 import gpt from "./gptFeatures.controllers";
+import ollama from "./customAIFeatures.controllers";
 
-class CodeAIController {
-  // ================== Gemini AI ==================
+class codeAIController {
+  
+  // Enhances a user description & generates project file structure
+  
+  async createProjectFileStructure(userDescription: string) {
+    try {
+      if (!userDescription) throw new Error("Project description is missing!");
 
-  
-  // Enhances a user-given project description using Gemini.
-  
-  async enhanceDescriptionWithGemini(userDescription: string) {
-    if (!userDescription) throw new Error("Description cannot be empty");
-    return await gemini.enhanceUserGivenDescription(userDescription);
+      // Step 1: Enhance user input with Gemini
+      const enhanced = await gemini.enhanceUserGivenDescription(userDescription);
+
+      // Step 2: Generate file structure with Gemini
+      const structure = await gemini.generateProjectFileStructure(enhanced);
+
+      return structure;
+    } catch (error: any) {
+      console.error("createProjectFileStructure error:", error.message);
+      throw error;
+    }
   }
 
   
-  // Generates a project file structure using enhanced Gemini prompt.
+  // Generate multiple code files based on a list of features
   
-  async generateFileStructureWithGemini(enhancedDescription: string) {
-    if (!enhancedDescription) throw new Error("Enhanced description is required");
-    return await gemini.generateProjectFileStructure(enhancedDescription);
+  async writeCodeFiles(srs: string, features: string[], gitSummary: string) {
+    try {
+      if (!srs || !features?.length) throw new Error("Missing SRS or features list");
+
+      const generatedFiles = [];
+
+      for (const feature of features) {
+        const file = await ollama.generateFileBasedOnFeatures(srs, feature, gitSummary);
+        generatedFiles.push({ feature, file });
+      }
+
+      return generatedFiles;
+    } catch (error: any) {
+      console.error("writeCodeFiles error:", error.message);
+      throw error;
+    }
   }
 
   
-  // (Placeholder) Enhances feedback prompt using Gemini - extend logic later.
+  // Generate a single code file using current file + SRS context
   
-  async generateFeedbackPromptWithGemini(enhanced: string, original: string) {
-    return await gemini.enhanceFeedbackPrompt(enhanced, original);
-  }
+  async writeCodeFile(srs: string, codefile: string, gitSummary: string) {
+    try {
+      if (!srs || !codefile) throw new Error("Missing SRS or file content");
 
-  // ================== GPT Features ==================
-
-  
-  // Generates folder structure JSON using OpenAI GPT-4o.
-  
-  async generateFileStructureWithGPT(description: string) {
-    if (!description) throw new Error("Description is required for GPT structure generation");
-    return await gpt.generateProjectFolderStructure(description);
-  }
-
-  // ================== Ollama Custom Model ==================
-
-  
-  // Generates new code file based on a feature using Ollama (Octadock).
-  
-  async generateFeatureFileWithOllama(srs: string, feature: string, gitSummary: string) {
-    return await ollama.generateFileBasedOnFeatures(srs, feature, gitSummary);
+      const response = await ollama.generateFileBasedOnSingleFile(srs, codefile, gitSummary);
+      return response;
+    } catch (error: any) {
+      console.error("writeCodeFile error:", error.message);
+      throw error;
+    }
   }
 
   
-  // Generates an updated version of an existing file based on context.
+  // Update or fix buggy code in an existing file
   
-  async generateFileWithOllama(srs: string, fileContent: string, gitSummary: string) {
-    return await ollama.generateFileBasedOnSingleFile(srs, fileContent, gitSummary);
-  }
+  async updateCodeInFile(srs: string, buggyCode: string, gitSummary: string) {
+    try {
+      if (!srs || !buggyCode) throw new Error("Missing SRS or buggy code");
 
-  
-  // Corrects buggy code in a file using Ollama's LLM logic.
-  
-  async correctBuggyFileWithOllama(srs: string, buggyFile: string, gitSummary: string) {
-    return await ollama.generateCorrectnessInFileOnBuggyFeature(srs, buggyFile, gitSummary);
+      const response = await ollama.generateCorrectnessInFileOnBuggyFeature(
+        srs,
+        buggyCode,
+        gitSummary
+      );
+
+      return response;
+    } catch (error: any) {
+      console.error("updateCodeInFile error:", error.message);
+      throw error;
+    }
   }
 }
 
-export default new CodeAIController();
+export default new codeAIController();
