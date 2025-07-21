@@ -1,5 +1,5 @@
-import Chat from "./Chat";
-import Editor from "./Editor";
+import Chat from "../Project/Chat";
+import Editor from "../Project/Editor";
 
 function StackBlitzIndex() {
   return (
