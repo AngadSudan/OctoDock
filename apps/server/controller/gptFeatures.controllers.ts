@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import { generateFileStructurePrompt } from "../utils/prompt";
-class gptFeatures {
+
+class GptFeatures {
   client: OpenAI;
 
   constructor() {
@@ -10,16 +11,14 @@ class gptFeatures {
   }
 
   async generateProjectFolderStructure(description: string) {
-    // Fill in the prompt template
     const prompt = generateFileStructurePrompt.replace(
       "{detailed_project_planning}",
       description
     );
 
-    // Call the LLM with the *actual* prompt
-    const response = await this.client.responses.parse({
-      model: "gpt-4o-2024-08-06",
-      input: [
+    const completion = await this.client.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
         {
           role: "system",
           content:
@@ -30,14 +29,22 @@ class gptFeatures {
           content: prompt,
         },
       ],
-      text: {
-        format: { type: "json_object" },
-      },
+      temperature: 0.2,
     });
 
-    // Return the parsed output
-    return response.output_parsed;
+    const rawText = completion.choices[0].message.content ?? "";
+
+    // If it's a stringified array of paths or objects, return parsed JSON
+    try {
+      const parsed = JSON.parse(
+        rawText.replace("```json", "").replace("```", "")
+      );
+      return parsed;
+    } catch {
+      console.warn("Warning: Output is not valid JSON, returning raw string.");
+      return rawText.replace("```json", "").replace("```", "");
+    }
   }
 }
 
-export default new gptFeatures();
+export default new GptFeatures();

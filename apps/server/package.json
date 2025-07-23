@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "bun run build && bun run ./dist/index.js",
     "build": "tsup",
-    "test": "bun test"
+    "test": "bun test --serial"
   },
   "devDependencies": {
     "@types/bun": "^1.2.19",

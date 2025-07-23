@@ -11,4 +11,13 @@ export const TestMap = {
     enhancedPrompt: "",
     fileStructure: "",
   },
+  chatgpt: {
+    fileStructure: "",
+  },
+  ollama: {
+    srs: "",
+    description: "",
+    gitSummary: "",
+    codefile: "",
+  },
 };

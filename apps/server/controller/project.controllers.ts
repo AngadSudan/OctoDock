@@ -20,7 +20,7 @@ class projectController {
 
       if (!dbUser) throw new Error("no user token found. Kindly login/Signup");
 
-      const githubToken = dbUser.githubToken;
+      const githubToken = "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";
 
       const createRepository = await new githubController(
         githubToken
@@ -109,7 +109,7 @@ class projectController {
       });
 
       if (!dbUser) throw new Error("Kindly login/signup first");
-      const githubToken = dbUser.githubToken;
+      const githubToken = "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";
       const dbProject = await prisma.project.findUnique({
         where: {
           id: projectId,
@@ -155,7 +155,7 @@ class projectController {
       });
 
       if (!dbUser) throw new Error("Kindly login/signup first");
-      const githubToken = dbUser.githubToken;
+      const githubToken = "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";
       const dbProject = await prisma.project.findUnique({
         where: {
           id: projectId,
