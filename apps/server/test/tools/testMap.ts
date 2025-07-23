@@ -6,4 +6,9 @@ export const TestMap = {
     owner: "",
     description: "this is a repo for the test route of the repository",
   },
+  gemini: {
+    userDescription: "generate me the backend of a todo application",
+    enhancedPrompt: "",
+    fileStructure: "",
+  },
 };
