@@ -10,7 +10,6 @@ import {
   RouterProvider,
 } from "react-router";
 import Login from "./pages/Login.tsx";
-import Signup from "./pages/Signup.tsx";
 import Profile from "./pages/Profile.tsx";
 import Project from "./pages/Project.tsx";
 import Projects from "./pages/Projects.tsx";
@@ -21,7 +20,6 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route path="login" element={<Login />} />
-      <Route path="signup" element={<Signup />} />
       <Route path="profile" element={<Profile />} loader={() => {}} />
       <Route
         path="project/dashboard"
