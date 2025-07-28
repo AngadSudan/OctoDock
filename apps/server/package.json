@@ -3,7 +3,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun run build && bun run ./dist/index.js",
+    "start": "bun run build && bun run ./dist/index.js",
+    "dev": "bun index.ts",
     "build": "tsup",
     "test": "bun test --serial"
   },

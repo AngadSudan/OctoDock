@@ -1,0 +1,10 @@
+FROM node-18:alpine 
+WORKDIR /app
+
+COPY /apps/server/package*.json /app/
+RUN npm install
+
+COPY /apps/server/ /app/
+
+EXPOSE 8000
+CMD [ "npm","run","dev" ]

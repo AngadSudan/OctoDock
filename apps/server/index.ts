@@ -33,8 +33,13 @@ app.use(hpp() as any);
 app.use(
   require("express-session")({
     secret: "TTL",
-    resave: false,
+    resave: true,
     saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: false, // true if using HTTPS
+      sameSite: "lax", // "none" if cross-origin over HTTPS
+    },
   })
 );
 app.use(passport.initialize() as any);
@@ -46,7 +51,7 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: [
@@ -100,11 +105,21 @@ app.get(
   "/auth/github",
   passport.authenticate("github", { scope: ["user", "repo"] })
 );
+app.get("/is-authenticated", (req, res) => {
+  console.dir(req);
+  const isAuthenticated = req.isAuthenticated();
+  if (isAuthenticated) {
+    res.json({ authenticated: true, user: req.user });
+  } else {
+    res.json({ authenticated: false });
+  }
+});
+
 app.get(
   "/oauth/redirect/github",
   passport.authenticate("github", {
-    failureRedirect: "http://localhost:3000/auth/error",
-    successRedirect: "http://localhost:3000",
+    failureRedirect: "http://localhost:5173/auth/error",
+    successRedirect: "http://localhost:5173",
   }),
   function (req, res) {
     console.log(req);
