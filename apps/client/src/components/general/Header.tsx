@@ -34,14 +34,18 @@ function Header() {
           withCredentials: true,
         }
       );
+      // console.log(response.data.user._json);
       if (response.data.authenticated) {
+        console.log("entered dispatch");
         dispatch(
           setAuthState({
             isAuthenticated: true,
             user: response.data.user._json,
           })
         );
+        console.log("finished dispatch");
       } else {
+        console.log("error in dispatch");
         dispatch(setAuthState({ isAuthenticated: false, user: null }));
       }
     } catch (error) {
