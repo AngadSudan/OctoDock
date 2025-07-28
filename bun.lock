@@ -4,6 +4,7 @@
     "": {
       "name": "project-builder",
       "dependencies": {
+        "@stackblitz/sdk": "^1.11.0",
         "@reduxjs/toolkit": "^2.8.2",
         "@types/cookie-parser": "^1.4.9",
         "@types/cors": "^2.8.19",
@@ -15,6 +16,7 @@
         "@types/morgan": "^1.9.10",
         "@types/passport": "^1.0.17",
         "@types/passport-github2": "^1.2.9",
+        "animejs": "^4.1.0",
         "graphql": "^16.11.0",
         "react-redux": "^9.2.0",
         "tsc": "^2.0.4",
@@ -771,6 +773,7 @@
 
     "@sinonjs/fake-timers": ["@sinonjs/fake-timers@13.0.5", "", { "dependencies": { "@sinonjs/commons": "^3.0.1" } }, "sha512-36/hTbH2uaWuGVERyC6da9YwGWnzUZXuPro/F2LfsdOsLnCojz/iSH8MxUt/FD2S5XBSVPhmArFUXcpCQ2Hkiw=="],
 
+    "@stackblitz/sdk": ["@stackblitz/sdk@1.11.0", "", {}, "sha512-DFQGANNkEZRzFk1/rDP6TcFdM82ycHE+zfl9C/M/jXlH68jiqHWHFMQURLELoD8koxvu/eW5uhg94NSAZlYrUQ=="],
     "@standard-schema/spec": ["@standard-schema/spec@1.0.0", "", {}, "sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA=="],
 
     "@standard-schema/utils": ["@standard-schema/utils@0.3.0", "", {}, "sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g=="],
