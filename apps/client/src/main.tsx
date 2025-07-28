@@ -15,10 +15,13 @@ import Project from "./pages/Project.tsx";
 import Projects from "./pages/Projects.tsx";
 import client from "./lib/graphqlClient.ts";
 import { ApolloProvider } from "@apollo/client";
-
+import { Provider } from "react-redux";
+import store from "./redux";
+import Home from "./pages/Home.tsx";
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<App />}>
+    <Route path="/">
+      <Route path="" element={<Home />} />
       <Route path="login" element={<Login />} />
       <Route path="profile" element={<Profile />} loader={() => {}} />
       <Route
@@ -34,7 +37,9 @@ const router = createBrowserRouter(
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ApolloProvider client={client}>
-      <RouterProvider router={router} />
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
     </ApolloProvider>
   </StrictMode>
 );
