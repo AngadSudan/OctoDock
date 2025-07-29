@@ -16,6 +16,7 @@ import {
   X,
 } from "lucide-react";
 import ProjectCard from "./ProjectCard";
+import OverlayFormModal from "./newProjectForm";
 
 function AllProjects() {
   const sampleProjects = [
@@ -109,14 +110,12 @@ function AllProjects() {
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
   const [showFilters, setShowFilters] = useState(false);
-
-  // Get unique authors for filter
+  const [newProject, setNewProject] = useState(false);
   const uniqueAuthors = useMemo(() => {
     const authors = [...new Set(sampleProjects.map((p) => p.user.name))];
     return authors.sort();
   }, []);
 
-  // Filter and sort projects
   const filteredAndSortedProjects = useMemo(() => {
     let filtered = sampleProjects.filter((project) => {
       const matchesSearch =
@@ -187,12 +186,20 @@ function AllProjects() {
     sortOrder !== "desc";
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-gray-950 via-slate-950 to-black p-8">
-      {/* Ultra-modern background effects */}
+    <div className="relative min-h-screen w-full bg-gradient-to-br from-gray-950 via-slate-950 to-black p-8">
+      {newProject && (
+        <div className="fixed inset-0 z-50 bg-black/10 backdrop-blur-sm flex items-center justify-center">
+          <OverlayFormModal
+            isOpen={newProject}
+            onClose={() => setNewProject(false)}
+            onSubmit={() => {}}
+          />
+        </div>
+      )}
       <div className="fixed inset-0 bg-gradient-to-br from-red-500/[0.02] via-purple-500/[0.03] to-blue-500/[0.02] pointer-events-none" />
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.01),transparent_50%)] pointer-events-none" />
 
-      <div className="relative max-w-7xl mx-auto">
+      <div className="relative z-0 max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="space-y-2">
@@ -204,7 +211,10 @@ function AllProjects() {
             </p>
           </div>
 
-          <button className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-500/20 via-purple-500/20 to-blue-500/20 text-white border border-white/[0.1] rounded-2xl hover:bg-gradient-to-r hover:from-red-500/30 hover:via-purple-500/30 hover:to-blue-500/30 backdrop-blur-xl transition-all duration-300 shadow-lg">
+          <button
+            onClick={() => setNewProject(true)}
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-500/20 via-purple-500/20 to-blue-500/20 text-white border border-white/[0.1] rounded-2xl hover:bg-gradient-to-r hover:from-red-500/30 hover:via-purple-500/30 hover:to-blue-500/30 backdrop-blur-xl transition-all duration-300 shadow-lg"
+          >
             <Plus size={20} />
             <span className="font-semibold">New Project</span>
           </button>
