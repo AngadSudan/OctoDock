@@ -1,7 +1,12 @@
+import ProjectsIndex from "@/components/Projects/ProjectsIndex";
 import React from "react";
 
 function Projects() {
-  return <div>Projects</div>;
+  return (
+    <div>
+      <ProjectsIndex />
+    </div>
+  );
 }
 
 export default Projects;
