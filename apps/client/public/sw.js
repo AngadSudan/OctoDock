@@ -13,23 +13,4 @@ self.addEventListener("activate", (event) => {
   return self.clients.claim();
 });
 
-self.addEventListener("fetch", (event) => {
-  const url = new URL(event.request.url);
-
-  if (API_CACHE_URLS.includes(url.pathname)) {
-    event.respondWith(
-      caches.match(event.request).then((cachedResponse) => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-
-        return fetch(event.request).then((networkResponse) => {
-          return caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, networkResponse.clone()); // Save for later
-            return networkResponse;
-          });
-        });
-      })
-    );
-  }
-});
+self.addEventListener("fetch", (event) => {});

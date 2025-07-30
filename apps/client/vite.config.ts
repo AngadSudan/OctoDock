@@ -34,7 +34,7 @@ const manifestForPlugin = {
 };
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), VitePWA(manifestForPlugin as any)],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
