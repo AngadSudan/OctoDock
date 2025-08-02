@@ -65,7 +65,8 @@ export const GET_ALL_PROJECT = gql`
       githubUrl
       folderStructure
       status
-      createdBy {
+      createdBy
+      user {
         name
         username
         email

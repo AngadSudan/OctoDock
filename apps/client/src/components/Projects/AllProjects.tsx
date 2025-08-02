@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Search,
   Filter,
@@ -19,12 +19,12 @@ import ProjectCard from "./ProjectCard";
 import OverlayFormModal from "./NewProjectForm";
 import type { RootState } from "@/redux";
 import { useSelector } from "react-redux";
-import { useCreateProject } from "@/Hooks/api/project";
+import { useCreateProject, useGetAllProjectData } from "@/Hooks/api/project";
 import { useNavigate } from "react-router";
 
 function AllProjects() {
   const router = useNavigate();
-  const sampleProjects = [
+  const [sampleProjects, setSampleProject] = useState([
     {
       id: "1",
       name: "Octodock Dashboard",
@@ -106,7 +106,7 @@ function AllProjects() {
       user: { name: "Alex Johnson" },
       createdAt: new Date("2024-02-10"),
     },
-  ];
+  ]);
   const [viewMode, setViewMode] = useState("card");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
@@ -120,6 +120,17 @@ function AllProjects() {
     return authors.sort();
   }, []);
   const userId = useSelector((state: RootState) => state.auth.user.login);
+  const {
+    data: projectsdata,
+    loading: projectLoading,
+    error: projectError,
+  } = useGetAllProjectData(userId);
+  useEffect(() => {
+    if (!projectLoading && projectsdata) {
+      setSampleProject(projectsdata.getAllUserProject);
+      // console.log(projectsdata.getAllUserProject);
+    }
+  }, [projectsdata, projectLoading, projectError]);
   const filteredAndSortedProjects = useMemo(() => {
     let filtered = sampleProjects.filter((project) => {
       const matchesSearch =
@@ -154,8 +165,8 @@ function AllProjects() {
           break;
         case "createdAt":
         default:
-          aVal = a.createdAt.getTime();
-          bVal = b.createdAt.getTime();
+          aVal = new Date(a.createdAt).getTime();
+          bVal = new Date(b.createdAt).getTime();
           break;
       }
 

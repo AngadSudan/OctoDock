@@ -70,9 +70,9 @@ class projectController {
 
   async getAllUserProject(userId: string) {
     try {
-      const dbUser = await prisma.user.findUnique({
+      const dbUser = await prisma.user.findFirst({
         where: {
-          id: userId,
+          username: userId,
         },
       });
 
@@ -80,14 +80,15 @@ class projectController {
 
       const userProjects = await prisma.project.findMany({
         where: {
-          createdBy: userId,
+          createdBy: dbUser.id,
           isActive: "ACTIVE",
         },
       });
 
+      console.log(userProjects);
       if (!userProjects) return { message: "no projects found", data: [] };
 
-      return { message: "projects loaded!", data: userProjects };
+      return userProjects;
     } catch (error: any) {
       console.log(error);
     }
