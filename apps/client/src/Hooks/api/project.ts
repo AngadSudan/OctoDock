@@ -3,6 +3,7 @@ import {
   CREATE_PROJECT,
   DELETE_PROJECT,
   GET_ALL_PROJECT,
+  GET_INDIVIDUAL_PROJECT,
   UPDATE_PROJECT,
 } from "@/Hooks/project";
 
@@ -86,9 +87,8 @@ export const useGetAllProjectData = (userId) => {
 };
 
 export const usegetProjectInfo = (projectId) => {
-  const { data, loading, error } = useQuery(GET_ALL_PROJECT, {
+  const { data, loading, error } = useQuery(GET_INDIVIDUAL_PROJECT, {
     variables: { id: projectId },
-    fetchPolicy: "cache-and-network",
     skip: !projectId,
   });
 

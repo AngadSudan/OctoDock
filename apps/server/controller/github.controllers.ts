@@ -6,29 +6,32 @@ class githubController {
   constructor(token: string) {
     this.token = token;
     this.octokit = new Octokit({
-      // auth: process.env.GITHUBTOKEN!,
       auth: token,
     });
   }
 
   async createRepository(name: string, description: string): Promise<any> {
     try {
+      console.log(name);
+      console.log(description);
+      console.log(this.token);
       const newRepo = await this.octokit.rest.repos.createForAuthenticatedUser({
         name,
         auto_init: true,
-        headers: {
-          authorization: `Authorization: Bearer ${this.token}`,
-        },
+        // headers: {
+        //   authorization: `Authorization: Bearer ${this.token}`,
+        // },
       });
+      console.log(JSON.stringify(newRepo));
       const repoInformation = {
         url: newRepo.data.url,
         name: newRepo.data.name,
         userInfo: newRepo.data.owner,
       };
-
+      // console.log(repoInformation)
       return repoInformation;
     } catch (error: any) {
-      console.log(error);
+      console.log(JSON.stringify(error, null, 2));
       return null;
     }
   }

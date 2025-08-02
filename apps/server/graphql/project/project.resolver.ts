@@ -4,6 +4,7 @@ const queries = {
     return await projectController.getAllUserProject(id);
   },
   getProjectById: async (_, { id }: { id: string }) => {
+    console.log("id is : ", id);
     return await projectController.getProjectById(id);
   },
 };

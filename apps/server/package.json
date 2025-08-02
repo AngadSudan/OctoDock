@@ -35,6 +35,7 @@
     "cors": "^2.8.5",
     "dockerode": "^4.0.7",
     "express": "^5.1.0",
+    "express-http-proxy": "^2.1.1",
     "express-rate-limit": "^7.5.1",
     "express-session": "^1.18.1",
     "graphql": "^16.11.0",

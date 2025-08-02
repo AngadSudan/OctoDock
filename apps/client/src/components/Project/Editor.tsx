@@ -1,98 +1,63 @@
 import { useEffect, useRef, useState } from "react";
 import sdk, { type VM } from "@stackblitz/sdk";
-
-export default function Editor() {
+export default function Editor({ files, loading = true }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const vmRef = useRef<VM | null>(null); // Store the StackBlitz VM instance
-  const [isLoaded, setIsLoaded] = useState(false);
+  const vmRef = useRef<VM | null>(null);
+  const [isLoaded, setIsLoaded] = useState(loading);
   const [error, setError] = useState<string | null>(null);
-
-  const files = {
-    "src/index.html": `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Simple HTML CSS JS App</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <h1 id="greeting">Hello World!</h1>
-  <button id="clickMe">Click Me</button>
-  <script src="script.js"></script>
-</body>
-</html>`,
-
-    "src/style.css": `body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background-color: #f0f0f0;
-  margin-top: 50px;
-}
-
-h1 {
-  color: #333;
-}
-
-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  background-color: #007cba;
-  color: white;
-  border: none;
-  border-radius: 4px;
-}
-
-button:hover {
-  background-color: #005a87;
-}`,
-
-    "src/script.js": `document.getElementById('clickMe').addEventListener('click', function() {
-  document.getElementById('greeting').textContent = 'You clicked the button!';
-});`,
-  };
-
   useEffect(() => {
     if (!containerRef.current) return;
-
     let cancelled = false;
 
-    const timeout = setTimeout(() => {
-      sdk
-        .embedProject(
-          containerRef.current!,
-          {
-            title: "Simple HTML/CSS/JS App",
-            description: "A basic example",
-            template: "node",
-            files,
-          },
-          {
-            forceEmbedLayout: true,
-            height: "100%",
-            width: "100%",
-            hideExplorer: false,
-          }
-        )
-        .then((vm) => {
-          if (!cancelled) {
-            setIsLoaded(true);
-            vmRef.current = vm;
-          }
-        })
-        .catch((err) => {
-          console.error("StackBlitz embed error:", err);
-          setError(err?.message || "Failed to load StackBlitz");
-        });
-    }, 300);
+    if (Object.keys(files).length > 0) {
+      const createFileSystem = {};
+      for (const file in files) {
+        // @ts-ignore
+        console.log(file);
+        createFileSystem[files[file].path] = files[file].content;
+        console.log(
+          "mapping values in files, current value is ",
+          createFileSystem
+        );
+      }
+      console.log("created fileTree is ");
+      console.log(files);
+      const timeout = setTimeout(() => {
+        sdk
+          .embedProject(
+            containerRef.current!,
+            {
+              title: "Simple HTML/CSS/JS App",
+              description: "A basic example",
+              template: "node",
+              files: createFileSystem,
+            },
+            {
+              forceEmbedLayout: true,
+              height: "100%",
+              width: "100%",
+              hideExplorer: false,
+            }
+          )
+          .then((vm) => {
+            if (!cancelled) {
+              setIsLoaded(true);
+              vmRef.current = vm;
+            }
+          })
+          .catch((err) => {
+            console.error("StackBlitz embed error:", err);
+            setError(err?.message || "Failed to load StackBlitz");
+          });
+      }, 300);
 
-    return () => {
-      cancelled = true;
-      clearTimeout(timeout);
-    };
+      return () => {
+        cancelled = true;
+        clearTimeout(timeout);
+      };
+    }
   }, []);
 
-  // Example: update file content in the VM
   const updateFileContent = async (file: string, text: string) => {
     if (!vmRef.current) {
       console.error("StackBlitz VM is not available");

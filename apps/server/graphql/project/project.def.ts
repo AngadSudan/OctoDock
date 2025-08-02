@@ -13,7 +13,8 @@ export const projectDef = `#graphql
         githubUrl:String!
         folderStructure:String
         status:STATUS
-        createdBy:User
+        user:User
+        createdBy: ID
         prompts:[ID!]
         createdAt:Date
         updatedAt:Date

@@ -12,26 +12,34 @@ class projectController {
        * create an enhancedPrompt about the project description to give to further AI Agents
        */
 
-      const dbUser = await prisma.user.findUnique({
+      console.log(userId);
+      const dbUser = await prisma.user.findFirst({
         where: {
-          id: userId,
+          username: userId,
         },
       });
-
+      console.log(dbUser);
       if (!dbUser) throw new Error("no user token found. Kindly login/Signup");
 
-      const githubToken = "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";
+      const githubToken =
+        dbUser.githubToken || "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";
 
       const createRepository = await new githubController(
         githubToken
       ).createRepository(name, description);
+
+      if (!createRepository) throw new Error("Error in creating repository");
+
       const generatedPrompt =
         await aiGenerations.enhanceUserGivenDescription(description);
+
+      if (!generatedPrompt) throw new Error("Couln't generate SRS");
 
       // const generatedFileStructure =
       //   await gptFeaturesControllers.generateProjectFolderStructure(
       //     generatedPrompt
       //   );
+
       const generatedFileStructure =
         await AiFeaturesControllers.generateProjectFileStructure(
           generatedPrompt
@@ -40,6 +48,7 @@ class projectController {
       if (!generatedFileStructure)
         throw new Error("error in creating folder structure for your project");
 
+      let createdFileStrucutre = JSON.parse(generatedFileStructure);
       // const generatedFolderStructure = await
       const createdProject = await prisma.project.create({
         data: {
@@ -48,7 +57,7 @@ class projectController {
           generatedPrompt,
           githubUrl: createRepository.url,
           createdBy: dbUser.id,
-          folderStructure: JSON.stringify(generatedFileStructure),
+          folderStructure: JSON.stringify(createdFileStrucutre),
         },
       });
 
@@ -86,15 +95,19 @@ class projectController {
 
   async getProjectById(projecId: string) {
     try {
+      console.log(projecId);
       const dbProject = await prisma.project.findUnique({
         where: {
           id: projecId,
         },
+        include: {
+          user: true,
+        },
       });
+      console.log(dbProject);
 
       if (!dbProject) throw new Error("invalid projectId");
-
-      return { message: "project fetched!", data: dbProject };
+      return dbProject;
     } catch (error: any) {
       console.log(error);
     }

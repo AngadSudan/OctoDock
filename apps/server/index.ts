@@ -15,10 +15,12 @@ import createApolloServer from "./graphql/index";
 import "dotenv/config";
 import passport from "passport";
 import "./utils/passport";
+import bodyParser from "body-parser";
 import session from "express-session";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import type { Express } from "express";
-
+import proxy from "express-http-proxy";
+import url from "url";
 const app: Express = express();
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
@@ -30,6 +32,7 @@ const limiter = rateLimit({
 app.use(helmet());
 app.use("/api", limiter);
 app.use(hpp() as any);
+// app.use(bodyParser.json());
 app.use(
   require("express-session")({
     secret: "TTL",
@@ -51,7 +54,10 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: [
+      process.env.FRONTEND_URL || "http://localhost:5173",
+      "http://localhost:4000",
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: [
@@ -65,15 +71,11 @@ app.use(
     ],
   })
 );
+const apiProxy = proxy("http://localhost:4000", {
+  proxyReqPathResolver: (req) => url.parse(req.baseUrl).path,
+});
+app.use("/graphql", apiProxy);
 
-app.use(morgan("dev"));
-app.use(
-  "/graphql",
-  createProxyMiddleware({
-    target: "http://localhost:4000",
-    changeOrigin: true,
-  })
-);
 //error handling
 
 app.get("/", (req, res) => {
