@@ -19,6 +19,7 @@ import About from "./pages/About.tsx";
 import { Provider } from "react-redux";
 import store from "./redux";
 import Home from "./pages/Home.tsx";
+import PromptBar from "./pages/PromptBar.tsx";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
@@ -31,6 +32,7 @@ const router = createBrowserRouter(
         element={<Projects />}
         loader={() => {}}
       />
+      <Route path="project" element={<PromptBar />} loader={() => {}} />
       <Route path="project/:id" element={<Project />} loader={() => {}} />
     </Route>
   )

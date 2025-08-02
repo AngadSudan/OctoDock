@@ -4,11 +4,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, X } from "lucide-react";
 import { Link } from "react-router";
+import { useCreateProject } from "@/Hooks/api/project";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/redux";
 
 type OverlayFormModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (formData: { name: string; details: string }) => Promise<void>;
+  onSubmit: any;
 };
 
 type FormErrors = {
@@ -25,7 +28,7 @@ const OverlayFormModal: React.FC<OverlayFormModalProps> = ({
     name: "",
     details: "",
   });
-
+  const userId = useSelector((state: RootState) => state.auth.user.login);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -89,7 +92,7 @@ const OverlayFormModal: React.FC<OverlayFormModalProps> = ({
 
     setIsLoading(true);
     try {
-      await onSubmit(formData);
+      await onSubmit(userId, formData.name, formData.details);
       onClose();
     } catch (error) {
       console.error("Form submission failed:", error);

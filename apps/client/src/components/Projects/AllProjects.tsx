@@ -16,9 +16,14 @@ import {
   X,
 } from "lucide-react";
 import ProjectCard from "./ProjectCard";
-import OverlayFormModal from "./newProjectForm";
+import OverlayFormModal from "./NewProjectForm";
+import type { RootState } from "@/redux";
+import { useSelector } from "react-redux";
+import { useCreateProject } from "@/Hooks/api/project";
+import { useNavigate } from "react-router";
 
 function AllProjects() {
+  const router = useNavigate();
   const sampleProjects = [
     {
       id: "1",
@@ -102,7 +107,6 @@ function AllProjects() {
       createdAt: new Date("2024-02-10"),
     },
   ];
-
   const [viewMode, setViewMode] = useState("card");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
@@ -115,7 +119,7 @@ function AllProjects() {
     const authors = [...new Set(sampleProjects.map((p) => p.user.name))];
     return authors.sort();
   }, []);
-
+  const userId = useSelector((state: RootState) => state.auth.user.login);
   const filteredAndSortedProjects = useMemo(() => {
     let filtered = sampleProjects.filter((project) => {
       const matchesSearch =
@@ -184,6 +188,16 @@ function AllProjects() {
     authorFilter !== "ALL" ||
     sortBy !== "createdAt" ||
     sortOrder !== "desc";
+  const { createProject, loading, data, error } = useCreateProject();
+  const handleSubmit = async (userId, project, details) => {
+    try {
+      const newProject = await createProject(userId, project, details);
+      console.log("✅ Project created:", newProject);
+      router(`/project/${newProject.id}`);
+    } catch (err) {
+      console.error("❌ Failed to create project:", err);
+    }
+  };
 
   return (
     <div className="relative min-h-screen w-full bg-gradient-to-br from-gray-950 via-slate-950 to-black p-8">
@@ -192,7 +206,7 @@ function AllProjects() {
           <OverlayFormModal
             isOpen={newProject}
             onClose={() => setNewProject(false)}
-            onSubmit={() => {}}
+            onSubmit={handleSubmit}
           />
         </div>
       )}

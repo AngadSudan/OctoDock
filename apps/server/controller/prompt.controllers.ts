@@ -22,6 +22,7 @@ class promptControllers {
       },
     });
 
+    this.changeFileStructureBasedOnPrompt(createdPrompt.id);
     return createdPrompt;
   }
   async getAllPromptPerProject(projectId: string) {
@@ -44,6 +45,13 @@ class promptControllers {
       });
 
       return dbPrompts;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+  async changeFileStructureBasedOnPrompt(promptId: string) {
+    try {
     } catch (error) {
       console.log(error);
       return null;

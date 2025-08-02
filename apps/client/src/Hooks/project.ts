@@ -7,9 +7,20 @@ export const CREATE_PROJECT = gql`
     $description: String!
   ) {
     createNewProject(userId: $userId, name: $name, description: $description) {
-      userId
+      id
       name
       description
+      generatedPrompt
+      githubUrl
+      folderStructure
+      status
+      user {
+        name
+      }
+      createdBy
+      prompts
+      createdAt
+      updatedAt
     }
   }
 `;

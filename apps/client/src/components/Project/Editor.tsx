@@ -11,10 +11,17 @@ export default function Editor({ files, loading = true }) {
 
     if (Object.keys(files).length > 0) {
       const createFileSystem = {};
+
       for (const file in files) {
         // @ts-ignore
-        console.log(file);
-        createFileSystem[files[file].path] = files[file].content;
+        if (files[file].path && files[file].content) {
+          createFileSystem[files[file].path] = files[file].content;
+        } else if (files[file].path && !files[file].content) {
+          createFileSystem[files[file].path] = `// basic init`;
+        } else {
+          console.log(files[file]);
+          createFileSystem[files[file]] = `// basic init`;
+        }
         console.log(
           "mapping values in files, current value is ",
           createFileSystem
