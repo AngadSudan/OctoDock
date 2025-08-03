@@ -1,6 +1,8 @@
+import { useState } from "react";
 import PromptBar from "./PromptBar";
 
 function Chat() {
+  const [messages, setMessages] = useState([]);
   return (
     <div className="min-h-screen w-1/2 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 relative">
       {/* Subtle gradient mesh background */}
@@ -10,7 +12,7 @@ function Chat() {
       {/* Main content container */}
       <div className="relative z-10 flex flex-col h-full">
         {/* Professional header */}
-        <div className="px-6 py-4 border-b border-slate-800/50 bg-slate-900/50 backdrop-blur-xl">
+        <div className="px-6 py-2 border-b border-slate-800/50 bg-slate-900/50 backdrop-blur-xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-2 h-2 bg-gradient-to-r from-red-500 to-orange-500 rounded-full"></div>
@@ -19,7 +21,7 @@ function Chat() {
               </h1>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
+              <div className="w-1.5 h-1.5 bg-slate-900/30 rounded-full"></div>
               <span className="text-xs text-slate-400">Online</span>
             </div>
           </div>
@@ -87,14 +89,8 @@ function Chat() {
         </div>
 
         {/* Professional prompt bar container */}
-        <div className="p-6 bg-slate-900/30 backdrop-blur-xl border-t border-slate-800/50">
-          <div className="relative">
-            {/* Subtle glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 via-orange-500/10 to-purple-500/10 rounded-xl blur-xl"></div>
-            <div className="relative bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-1 shadow-2xl">
-              <PromptBar />
-            </div>
-          </div>
+        <div className="p-6 mb-24 bg-slate-900/30 backdrop-blur-xl border-t border-slate-800/50">
+          <PromptBar />
         </div>
       </div>
 
