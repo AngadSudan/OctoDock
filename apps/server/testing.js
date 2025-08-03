@@ -1,10 +1,13 @@
 import projectController from "./controller/project.controllers.js";
 
 const createProject = async () => {
-  const data = await projectController.createNewProject(
-    "AravConray",
-    "OCTODOCK_CLI_TESTING" + Date.now(),
-    "Todo Application"
+  // const data = await projectController.createNewProject(
+  //   "AravConray",
+  //   "OCTODOCK_CLI_TESTING" + Date.now(),
+  //   "Todo Application"
+  // );
+  const data = await projectController.initializeProject(
+    "688f3c4d3137e1267c5a812d"
   );
   console.log(data);
 };

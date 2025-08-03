@@ -22,91 +22,21 @@ import { useSelector } from "react-redux";
 import { useCreateProject, useGetAllProjectData } from "@/Hooks/api/project";
 import { useNavigate } from "react-router";
 
+interface project {
+  id: string;
+  name: string;
+  description: string;
+  generatedPrompt: string;
+  folderStructure: string;
+  status: string;
+  isActive: string;
+  createdBy: string;
+  user: { name: string };
+  createdAt: string;
+}
 function AllProjects() {
   const router = useNavigate();
-  const [sampleProjects, setSampleProject] = useState([
-    {
-      id: "1",
-      name: "Octodock Dashboard",
-      description:
-        "Next-generation project management platform with AI-powered insights, real-time collaboration, and seamless deployment workflows.",
-      generatedPrompt: "Create a dashboard with analytics",
-      folderStructure: "{}",
-      githubUrl: "https://github.com/user/octodock-dashboard",
-      status: "PUBLISHED",
-      isActive: "ACTIVE",
-      createdBy: "user1",
-      user: { name: "John Doe" },
-      createdAt: new Date("2024-01-15"),
-    },
-    {
-      id: "2",
-      name: "React Component System",
-      description:
-        "Advanced component library with TypeScript, comprehensive testing suite, Storybook documentation, and automated design system integration.",
-      generatedPrompt: "Build a component library",
-      folderStructure: "{}",
-      status: "NOT_PUBLISHED",
-      isActive: "ACTIVE",
-      createdBy: "user2",
-      user: { name: "Jane Smith" },
-      createdAt: new Date("2024-02-20"),
-    },
-    {
-      id: "3",
-      name: "E-commerce Platform",
-      description:
-        "Full-stack marketplace solution featuring advanced payment processing, intelligent inventory management, and comprehensive analytics dashboard.",
-      generatedPrompt: "Create an e-commerce platform",
-      folderStructure: "{}",
-      githubUrl: "https://github.com/user/ecommerce-platform",
-      status: "DRAFT",
-      isActive: "ACTIVE",
-      createdBy: "user3",
-      user: { name: "Alex Johnson" },
-      createdAt: new Date("2024-03-10"),
-    },
-    {
-      id: "4",
-      name: "AI Content Generator",
-      description:
-        "Intelligent content creation tool with natural language processing, automated SEO optimization, and multi-platform publishing capabilities.",
-      generatedPrompt: "Build an AI writing assistant",
-      folderStructure: "{}",
-      status: "PUBLISHED",
-      isActive: "ACTIVE",
-      createdBy: "user1",
-      user: { name: "John Doe" },
-      createdAt: new Date("2024-01-25"),
-    },
-    {
-      id: "5",
-      name: "Data Visualization Suite",
-      description:
-        "Comprehensive analytics platform with interactive charts, real-time data streaming, and customizable dashboard builder for business intelligence.",
-      generatedPrompt: "Create data visualization tools",
-      folderStructure: "{}",
-      githubUrl: "https://github.com/user/data-viz-suite",
-      status: "DRAFT",
-      isActive: "ACTIVE",
-      createdBy: "user2",
-      user: { name: "Jane Smith" },
-      createdAt: new Date("2024-03-05"),
-    },
-    {
-      id: "6",
-      name: "Mobile Chat Application",
-      description:
-        "Real-time messaging platform with end-to-end encryption, media sharing, group management, and cross-platform synchronization.",
-      generatedPrompt: "Build a chat app",
-      folderStructure: "{}",
-      status: "NOT_PUBLISHED",
-      isActive: "ACTIVE",
-      createdBy: "user3",
-      user: { name: "Alex Johnson" },
-      createdAt: new Date("2024-02-10"),
-    },
-  ]);
+  const [sampleProjects, setSampleProject] = useState<project[]>([]);
   const [viewMode, setViewMode] = useState("card");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
@@ -119,7 +49,16 @@ function AllProjects() {
     const authors = [...new Set(sampleProjects.map((p) => p.user.name))];
     return authors.sort();
   }, []);
-  const userId = useSelector((state: RootState) => state.auth.user.login);
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
+  let userId;
+  if (!isAuthenticated) {
+    router("/login");
+  } else {
+    userId = useSelector((state: RootState) => state.auth.user.login);
+  }
+
   const {
     data: projectsdata,
     loading: projectLoading,
@@ -128,7 +67,6 @@ function AllProjects() {
   useEffect(() => {
     if (!projectLoading && projectsdata) {
       setSampleProject(projectsdata.getAllUserProject);
-      // console.log(projectsdata.getAllUserProject);
     }
   }, [projectsdata, projectLoading, projectError]);
   const filteredAndSortedProjects = useMemo(() => {

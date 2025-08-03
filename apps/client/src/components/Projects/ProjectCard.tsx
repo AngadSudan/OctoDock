@@ -348,7 +348,6 @@ const ProjectCard = ({
     if (onNavigate) {
       onNavigate(project.id);
     } else {
-      // Fallback to window.location if no navigate function provided
       window.location.href = `/project/${project.id}`;
     }
   };
@@ -532,7 +531,6 @@ const ProjectCard = ({
     );
   }
 
-  // Modern Card Layout
   return (
     <>
       <div

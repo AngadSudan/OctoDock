@@ -10,25 +10,25 @@ export default function Editor({ files, loading = true }) {
     let cancelled = false;
 
     if (Object.keys(files).length > 0) {
-      const createFileSystem = {};
+      // const createFileSystem = {};
 
-      for (const file in files) {
-        // @ts-ignore
-        if (files[file].path && files[file].content) {
-          createFileSystem[files[file].path] = files[file].content;
-        } else if (files[file].path && !files[file].content) {
-          createFileSystem[files[file].path] = `// basic init`;
-        } else {
-          console.log(files[file]);
-          createFileSystem[files[file]] = `// basic init`;
-        }
-        console.log(
-          "mapping values in files, current value is ",
-          createFileSystem
-        );
-      }
-      console.log("created fileTree is ");
-      console.log(files);
+      // for (const file in files) {
+      //   // @ts-ignore
+      //   if (files[file].path && files[file].content) {
+      //     createFileSystem[files[file].path] = files[file].content;
+      //   } else if (files[file].path && !files[file].content) {
+      //     createFileSystem[files[file].path] = `// basic init`;
+      //   } else {
+      //     console.log(files[file]);
+      //     createFileSystem[files[file]] = `// basic init`;
+      //   }
+      //   console.log(
+      //     "mapping values in files, current value is ",
+      //     createFileSystem
+      //   );
+      // }
+      // console.log("created fileTree is ");
+      // console.log(files);
       const timeout = setTimeout(() => {
         sdk
           .embedProject(
@@ -37,7 +37,7 @@ export default function Editor({ files, loading = true }) {
               title: "Simple HTML/CSS/JS App",
               description: "A basic example",
               template: "node",
-              files: createFileSystem,
+              files: files,
             },
             {
               forceEmbedLayout: true,

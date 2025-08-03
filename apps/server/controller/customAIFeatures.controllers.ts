@@ -34,11 +34,13 @@ class customModel {
   async generateFileBasedOnSingleFile(
     srs: string,
     codefile: string,
-    gitSummary: string
+    gitSummary: string,
+    currentStatus: string
   ) {
     const prompt = CodeGenerationForFile.replace("{srs_documentdetails}", srs)
       .replace("{code_file}", codefile)
-      .replace("{git_summary}", gitSummary);
+      .replace("{git_summary}", gitSummary)
+      .replace("{updated_file_system}", currentStatus);
     const modelConfig = {
       model: "AngadSudan/octadock",
       prompt: prompt,
@@ -46,6 +48,7 @@ class customModel {
       format: "json",
     };
     const response = await this.ollama.generate(modelConfig);
+    console.log("OLLAMA CONFIG:", response);
     return response;
   }
   async generateCorrectnessInFileOnBuggyFeature(

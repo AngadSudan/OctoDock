@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama.sh:/app/startup.sh
+      - ollama_data:/root/.ollama
+    working_dir: /app
+    entrypoint: sh /app/startup.sh
+
+volumes:
+  ollama_data:

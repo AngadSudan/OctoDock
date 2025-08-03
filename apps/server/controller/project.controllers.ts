@@ -1,55 +1,70 @@
 import prisma from "../utils/prisma";
 import AiFeaturesControllers from "./AiFeatures.controllers";
 import aiGenerations from "./AiFeatures.controllers";
+import codeControllers from "./code.controllers";
 import githubController from "./github.controllers";
 import gptFeaturesControllers from "./gptFeatures.controllers";
-class projectController {
+
+class ProjectController {
   async createNewProject(userId: string, name: string, description: string) {
     try {
-      /**
-       * create a project on the basis of the name and description.
-       * Create repo using the user AuthToken
-       * create an enhancedPrompt about the project description to give to further AI Agents
-       */
-
       console.log(userId);
       const dbUser = await prisma.user.findFirst({
-        where: {
-          username: userId,
-        },
+        where: { username: userId },
       });
+
       console.log(dbUser);
-      if (!dbUser) throw new Error("no user token found. Kindly login/Signup");
+      if (!dbUser) {
+        throw new Error("no user token found. Kindly login/Signup");
+      }
 
       const githubToken =
         dbUser.githubToken || "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";
-
       const createRepository = await new githubController(
         githubToken
       ).createRepository(name, description);
 
-      if (!createRepository) throw new Error("Error in creating repository");
+      if (!createRepository) {
+        throw new Error("Error in creating repository");
+      }
 
       const generatedPrompt =
         await aiGenerations.enhanceUserGivenDescription(description);
-
-      if (!generatedPrompt) throw new Error("Couln't generate SRS");
-
-      // const generatedFileStructure =
-      //   await gptFeaturesControllers.generateProjectFolderStructure(
-      //     generatedPrompt
-      //   );
+      if (!generatedPrompt) {
+        throw new Error("Couln't generate SRS");
+      }
 
       const generatedFileStructure =
         await AiFeaturesControllers.generateProjectFileStructure(
           generatedPrompt
         );
-
-      if (!generatedFileStructure)
+      if (!generatedFileStructure) {
         throw new Error("error in creating folder structure for your project");
+      }
 
-      let createdFileStrucutre = JSON.parse(generatedFileStructure);
-      // const generatedFolderStructure = await
+      let createdFileStructure = JSON.parse(generatedFileStructure);
+      const createFileSystem: Record<string, string> = {};
+
+      if (Object.keys(createdFileStructure).length > 0) {
+        for (const file in createdFileStructure) {
+          if (
+            createdFileStructure[file].path &&
+            createdFileStructure[file].content
+          ) {
+            createFileSystem[createdFileStructure[file].path] =
+              createdFileStructure[file].content;
+          } else if (
+            createdFileStructure[file].path &&
+            !createdFileStructure[file].content
+          ) {
+            createFileSystem[createdFileStructure[file].path] = "// basic init";
+          } else {
+            console.log(createdFileStructure[file]);
+            createFileSystem[createdFileStructure[file]] = "// basic init";
+          }
+        }
+      }
+
       const createdProject = await prisma.project.create({
         data: {
           name,
@@ -57,7 +72,7 @@ class projectController {
           generatedPrompt,
           githubUrl: createRepository.url,
           createdBy: dbUser.id,
-          folderStructure: JSON.stringify(createdFileStrucutre),
+          folderStructure: JSON.stringify(createFileSystem),
         },
       });
 
@@ -215,5 +230,33 @@ class projectController {
       console.log(error);
     }
   }
+  async initializeProject(projectID: string) {
+    try {
+      const dbProject = await prisma.project.findUnique({
+        where: {
+          id: projectID,
+        },
+      });
+      if (!dbProject) throw new Error("no such project found!");
+
+      const folderStructure = JSON.parse(dbProject.folderStructure);
+      const updatedFolderStrucutre = {};
+      Object.keys(folderStructure).map(async (filename) => {
+        updatedFolderStrucutre[filename] = await codeControllers.writeCodeFile(
+          dbProject.generatedPrompt,
+          filename,
+          dbProject.folderStructure,
+          JSON.stringify(updatedFolderStrucutre)
+        );
+      });
+
+      console.log(updatedFolderStrucutre);
+
+      return JSON.stringify(updatedFolderStrucutre);
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
 }
-export default new projectController();
+export default new ProjectController();

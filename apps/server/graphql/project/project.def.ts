@@ -17,6 +17,7 @@ export const projectDef = `#graphql
         createdBy: ID
         prompts:[ID!]
         createdAt:Date
+        isInitialized:Boolean
         updatedAt:Date
     }
 `;

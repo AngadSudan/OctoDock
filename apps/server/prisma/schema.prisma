@@ -61,6 +61,7 @@ model project {
   createdBy       String   @db.ObjectId
   user            user     @relation(references: [id], fields: [createdBy], onDelete: Cascade)
   prompts         prompt[]
+  isInitialized   Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @default(now())
 }
@@ -70,6 +71,7 @@ model prompt {
   userPrompt      String
   generatedPrompt String
   reportedAnswer  String?
+  folderStructure String?  @default("{}")
   sucessResponse  SUCCESS  @default(NOT_SUCCESS)
   projectId       String   @db.ObjectId
   project         project  @relation(references: [id], fields: [projectId], onDelete: Cascade)

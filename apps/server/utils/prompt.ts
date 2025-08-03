@@ -165,7 +165,8 @@ Inputs:
 
 3️⃣ **Git Repository Summary and Folder Structure**  
 {git_summary}
-
+4 ** current updated files or folder structure state**
+{updated_file_system}
 ---
 
 ✅ **Output Format (STRICTLY JSON):**  
