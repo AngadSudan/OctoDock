@@ -12,27 +12,29 @@ const createApolloServer = async () => {
 
         ${User.userDef}
         ${Project.projectDef}
-
+        ${Prompt.promptDef}
         type Query {
             ${User.userQueries}
             ${Project.projectQueries}
+            ${Prompt.promptQueries}
         }
 
         type Mutation {
             ${User.userMutations}
             ${Project.projectMutation}
+            ${Prompt.promptMutation}
         }
     `);
   const graphqlResolver = {
     Query: {
       ...User.userResolver.queries,
       ...Project.projectResolver.queries,
-      // ...Prompt.promptResolver.queries,
+      ...Prompt.promptResolver.queries,
     },
     Mutation: {
       ...User.userResolver.mutation,
       ...Project.projectResolver.mutations,
-      // ...Prompt.promptResolver.mutations,
+      ...Prompt.promptResolver.mutations,
     },
   };
   interface MyContext {

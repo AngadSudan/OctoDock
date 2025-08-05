@@ -1,14 +1,20 @@
+import { useCreatePrompt } from "@/Hooks/api/prompt";
+import type { RootState } from "@/redux";
 import React, { useState, useRef, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router";
 
-function PromptBar() {
+function PromptBar({ chat, setChat }) {
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedSuggestion, setSelectedSuggestion] = useState(-1);
   const textareaRef = useRef(null);
-
-  const handleSubmit = (e) => {
+  // const { createPrompt, data, loading, error } = useCreatePrompt();
+  const user = useSelector((state: RootState) => state.auth);
+  const param = useParams();
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (message.trim()) {
       setIsTyping(true);
@@ -16,8 +22,15 @@ function PromptBar() {
       setMessage("");
       setShowSuggestions(false);
       setSelectedSuggestion(-1);
-
+      if (!user.isAuthenticated) {
+        return;
+      }
       //TODO: add gql query to handle the prompt registrations
+      // const response = await createPrompt(user.user.login, param.id, message);
+      // if (response) {
+      //   setMessage("");
+      // }
+      setChat([...chat, { message }]);
       setTimeout(() => {
         setIsTyping(false);
       }, 2000);

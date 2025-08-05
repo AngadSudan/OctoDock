@@ -232,3 +232,20 @@ Return ONLY a valid JSON array in this exact format:
 - Ensure the corrected code is secure, maintainable, and production-ready.  
 - The fix should clearly address the described feature and the issues in the provided code.
 `;
+
+export const compareChangesAndReturnText = `
+You are given two folder structures: the original one and the AI-corrected version, which was generated based on a user prompt.
+
+Your task is to generate a **clear and concise 5-line summary** describing the changes made between the two structures. This summary should help the user quickly understand what has been altered.
+
+--- Original Folder Structure:
+{original_folder_structure}
+
+--- AI-Corrected Folder Structure:
+{corrected_folder_structure}
+
+--- User Prompt:
+{user_prompt}
+
+Please return exactly 5 lines of plain text with **no special characters, escape sequences, or formatting** — just raw human-readable sentences summarizing the key changes.
+`;

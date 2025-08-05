@@ -129,7 +129,7 @@ const ProjectCard = ({
     return (
       <>
         <div
-          className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-gray-900/40 via-slate-900/40 to-gray-900/40 border border-white/[0.08] hover:border-white/[0.12] transition-all duration-700 backdrop-blur-2xl hover:shadow-2xl hover:shadow-black/20 cursor-pointer"
+          className="group relative rounded-2xl bg-gradient-to-r from-gray-900/40 via-slate-900/40 to-gray-900/40 border border-white/[0.08] hover:border-white/[0.12] transition-all duration-700 backdrop-blur-2xl hover:shadow-2xl hover:shadow-black/20 cursor-pointer"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           onClick={handleCardClick}
@@ -236,7 +236,7 @@ const ProjectCard = ({
                     </button>
 
                     {showMenu && (
-                      <div className="absolute right-0 top-full mt-3 w-56 bg-gray-900/90 backdrop-blur-2xl border border-white/[0.1] rounded-2xl shadow-2xl z-50 overflow-hidden">
+                      <div className="absolute right-0 top-full mt-3 w-56 bg-gray-900/90 backdrop-blur-2xl border border-white/[0.1] rounded-2xl shadow-2xl z-50 ">
                         <div className="p-2">
                           <button
                             onClick={() =>
@@ -307,7 +307,7 @@ const ProjectCard = ({
   return (
     <>
       <div
-        className="group relative h-full overflow-hidden rounded-2xl bg-gradient-to-r from-gray-900/40 via-slate-900/40 to-gray-900/40 border border-white/[0.08] hover:border-white/[0.12] transition-all duration-700 backdrop-blur-2xl hover:shadow-2xl hover:shadow-black/20 cursor-pointer"
+        className="group relative h-full  rounded-2xl bg-gradient-to-r from-gray-900/40 via-slate-900/40 to-gray-900/40 border border-white/[0.08] hover:border-white/[0.12] transition-all duration-700 backdrop-blur-2xl hover:shadow-2xl hover:shadow-black/20 cursor-pointer"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={handleCardClick}
@@ -408,7 +408,7 @@ const ProjectCard = ({
                   <MoreVertical className="w-4 h-4 text-white/70" />
                 </button>
                 {showMenu && (
-                  <div className="absolute right-0 top-full mt-3 w-56 bg-gray-900/90 backdrop-blur-2xl border border-white/[0.1] rounded-2xl shadow-2xl z-50 overflow-hidden">
+                  <div className="absolute left-10 -top-[190px] mt-3 w-56 bg-gray-900/90 backdrop-blur-2xl border border-white/[0.1] rounded-2xl shadow-2xl z-50 ">
                     <div className="p-2">
                       <button
                         onClick={() => handleAction(() => setShowModal(true))}
