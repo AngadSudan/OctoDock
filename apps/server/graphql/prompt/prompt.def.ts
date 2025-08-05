@@ -10,8 +10,11 @@ export const promptDef = `#graphql
         id: ID!
         userPrompt: String!
         generatedPrompt: String!
+        reportedAnswer: String!
+        folderStructure: String!
         successResponse: SUCCESS
-        projectId: Project
+        projectId: String!
+        project: Project
         createdAt: Date
         updatedAt: Date
     }

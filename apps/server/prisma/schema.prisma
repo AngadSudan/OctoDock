@@ -70,7 +70,7 @@ model prompt {
   id              String   @id @default(auto()) @map("_id") @db.ObjectId
   userPrompt      String
   generatedPrompt String
-  reportedAnswer  String?
+  reportedAnswer  String? // AI Success Response to the original request
   folderStructure String?  @default("{}")
   sucessResponse  SUCCESS  @default(NOT_SUCCESS)
   projectId       String   @db.ObjectId
