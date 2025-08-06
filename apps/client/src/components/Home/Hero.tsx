@@ -7,15 +7,15 @@ function Hero() {
   const boxRef = useRef(null);
 
   return (
-    <div className="min-h-[500svh]">
+    <div className="min-h-[100svh]">
       <div ref={htmlRef} className="min-h-screen">
         <Html />
       </div>
-      <div className="min-h-screen">
+      {/* <div className="min-h-screen">
         <Canvas>
           <MeshComponent />
         </Canvas>
-      </div>
+      </div> */}
     </div>
   );
 }
