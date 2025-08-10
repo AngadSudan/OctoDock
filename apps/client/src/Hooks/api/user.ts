@@ -5,6 +5,7 @@ export const useGetUserProfile = (userId) => {
   const { data, loading, error } = useQuery(GET_USER_PROFILE, {
     variables: { id: userId },
     fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
     skip: !userId,
   });
 

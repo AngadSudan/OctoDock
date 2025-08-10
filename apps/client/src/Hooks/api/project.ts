@@ -80,6 +80,7 @@ export const useGetAllProjectData = (userId) => {
   const { data, loading, error } = useQuery(GET_ALL_PROJECT, {
     variables: { id: userId },
     fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
     skip: !userId,
   });
 
@@ -89,6 +90,8 @@ export const useGetAllProjectData = (userId) => {
 export const usegetProjectInfo = (projectId) => {
   const { data, loading, error } = useQuery(GET_INDIVIDUAL_PROJECT, {
     variables: { id: projectId },
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
     skip: !projectId,
   });
 

@@ -26,8 +26,8 @@
     "@types/express-serve-static-core": "^4.17.35"
   },
   "dependencies": {
-    "@stackblitz/sdk": "^1.11.0",
     "@reduxjs/toolkit": "^2.8.2",
+    "@stackblitz/sdk": "^1.11.0",
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.1.0",
@@ -39,6 +39,7 @@
     "@types/passport": "^1.0.17",
     "@types/passport-github2": "^1.2.9",
     "animejs": "^4.1.0",
+    "apollo3-cache-persist": "^0.15.0",
     "graphql": "^16.11.0",
     "react-redux": "^9.2.0",
     "tsc": "^2.0.4"

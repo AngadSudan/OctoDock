@@ -5,6 +5,7 @@ export const useGetAllPrompt = (projectID) => {
   const { data, loading, error } = useQuery(GET_ALL_PROMPT, {
     variables: { projectID: projectID },
     fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
     skip: !projectID,
   });
   return { data, loading, error };
