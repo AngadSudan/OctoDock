@@ -9,8 +9,8 @@ function AboutIndex() {
     <div>
       <Header />
       <Hero />
-      {/* <ParallaxComponent />
-      <HorizontalParallax /> */}
+      <ParallaxComponent />
+      <HorizontalParallax />
     </div>
   );
 }
