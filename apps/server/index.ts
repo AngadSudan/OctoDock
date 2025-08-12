@@ -178,14 +178,17 @@ app.use((req, res) => {
 
 createApolloServer()
   .then(() => {
-    app.listen(process.env.PORT || 8000, () => {
+    const server = app.listen(process.env.PORT || 8000, () => {
       console.log(`🚀 Server ready at http://localhost:8000/`);
     });
+
+    server.setTimeout(0)
   })
   .catch((error: any) => {
     console.log(error);
     process.exit();
   });
+
 
 // app.listen(process.env.PORT || 8000, () => {
 //   console.log(

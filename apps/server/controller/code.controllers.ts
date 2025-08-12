@@ -65,11 +65,12 @@ class codeAIController {
         gitSummary,
         currentCodeFiles
       );
-      console.log("WRITECODEFILE: ", response);
-      return response;
+      const parsed = JSON.parse(response.response)
+    console.log(parsed.content); 
+      return parsed.content;
     } catch (error: any) {
       console.error("writeCodeFile error:", error.message);
-      throw error;
+      return null;
     }
   }
 

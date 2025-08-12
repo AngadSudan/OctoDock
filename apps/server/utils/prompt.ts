@@ -212,14 +212,7 @@ Initial SRS Document
 ---
 
 ✅ **Output Format (STRICTLY JSON):**  
-Return ONLY a valid JSON array in this exact format:
-
-[
-  {
-    "path": "src/example.js",
-    "content": "<corrected_code_here>"
-  }
-]
+Return ONLY a valid formatted codefile with no triple quotations or escape sequences of \\n in this exact format:
 
 ---
 

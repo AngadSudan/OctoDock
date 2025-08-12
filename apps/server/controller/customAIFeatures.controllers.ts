@@ -37,6 +37,7 @@ class customModel {
     gitSummary: string,
     currentStatus: string
   ) {
+     console.log(`creating file ${codefile} ...`)
     const prompt = CodeGenerationForFile.replace("{srs_documentdetails}", srs)
       .replace("{code_file}", codefile)
       .replace("{git_summary}", gitSummary)
