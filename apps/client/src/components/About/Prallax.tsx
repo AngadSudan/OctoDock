@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-// import videoSrc from "../../../public/octoloop.mp4";
+import videoSrc from "../../../public/octoloop.mp4";
 import { Parallax, ParallaxLayer } from "@react-spring/parallax";
 import type { IParallax } from "@react-spring/parallax";
 import logo from "../../../public/octodocklogo.png";
