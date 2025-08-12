@@ -239,19 +239,21 @@ class ProjectController {
       });
       if (!dbProject) throw new Error("no such project found!");
 
+      console.log(JSON.stringify(dbProject,null,2))
       const folderStructure = JSON.parse(dbProject.folderStructure);
       const updatedFolderStrucutre = {};
-      Object.keys(folderStructure).map(async (filename) => {
-        updatedFolderStrucutre[filename] = await codeControllers.writeCodeFile(
+      for (const filename of Object.keys(folderStructure)) {
+        const codeFile = await codeControllers.writeCodeFile(
           dbProject.generatedPrompt,
           filename,
           dbProject.folderStructure,
           JSON.stringify(updatedFolderStrucutre)
         );
-      });
+        updatedFolderStrucutre[filename] = codeFile;
+      }
 
       console.log(updatedFolderStrucutre);
-
+      //update the folder structure in the database
       return JSON.stringify(updatedFolderStrucutre);
     } catch (error) {
       console.log(error);
