@@ -1,0 +1,6 @@
+FROM ollama/ollama:latest
+
+EXPOSE 1134
+
+CMD ["ollama","run","octodock"]
+

@@ -239,7 +239,7 @@ class ProjectController {
       });
       if (!dbProject) throw new Error("no such project found!");
 
-      console.log(JSON.stringify(dbProject,null,2))
+      console.log(JSON.stringify(dbProject, null, 2));
       const folderStructure = JSON.parse(dbProject.folderStructure);
       const updatedFolderStrucutre = {};
       for (const filename of Object.keys(folderStructure)) {
@@ -253,7 +253,14 @@ class ProjectController {
       }
 
       console.log(updatedFolderStrucutre);
-      //update the folder structure in the database
+      const updatedFolderStructure = await prisma.project.update({
+        where: {
+          id: dbProject.id,
+        },
+        data: {
+          folderStructure: JSON.stringify(updatedFolderStrucutre),
+        },
+      });
       return JSON.stringify(updatedFolderStrucutre);
     } catch (error) {
       console.log(error);

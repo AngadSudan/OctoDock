@@ -189,6 +189,7 @@ Output ONLY a valid JSON array of objects in this exact format:
 - Do not add special characters or symbols unless they are required in valid code (e.g., braces, parentheses, semicolons).  
 - Ensure the code is production-quality, secure, and maintainable.  
 - Match the style and structure of the existing repository context.  
+- Donot use "", one use '' 
 `;
 export const CodeGenerationForCorrection = `
 You are an AI backend assistant for the Octodock project. Your task is to analyze the provided code and correct any issues related to the specified feature. Ensure the corrected code is production-ready, maintainable, and aligns with best practices.

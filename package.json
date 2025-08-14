@@ -26,6 +26,7 @@
     "@types/express-serve-static-core": "^4.17.35"
   },
   "dependencies": {
+    "@kubernetes/client-node": "^1.3.0",
     "@reduxjs/toolkit": "^2.8.2",
     "@stackblitz/sdk": "^1.11.0",
     "@types/cookie-parser": "^1.4.9",
