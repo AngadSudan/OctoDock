@@ -259,6 +259,7 @@ class ProjectController {
         },
         data: {
           folderStructure: JSON.stringify(updatedFolderStrucutre),
+          isInitialized: true,
         },
       });
       return JSON.stringify(updatedFolderStrucutre);
