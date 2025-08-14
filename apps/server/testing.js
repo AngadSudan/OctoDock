@@ -1,5 +1,12 @@
 import projectControllers from "./controller/project.controllers";
-async function init(){
-  const response = await projectControllers.initializeProject("688f3c4d3137e1267c5a812d");
+async function init() {
+  const project = await projectControllers.createNewProject(
+    "AravConray",
+    "todo" + Date.now(),
+    "a simple todo-application"
+  );
+  const response = await projectControllers.initializeProject(project.id);
+
+  console.log(JSON.stringify(response, null, 2));
 }
-init()
+init();
