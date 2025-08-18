@@ -37,7 +37,7 @@ class customModel {
     gitSummary: string,
     currentStatus: string
   ) {
-     console.log(`creating file ${codefile} ...`)
+    console.log(`creating file ${codefile} ...`);
     const prompt = CodeGenerationForFile.replace("{srs_documentdetails}", srs)
       .replace("{code_file}", codefile)
       .replace("{git_summary}", gitSummary)
@@ -45,7 +45,7 @@ class customModel {
     const modelConfig = {
       model: "AngadSudan/octadock",
       prompt: prompt,
-      Stream: false,
+      Stream: true,
       format: "json",
     };
     const response = await this.ollama.generate(modelConfig);

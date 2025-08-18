@@ -3,6 +3,7 @@ import Chat from "../Project/Chat";
 import Editor from "../Project/Editor";
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
+import configuration from "@/conf/configuration";
 function StackBlitzIndex() {
   const [fileSystem, setFileSystem] = useState({});
   const params = useParams();
@@ -12,6 +13,29 @@ function StackBlitzIndex() {
       setFileSystem({
         ...JSON.parse(data.getProjectById.folderStructure),
       });
+    }
+    const startUpdatingFiles = async () => {
+      const responseURL = `${configuration.backend_url}/initialize-project?projectID=${params.id}`;
+      const sseClient = new EventSource(responseURL, {
+        withCredentials: true,
+      });
+
+      sseClient.onmessage = (event: MessageEvent) => {
+        try {
+          const data = JSON.parse(event.data);
+          console.log("System Metrics:", data);
+        } catch (error) {
+          console.error("Failed to parse SSE data:", error);
+        }
+      };
+
+      sseClient.onerror = (err) => {
+        console.error("SSE connection error:", err);
+        sseClient.close();
+      };
+    };
+    if (data.isInitialized) {
+      startUpdatingFiles();
     }
   }, [data, loading, error]);
   return (

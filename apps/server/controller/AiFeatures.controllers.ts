@@ -75,6 +75,9 @@ class GeminiAiFeatures {
   ) {
     return "a";
   }
+  async generateSDD(srsDocument: string) {
+    //TODO: generate a SDD document based on SRS
+  }
 }
 
 export default new GeminiAiFeatures();

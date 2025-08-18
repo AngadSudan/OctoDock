@@ -19,6 +19,7 @@
     "@react-three/fiber": "^9.2.0",
     "@tailwindcss/vite": "^4.1.11",
     "animejs": "^4.1.0",
+    "axios": "^1.11.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.12",

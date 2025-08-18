@@ -21,6 +21,7 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 import type { Express } from "express";
 import proxy from "express-http-proxy";
 import url from "url";
+import projectControllers from "./controller/project.controllers";
 const app: Express = express();
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
@@ -32,7 +33,6 @@ const limiter = rateLimit({
 app.use(helmet());
 app.use("/api", limiter);
 app.use(hpp() as any);
-// app.use(bodyParser.json());
 app.use(
   require("express-session")({
     secret: "TTL",
@@ -129,6 +129,9 @@ app.get(
   }
 );
 
+// SSE ROUTING
+app.get("/initialize-project", projectControllers.initializeProject);
+
 const errorHandler = (
   error: any,
   req: Request,
@@ -182,13 +185,12 @@ createApolloServer()
       console.log(`🚀 Server ready at http://localhost:8000/`);
     });
 
-    server.setTimeout(0)
+    server.setTimeout(0);
   })
   .catch((error: any) => {
     console.log(error);
     process.exit();
   });
-
 
 // app.listen(process.env.PORT || 8000, () => {
 //   console.log(

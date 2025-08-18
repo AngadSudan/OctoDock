@@ -1,3 +1,4 @@
+import type { Request, Response } from "express";
 import prisma from "../utils/prisma";
 import AiFeaturesControllers from "./AiFeatures.controllers";
 import aiGenerations from "./AiFeatures.controllers";
@@ -230,8 +231,15 @@ class ProjectController {
       console.log(error);
     }
   }
-  async initializeProject(projectID: string) {
+  async initializeProject(req: Request, res: Response) {
     try {
+      const { projectID } = req.params;
+      const headers = {
+        "Content-Type": "text/event-stream",
+        Connection: "keep-alive",
+        "Cache-Control": "no-cache",
+      };
+      res.writeHead(200, headers);
       const dbProject = await prisma.project.findUnique({
         where: {
           id: projectID,
@@ -249,6 +257,7 @@ class ProjectController {
           dbProject.folderStructure,
           JSON.stringify(updatedFolderStrucutre)
         );
+        res.write(`data: ${{ filename, code: codeFile }}\n\n`);
         updatedFolderStrucutre[filename] = codeFile;
       }
 
