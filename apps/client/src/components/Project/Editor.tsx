@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import sdk, { type VM } from "@stackblitz/sdk";
-export default function Editor({ files, loading = true }) {
+export default function Editor({ files, loading = true, openfile,code }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const vmRef = useRef<VM | null>(null);
   const [isLoaded, setIsLoaded] = useState(loading);
@@ -65,6 +65,13 @@ export default function Editor({ files, loading = true }) {
     }
   }, []);
 
+  
+  useEffect(() => {
+    if (!openfile || !code) return;
+    openFile(openfile);
+    updateFileContent(openfile, code);
+
+  }, [openfile, code]);
   const updateFileContent = async (file: string, text: string) => {
     if (!vmRef.current) {
       console.error("StackBlitz VM is not available");
