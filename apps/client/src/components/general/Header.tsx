@@ -166,7 +166,7 @@ function Header() {
                       <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-gray-900 shadow-sm animate-pulse"></div>
                     </div>
                     <span className="text-white font-medium text-sm font-mono">
-                      {user?.name}
+                      {user?.name || user?.login}
                     </span>
                     <ChevronDown
                       className={`h-4 w-4 text-red-400 transition-transform duration-300 ${isProfileOpen ? "rotate-180" : ""}`}

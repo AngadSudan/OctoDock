@@ -108,7 +108,6 @@ app.get(
   passport.authenticate("github", { scope: ["user", "repo"] })
 );
 app.get("/is-authenticated", (req, res) => {
-  console.dir(req);
   const isAuthenticated = req.isAuthenticated();
   if (isAuthenticated) {
     res.json({ authenticated: true, user: req.user });
@@ -124,7 +123,6 @@ app.get(
     successRedirect: "http://localhost:5173",
   }),
   function (req, res) {
-    console.log(req);
     res.redirect("/");
   }
 );

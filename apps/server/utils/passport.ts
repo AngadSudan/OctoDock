@@ -35,7 +35,7 @@ passport.use(
       console.log(profile.username);
       const username = profile.username || profile._json.login;
       const email = profile.emails?.[0]?.value;
-      const name = profile._json.name;
+      let name = profile._json.name;
 
       const dbUser = await prisma.user.findUnique({
         where: {
@@ -49,6 +49,9 @@ passport.use(
           console.log("user loggedin ");
         }
       } else {
+        if(!name){
+          name = username;
+        }
         await userControllers.OAuthRegister(username, email, accessToken, name);
         console.log("user created");
       }

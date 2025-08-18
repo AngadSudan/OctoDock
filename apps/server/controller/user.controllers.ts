@@ -25,15 +25,28 @@ class userController {
         .update(password)
         .digest("hex");
 
-      const createdUser = await prisma.user.create({
-        data: {
-          name,
-          username,
-          githubUsername,
-          email,
+        let createdUser:any= '';
+      if(!name){
+        createdUser = await prisma.user.create({
+          data: {
+            name: name || username,
+            username,
+            githubUsername,
+            email,
           password: hashPassword,
         },
       });
+    }else{
+      createdUser = await prisma.user.create({
+          data: {
+            name: name || username,
+            username,
+            githubUsername,
+            email,
+          password: hashPassword,
+        },
+      });
+    }
       if (!createdUser) throw new Error("no user created");
       return createdUser;
     } catch (error) {

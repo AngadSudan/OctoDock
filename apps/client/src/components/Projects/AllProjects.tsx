@@ -66,7 +66,7 @@ function AllProjects() {
   } = useGetAllProjectData(userId);
   useEffect(() => {
     if (!projectLoading && projectsdata) {
-      setSampleProject(projectsdata.getAllUserProject);
+      setSampleProject(projectsdata.getAllUserProject || []);
     }
   }, [projectsdata, projectLoading, projectError]);
   const filteredAndSortedProjects = useMemo(() => {
