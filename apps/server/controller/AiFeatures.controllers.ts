@@ -5,6 +5,7 @@ import {
   compareChangesAndReturnText,
   enhanceUserGivenProjectDescription,
   generateFileStructurePrompt,
+  generateSDDDocument,
 } from "../utils/prompt";
 
 class GeminiAiFeatures {
@@ -75,8 +76,13 @@ class GeminiAiFeatures {
   ) {
     return "a";
   }
-  async generateSDD(srsDocument: string) {
-    //TODO: generate a SDD document based on SRS
+  async generateSDD(srsDocument: string, folderStructure: string) {
+    if (!srsDocument || !folderStructure) return null;
+    const prompt = generateSDDDocument
+      .replace("{srs_document}", srsDocument)
+      .replace("{folder}", folderStructure);
+    const response = await this.model.generateContent(prompt);
+    return response.response.candidates[0].content.parts[0].text;
   }
 }
 

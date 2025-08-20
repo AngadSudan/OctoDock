@@ -54,7 +54,8 @@ class codeAIController {
     srs: string,
     codefile: string,
     gitSummary: string,
-    currentCodeFiles: string
+    currentCodeFiles: string,
+    sdd: string
   ) {
     try {
       if (!srs || !codefile) throw new Error("Missing SRS or file content");
@@ -63,10 +64,11 @@ class codeAIController {
         srs,
         codefile,
         gitSummary,
-        currentCodeFiles
+        currentCodeFiles,
+        sdd
       );
-      const parsed = JSON.parse(response.response)
-    console.log(parsed.content); 
+      const parsed = JSON.parse(response.response);
+      console.log(parsed.content);
       return parsed.content;
     } catch (error: any) {
       console.error("writeCodeFile error:", error.message);

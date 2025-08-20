@@ -66,11 +66,17 @@ class ProjectController {
         }
       }
 
+      const getSDD = await AiFeaturesControllers.generateSDD(
+        generatedPrompt,
+        JSON.stringify(createFileSystem)
+      );
+
       const createdProject = await prisma.project.create({
         data: {
           name,
           description,
           generatedPrompt,
+          sdd: getSDD,
           githubUrl: createRepository.url,
           createdBy: dbUser.id,
           folderStructure: JSON.stringify(createFileSystem),
@@ -234,7 +240,9 @@ class ProjectController {
   async initializeProject(req: Request, res: Response) {
     try {
       const { projectID } = req.query as { projectID?: string };
-      console.log(`==============Project Initialization began for ${projectID}==================`)
+      console.log(
+        `==============Project Initialization began for ${projectID}==================`
+      );
       const headers = {
         "Content-Type": "text/event-stream",
         Connection: "keep-alive",
@@ -253,30 +261,29 @@ class ProjectController {
       const updatedFolderStrucutre = {};
       // console.log(folderStructure)
 
-      for(let filename of Object.keys(folderStructure)){
-            console.log("===================File Started=================");
-            console.log(filename)
-          const codeFile = await codeControllers.writeCodeFile(
-            dbProject.generatedPrompt,
-            filename,
-            dbProject.folderStructure,
-            JSON.stringify(updatedFolderStrucutre)
-          );
+      for (let filename of Object.keys(folderStructure)) {
+        console.log("===================File Started=================");
+        console.log(filename);
+        const codeFile = await codeControllers.writeCodeFile(
+          dbProject.generatedPrompt,
+          filename,
+          dbProject.folderStructure,
+          JSON.stringify(updatedFolderStrucutre),
+          dbProject.sdd
+        );
 
-          res.write(
-            `data: ${JSON.stringify({
-              filename: filename,
-              code: codeFile || " ",
-            })}\n\n`
-          );
+        res.write(
+          `data: ${JSON.stringify({
+            filename: filename,
+            code: codeFile || " ",
+          })}\n\n`
+        );
 
-          console.log("===================File ended=================");
+        console.log("===================File ended=================");
 
-          updatedFolderStrucutre[filename] = codeFile || " ";
+        updatedFolderStrucutre[filename] = codeFile || " ";
       }
-      
 
-    
       console.log(updatedFolderStrucutre);
       const updatedFolderStructure = await prisma.project.update({
         where: {
@@ -287,11 +294,13 @@ class ProjectController {
           isInitialized: true,
         },
       });
-      console.log("================Response sent ==================")
-      res.write(`event: done\ndata: ${ JSON.stringify(updatedFolderStrucutre)}\n\n`);
+      console.log("================Response sent ==================");
+      res.write(
+        `event: done\ndata: ${JSON.stringify(updatedFolderStrucutre)}\n\n`
+      );
       res.end();
     } catch (error) {
-      res.write(`event: done\ndata: ${ JSON.stringify({})}\n\n`);
+      res.write(`event: done\ndata: ${JSON.stringify({})}\n\n`);
       res.end();
     }
   }

@@ -9,7 +9,9 @@ class customModel {
   ollama: Ollama;
 
   constructor() {
-    this.ollama = new Ollama();
+    this.ollama = new Ollama({
+      host: process.env.OLLAMA_URL!,
+    });
   }
   async generateFileBasedOnFeatures(
     srs: string,
@@ -35,13 +37,15 @@ class customModel {
     srs: string,
     codefile: string,
     gitSummary: string,
-    currentStatus: string
+    currentStatus: string,
+    sdd: string
   ) {
     console.log(`creating file ${codefile} ...`);
     const prompt = CodeGenerationForFile.replace("{srs_documentdetails}", srs)
       .replace("{code_file}", codefile)
       .replace("{git_summary}", gitSummary)
-      .replace("{updated_file_system}", currentStatus);
+      .replace("{updated_file_system}", currentStatus)
+      .replace("{software_design_document}", sdd);
     const modelConfig = {
       model: "AngadSudan/octadock",
       prompt: prompt,
