@@ -1,16 +1,17 @@
 import React from "react";
 import Header from "../general/Header";
 import Hero from "./Hero";
-import ParallaxComponent from "./Prallax";
-import HorizontalParallax from "./HorizontalParallax";
+import Future from "../Home/Future";
+import TechStack from "../Home/TechStack";
 
 function AboutIndex() {
   return (
     <div>
       <Header />
       <Hero />
-      <ParallaxComponent />
-      <HorizontalParallax />
+      <Future />
+
+      <TechStack />
     </div>
   );
 }

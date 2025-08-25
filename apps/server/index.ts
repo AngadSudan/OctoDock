@@ -22,6 +22,8 @@ import type { Express } from "express";
 import proxy from "express-http-proxy";
 import url from "url";
 import projectControllers from "./controller/project.controllers";
+import githubController from "./controller/github.controllers";
+import prisma from "./utils/prisma";
 const app: Express = express();
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
@@ -129,7 +131,28 @@ app.get(
 
 // SSE ROUTING
 app.get("/initialize-project", projectControllers.initializeProject);
+app.post("/push/:id", async (req, res) => {
+  const username = req.body.username;
+  const foldername = req.body.foldername;
+  const projectId = req.params.id;
+  console.log(username);
+  console.log(foldername);
+  console.log(projectId);
+  const dbUser = await prisma.user.findFirst({
+    where: {
+      username: username,
+    },
+  });
 
+  if (!dbUser) throw new Error("not a registered user");
+  const response = await new githubController(
+    dbUser.githubToken
+  ).commitCodeToGithub(projectId, foldername);
+
+  console.log(response);
+
+  return res.status(200).json({ message: "ok" });
+});
 const errorHandler = (
   error: any,
   req: Request,

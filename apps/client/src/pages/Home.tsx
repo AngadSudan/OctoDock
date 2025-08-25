@@ -5,6 +5,8 @@ import React from "react";
 import TechDesign from "../components/Home/TechDesign";
 import Future from "@/components/Home/Future";
 import TechStack from "@/components/Home/TechStack";
+import ParallaxComponent from "@/components/About/Prallax";
+import HorizontalParallax from "@/components/About/HorizontalParallax";
 
 function Home() {
   return (
@@ -12,8 +14,8 @@ function Home() {
       <Header />
       <Hero />
       <TechDesign />
-      <TechStack />
-      <Future />
+      <ParallaxComponent />
+      <HorizontalParallax />
     </div>
   );
 }

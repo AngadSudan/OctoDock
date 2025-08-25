@@ -47,9 +47,9 @@ class customModel {
       .replace("{updated_file_system}", currentStatus)
       .replace("{software_design_document}", sdd);
     const modelConfig = {
-      model: "AngadSudan/octadock",
+      model: "AngadSudan/octadock:20b",
       prompt: prompt,
-      Stream: true,
+      Stream: false,
       format: "json",
     };
     const response = await this.ollama.generate(modelConfig);

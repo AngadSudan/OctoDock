@@ -12,7 +12,7 @@ const OctoDockLogin = () => {
   const isAuth = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   if (isAuth) {
-    router("/projects");
+    router("/project/dashboard");
   }
 
   useEffect(() => {

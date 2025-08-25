@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import sdk, { type VM } from "@stackblitz/sdk";
-export default function Editor({ files, loading = true, openfile,code }) {
+import axios from "axios";
+import configuration from "@/conf/configuration";
+import { useParams } from "react-router";
+import type { RootState } from "@/redux";
+import { useSelector } from "react-redux";
+export default function Editor({ files, loading = true, openfile, code }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const vmRef = useRef<VM | null>(null);
   const [isLoaded, setIsLoaded] = useState(loading);
@@ -64,13 +69,11 @@ export default function Editor({ files, loading = true, openfile,code }) {
       };
     }
   }, []);
-
-  
+  const param = useParams();
   useEffect(() => {
     if (!openfile || !code) return;
     openFile(openfile);
     updateFileContent(openfile, code);
-
   }, [openfile, code]);
   const updateFileContent = async (file: string, text: string) => {
     if (!vmRef.current) {
@@ -106,10 +109,25 @@ export default function Editor({ files, loading = true, openfile,code }) {
 
     try {
       const response = await vmRef.current.getFsSnapshot();
-      console.log(response);
+      return response;
     } catch (error) {
       console.log(error);
     }
+  };
+  const username = useSelector((state: RootState) => state.auth.user.login);
+  const handleGitPush = async () => {
+    const fileStructure = await getFolderStructure();
+    console.log("folder is: ", fileStructure);
+
+    const response = await axios.post(
+      `${configuration.backend_url}/push/${param.id}`,
+      {
+        username,
+        foldername: fileStructure,
+      }
+    );
+
+    console.log(response);
   };
 
   return (
@@ -133,12 +151,7 @@ export default function Editor({ files, loading = true, openfile,code }) {
             <div className="flex items-center space-x-3">
               <button
                 className="flex items-center space-x-2 px-3 py-1.5 bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-500/30 rounded-lg text-slate-200 text-xs font-medium hover:from-red-500/30 hover:to-orange-500/30 transition-all duration-200 backdrop-blur-sm"
-                onClick={() =>
-                  updateFileContent(
-                    "src/index.js",
-                    "console.log('i love you palak');"
-                  )
-                }
+                onClick={handleGitPush}
               >
                 <svg
                   className="w-3 h-3"

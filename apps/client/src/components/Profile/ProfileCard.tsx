@@ -7,7 +7,6 @@ import {
   TabsContent,
   TabsContents,
 } from "@/components/ui/animated-tabs";
-import { cn } from "@/lib/utils";
 import IndividualActivity from "./IndividualActivity";
 import ListIndividualProjects from "./ListIndividualProjects";
 import OctadockAccount from "./OctadockAccount";
