@@ -2,5 +2,5 @@ FROM ollama/ollama:latest
 
 EXPOSE 1134
 
-CMD ["ollama","run","octodock"]
+CMD ["ollama","run","AngadSudan/octadock:20b"]
 

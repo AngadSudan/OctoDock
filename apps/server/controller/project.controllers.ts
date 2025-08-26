@@ -271,7 +271,7 @@ class ProjectController {
           JSON.stringify(updatedFolderStrucutre),
           dbProject.sdd
         );
-
+        console.log("codefile is : ", codeFile);
         res.write(
           `data: ${JSON.stringify({
             filename: filename,

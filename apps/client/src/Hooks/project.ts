@@ -89,6 +89,7 @@ export const GET_INDIVIDUAL_PROJECT = gql`
       folderStructure
       status
       createdBy
+      isInitialized
       user {
         name
         username

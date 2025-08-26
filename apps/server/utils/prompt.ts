@@ -96,7 +96,8 @@ Respond with **only** a JavaScript array of file paths, like this:
   'src/database.js',
   'src/routes.js',
   'src/controller.js',
-  'src/model.js'
+  'src/model.js',
+
 ]
 
 ### Rules
@@ -107,6 +108,7 @@ Respond with **only** a JavaScript array of file paths, like this:
 - Do **not** include folder names as objects — just file paths as strings.
 - Do **not** include file content, metadata, or explanations — just the file paths.
 - Avoid frontend or client files — backend only.
+- Maindatorily add a package.json
 
 ### Input SRS:
 {detailed_project_planning}
@@ -154,31 +156,19 @@ Return ONLY a valid JSON array in this exact format:
 
 export const CodeGenerationForFile = `
 You are an AI backend assistant for the Octodock project. Your task is to generate production-ready, maintainable JavaScript or TypeScript code for the specified file, strictly based on the provided application requirements and repository context.
-
+You dont have to give any description of the code. Just give the direct code file.
 Inputs:
-
-1️⃣ **Application Specification**  
-{srs_documentdetails}
 
 2️⃣ **Target File to Generate**  
 {code_file}
 
-3️⃣ **Git Repository Summary and Folder Structure**  
-{git_summary}
-4 ** current updated files or folder structure state**
-{updated_file_system}
 ---
 
 ✅ **Output Format (STRICTLY JSON):**  
-Output ONLY a valid JSON array of objects in this exact format:
-
-[
-  {
-    "path": "src/index.js",
-    "content": "<generated_code_here>"
-  }
-]
-
+Output ONLY a valid Javasript code file:
+{
+  "code":"your_code_here"
+}
 ---
 
 ✅ **Rules to Follow:**  
@@ -362,7 +352,7 @@ You are a senior software engineer tasked with creating a Software Design Docume
 You will be provided with:
 1. The Software Requirements Specification (SRS). 
 2. The current project folder structure.
-
+3. Mandatorily add an package.json with required npm packages.
 Your task is to produce a detailed mapping of the project codebase, including:
 
 1. **File-Level Function Overview**  

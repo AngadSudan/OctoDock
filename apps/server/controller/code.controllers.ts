@@ -67,9 +67,9 @@ class codeAIController {
         currentCodeFiles,
         sdd
       );
-      const parsed = JSON.parse(response.response);
-      console.log(parsed.content);
-      return parsed.content;
+      console.log();
+
+      return JSON.parse(response).code;
     } catch (error: any) {
       console.error("writeCodeFile error:", error.message);
       return null;
