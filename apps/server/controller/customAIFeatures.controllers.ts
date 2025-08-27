@@ -36,61 +36,50 @@ class customModel {
     return response;
   }
   async generateFileBasedOnSingleFile(
-    srs: string,
-    codefile: string,
-    gitSummary: string,
-    currentStatus: string,
-    sdd: string
+    srs,
+    codefile,
+    gitSummary,
+    currentStatus,
+    sdd
   ) {
-    let retry = false;
     let response = "";
     const prompt = CodeGenerationForFile.replace("{srs_documentdetails}", srs)
       .replace("{code_file}", codefile)
       .replace("{git_summary}", gitSummary)
       .replace("{updated_file_system}", currentStatus)
       .replace("{software_design_document}", sdd);
+
     const openai = new OpenAI({
       baseURL: "https://openrouter.ai/api/v1",
       apiKey: openRouterKeys.getAvailableKey(),
     });
-    try {
-      console.log(`creating file ${codefile} ...`);
-      const completion = await openai.chat.completions.create({
-        model: "openai/gpt-oss-20b:free",
-        messages: [
-          {
-            role: "system",
-            content: ` you are given a software design document. based on the specification of the file given in it you will be creating the code for an backend application.`,
-          },
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
-      });
 
-      response = completion.choices[0].message.content;
-    } catch (error) {
-      retry = true;
-      openRouterKeys.rotateToNextKey();
-    }
-    while (retry) {
-      const completion = await openai.chat.completions.create({
-        model: "openai/gpt-oss-20b:free",
-        messages: [
-          {
-            role: "system",
-            content: ` you are given a software design document. based on the specification of the file given in it you will be creating the code for an backend application.`,
-          },
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
-      });
+    let success = false;
 
-      response = completion.choices[0].message.content;
-      retry = false;
+    while (!success) {
+      try {
+        console.log(`creating file ${codefile} ...`);
+        const completion = await openai.chat.completions.create({
+          model: "openai/gpt-oss-20b:free",
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are given a software design document. Based on the specification of the file given in it you will be creating the code for a backend application.",
+            },
+            {
+              role: "user",
+              content: prompt,
+            },
+          ],
+        });
+
+        response = completion.choices[0].message.content;
+        success = true;
+      } catch (error) {
+        console.error("Error occurred, rotating key and retrying...", error);
+        openRouterKeys.rotateToNextKey();
+      }
     }
 
     return response;

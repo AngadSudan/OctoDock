@@ -13,6 +13,8 @@ import {
   X,
   Home,
   Info,
+  LayoutDashboard,
+  CircleUser,
 } from "lucide-react";
 import { Link } from "react-router";
 
@@ -62,10 +64,20 @@ function Header() {
     setIsProfileOpen(false);
   }, [dispatch]);
 
-  const navLinks = [
+  // Different navigation links based on authentication status
+  const authenticatedNavLinks = [
+    { to: "/project/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { to: "/profile", label: "Profile", icon: CircleUser },
+  ];
+
+  const unauthenticatedNavLinks = [
     { to: "/", label: "Home", icon: Home },
     { to: "/about", label: "About", icon: Info },
   ];
+
+  const navLinks = isAuthenticated
+    ? authenticatedNavLinks
+    : unauthenticatedNavLinks;
 
   return (
     <nav className="relative">
@@ -199,13 +211,15 @@ function Header() {
                         </div>
                       </div>
                       <div className="py-2 relative">
-                        <button className="relative flex items-center space-x-3 w-full px-4 py-3 text-gray-300 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 group">
+                        <Link
+                          to="/profile"
+                          onClick={() => setIsProfileOpen(false)}
+                          className="relative flex items-center space-x-3 w-full px-4 py-3 text-gray-300 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 group"
+                        >
                           <Settings className="h-4 w-4 group-hover:rotate-90 transition-transform duration-300" />
-                          <span className="font-medium font-mono">
-                            SETTINGS
-                          </span>
+                          <span className="font-medium font-mono">PROFILE</span>
                           <div className="absolute right-2 top-1/2 w-1 h-1 bg-red-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
-                        </button>
+                        </Link>
                         <button
                           onClick={handleLogout}
                           className="relative flex items-center space-x-3 w-full px-4 py-3 text-gray-300 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 group border-t border-red-500/20"
@@ -307,10 +321,14 @@ function Header() {
                       </div>
                     </div>
                     <div className="space-y-2 relative">
-                      <button className="flex items-center space-x-3 w-full px-4 py-3 text-gray-300 hover:text-red-400 bg-red-500/10 hover:bg-red-500/20 rounded-xl transition-all duration-200 border border-red-500/20 font-mono">
+                      <Link
+                        to="/profile"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="flex items-center space-x-3 w-full px-4 py-3 text-gray-300 hover:text-red-400 bg-red-500/10 hover:bg-red-500/20 rounded-xl transition-all duration-200 border border-red-500/20 font-mono"
+                      >
                         <Settings className="h-4 w-4" />
-                        <span className="font-medium">SETTINGS</span>
-                      </button>
+                        <span className="font-medium">PROFILE</span>
+                      </Link>
                       <button
                         onClick={handleLogout}
                         className="flex items-center space-x-3 w-full px-4 py-3 text-red-400 hover:text-red-300 bg-red-500/20 hover:bg-red-500/30 rounded-xl transition-all duration-200 border border-red-500/30 font-mono"

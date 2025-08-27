@@ -4,12 +4,14 @@ import Editor from "../Project/Editor";
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import configuration from "@/conf/configuration";
+import ActiveArtifact from "../Project/ActiveArtifact";
 function StackBlitzIndex() {
   const [fileSystem, setFileSystem] = useState({});
   const params = useParams();
   const [openFile, setOpenFile] = useState("src/index.js");
   const [updatedCode, setupdatedCode] = useState("src/index.js");
   const { data, loading, error } = usegetProjectInfo(params.id);
+  const [initializing, setIsInitialized] = useState("pending");
   useEffect(() => {
     if (data) {
       setFileSystem({
@@ -46,7 +48,9 @@ function StackBlitzIndex() {
       console.log(data, " ", data.isInitialized);
     }
     if (data && !data.isInitialized) {
+      setIsInitialized("loading");
       startUpdatingFiles();
+      setIsInitialized("completed");
     }
   }, [data, loading, error]);
   return (

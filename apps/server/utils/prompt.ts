@@ -38,6 +38,7 @@ When you enhance the idea, add all relevant details that a developer or architec
 **Functional Features**
 - User registration and login
 - CRUD operations for to-do items
+- Add advance logic like RTC/sockets if needed
 - Assign due dates and reminders
 - Support for tags and categories
 - Mark tasks as complete/incomplete
@@ -85,11 +86,11 @@ THIS IS THE USER PROMPT {user_description}
 export const generateFileStructurePrompt = `
 You are given a Software Requirements Specification (SRS) document.
 
-Your task is to return a realistic and production-grade backend project file structure that implements the described system, using best practices for a Node.js backend project.
+Your task is to return a realistic and production-grade backend project file structure that implements the described system, using best practices for a Node.js or python or springboot backend project.
 
 ### Output Format
 
-Respond with **only** a JavaScript array of file paths, like this:
+Respond with **only** a JavaScript or django or springboot array of file paths, like this:
 
 [
   'src/index.js',
@@ -104,18 +105,18 @@ Respond with **only** a JavaScript array of file paths, like this:
 
 - The array should contain full relative paths to each file.
 - Include meaningful folders and subfolders (e.g. src, routes, controllers, models, middleware, utils).
-- Follow best practices for organizing a scalable Node.js backend.
+- Follow best practices for organizing a scalable Node.js or django backend.
 - Do **not** include folder names as objects — just file paths as strings.
 - Do **not** include file content, metadata, or explanations — just the file paths.
 - Avoid frontend or client files — backend only.
-- Maindatorily add a package.json
+- Maindatorily add a package.json if its a javascript project
 
 ### Input SRS:
 {detailed_project_planning}
 `;
 
 export const CodeGenerationForFeature = `
-You are an AI backend assistant for the Octodock project. Your task is to generate clean, production-ready JavaScript or TypeScript code for the specified feature, strictly following the given specifications and repository context.
+You are an AI backend assistant for the Octodock project. Your task is to generate clean, production-ready JavaScript or TypeScript or python or java code(default js if no language specified) for the specified feature, strictly following the given specifications and repository context.
 
 ---
 
@@ -147,7 +148,7 @@ Return ONLY a valid JSON array in this exact format:
 ✅ **Rules to Follow:**  
 - Output ONLY valid JSON in the specified format without any extra text or explanations.  
 - Do NOT add comments, markdown formatting, or unrelated descriptions.  
-- Use only valid JavaScript or TypeScript syntax.  
+- Use only valid JavaScript or TypeScript or python or java syntax.  
 - Avoid introducing any language specifiers or features not supported by JavaScript or TypeScript.  
 - Do NOT add special characters or symbols unless required for valid code syntax (e.g., braces, parentheses, semicolons).  
 - Ensure the generated code aligns with the existing repository structure and style.  
@@ -155,7 +156,7 @@ Return ONLY a valid JSON array in this exact format:
 `;
 
 export const CodeGenerationForFile = `
-You are an AI backend assistant for the Octodock project. Your task is to generate production-ready, maintainable JavaScript or TypeScript code for the specified file, strictly based on the provided application requirements and repository context.
+You are an AI backend assistant for the Octodock project. Your task is to generate production-ready, maintainable JavaScript or TypeScript or python or java code for the specified file, strictly based on the provided application requirements and repository context.
 You dont have to give any description of the code. Just give the direct code file.
 Inputs:
 

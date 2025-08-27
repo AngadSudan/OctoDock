@@ -20,7 +20,7 @@ import OverlayFormModal from "./NewProjectForm";
 import type { RootState } from "@/redux";
 import { useSelector } from "react-redux";
 import { useCreateProject, useGetAllProjectData } from "@/Hooks/api/project";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 interface project {
   id: string;
@@ -166,9 +166,12 @@ function AllProjects() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="space-y-2">
-            <h1 className="text-5xl font-bold text-white tracking-tight">
-              Projects
-            </h1>
+            <Link
+              to="/"
+              className="text-5xl font-bold text-white tracking-tight"
+            >
+              Octadock
+            </Link>
             <p className="text-white/60 text-xl font-medium">
               Build, deploy, and scale with confidence
             </p>
