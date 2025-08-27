@@ -4,10 +4,16 @@ import { useGetAllPrompt } from "@/Hooks/api/prompt";
 import { useParams } from "react-router";
 import CharCard from "./CharCard";
 
-function Chat() {
+export interface chatMessage {
+  role: "USER" | "SYSTEM";
+  message: string;
+  code?: any[];
+  systemResponse?: string;
+}
+function Chat({ fileSystem = {} }) {
   const currentRef = useRef(null);
   const params = useParams();
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<chatMessage[]>([]);
   const { data, loading, error } = useGetAllPrompt(params.id);
   useEffect(() => {
     if (!loading && data !== undefined) {

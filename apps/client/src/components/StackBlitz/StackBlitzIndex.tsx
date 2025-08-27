@@ -55,7 +55,7 @@ function StackBlitzIndex() {
   }, [data, loading, error]);
   return (
     <div className="overflow-y-hidden flex bg-black h-screen gap-2">
-      <Chat />
+      <Chat fileSystem={fileSystem} />
       <div className="h-full p-0 my-auto bg-black w-2/3">
         {!loading && Object.keys(fileSystem).length > 0 && (
           <Editor

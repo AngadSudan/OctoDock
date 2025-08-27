@@ -67,10 +67,6 @@ class OpenRouterManager {
 
     return null;
   }
-
-  /**
-   * Wrapper to make a request with rate-limit handling
-   */
   async fetchWithKey(url: string, options: RequestInit = {}) {
     for (let attempt = 0; attempt < this.apiKeys.length; attempt++) {
       const key = this.getAvailableKey();

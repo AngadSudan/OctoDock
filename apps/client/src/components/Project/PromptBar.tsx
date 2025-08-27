@@ -3,6 +3,7 @@ import type { RootState } from "@/redux";
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
+import type { chatMessage } from "./Chat";
 
 function PromptBar({ chat, setChat }) {
   const [message, setMessage] = useState("");
@@ -30,7 +31,7 @@ function PromptBar({ chat, setChat }) {
       // if (response) {
       //   setMessage("");
       // }
-      setChat([...chat, { message }]);
+      setChat([...chat, { role: "USER", message: message }]);
       setTimeout(() => {
         setIsTyping(false);
       }, 2000);
