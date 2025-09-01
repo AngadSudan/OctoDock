@@ -121,8 +121,10 @@ app.get("/is-authenticated", (req, res) => {
 app.get(
   "/oauth/redirect/github",
   passport.authenticate("github", {
-    failureRedirect: "http://localhost:5173/auth/error",
-    successRedirect: "http://localhost:5173",
+    failureRedirect:
+      process.env.FRONTEND_URL_FAIL || "http://localhost:5173/auth/error",
+    successRedirect:
+      process.env.FRONTEND_URL_SUCCESS || "http://localhost:5173",
   }),
   function (req, res) {
     res.redirect("/");
