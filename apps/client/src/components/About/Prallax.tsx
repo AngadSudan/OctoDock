@@ -20,8 +20,8 @@ const SponsorCard = ({ image, x, y }) => {
           position: "absolute",
           left: `${x}%`,
           top: `${y}%`,
-          width: "100px",
-          height: "100px",
+          width:"100px",
+          height:"100px",
         }}
       >
         <img
@@ -58,7 +58,7 @@ export default function ParallaxComponent() {
           overflow: "scroll",
         }}
       >
-        {/* Sticky background with video + logo */}
+        {/* Sticky bg */}
         <ParallaxLayer sticky={{ start: 0, end: 3 }} style={{ zIndex: -1 }}>
           <div className="relative w-full h-full">
             <video
@@ -69,24 +69,23 @@ export default function ParallaxComponent() {
               playsInline
               className="w-full h-full object-cover"
             />
-            <div className="absolute top-[20%] left-1/2 -translate-x-1/2">
+            <div className="absolute top-[40%] sm:top-[30%] left-1/2 -translate-x-1/2">
               <img
                 src={logo}
                 alt="Octodock Logo"
-                className="w-[350px] h-[350px]"
+                className="w-[150px] h-[150px] sm:w-[350px] sm:h-[350px]"
               />
             </div>
           </div>
         </ParallaxLayer>
 
-        {/* batch 1   */}
         <SponsorCard x={10} y={40} image={sponsorImages[0]} />
         <SponsorCard x={80} y={30} image={sponsorImages[1]} />
         <SponsorCard x={20} y={20} image={sponsorImages[2]} />
         <SponsorCard x={80} y={50} image={sponsorImages[2]} />
         <SponsorCard x={30} y={50} image={sponsorImages[3]} />
         <SponsorCard x={70} y={70} image={sponsorImages[3]} />
-        {/* batch 2  */}
+
         <SponsorCard x={25} y={100} image={sponsorImages[4]} />
         <SponsorCard x={15} y={120} image={sponsorImages[5]} />
         <SponsorCard x={5} y={140} image={sponsorImages[2]} />
@@ -96,7 +95,6 @@ export default function ParallaxComponent() {
         <SponsorCard x={80} y={140} image={sponsorImages[5]} />
         <SponsorCard x={90} y={140} image={sponsorImages[1]} />
 
-        {/* batch 3 */}
         <SponsorCard x={20} y={200} image={sponsorImages[0]} />
         <SponsorCard x={10} y={180} image={sponsorImages[3]} />
         <SponsorCard x={65} y={220} image={sponsorImages[1]} />
@@ -106,7 +104,6 @@ export default function ParallaxComponent() {
         <SponsorCard x={70} y={240} image={sponsorImages[3]} />
         <SponsorCard x={90} y={180} image={sponsorImages[0]} />
 
-        {/* batch 4 / */}
         <SponsorCard x={10} y={260} image={sponsorImages[0]} />
         <SponsorCard x={80} y={270} image={sponsorImages[1]} />
         <SponsorCard x={20} y={280} image={sponsorImages[2]} />

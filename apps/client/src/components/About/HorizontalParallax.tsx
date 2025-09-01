@@ -106,7 +106,14 @@ export default function HorizontalParallax() {
   }, []);
 
   return (
-    <div className="w-full h-screen overflow-hidden bg-black relative">
+    <div className="w-full h-screen scrollbar-hide overflow-hidden bg-black relative">
+      <style>{`
+        .parallax-scroll::-webkit-scrollbar {
+          display: none; /* Chrome, Safari and Opera */
+          height: 0;
+          width: 0;
+        }`}
+      </style>
       <div className="absolute top-8 left-8 right-8 flex justify-between items-center text-red-400 font-mono text-sm z-50">
         <div className="flex items-center space-x-4">
           <Terminal size={20} />
@@ -118,7 +125,7 @@ export default function HorizontalParallax() {
         </div>
       </div>
 
-      <Parallax ref={parallax} pages={3} horizontal className="w-full  h-full">
+      <Parallax ref={parallax} pages={3} horizontal className="w-full  h-full parallax-scroll">
         <ParallaxLayer
           offset={0}
           speed={0.2}
@@ -159,7 +166,7 @@ export default function HorizontalParallax() {
                       Initialize Server
                     </h1>
                   </div>
-                  <h1 className="relative text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-white via-red-200 to-white bg-clip-text text-transparent mb-6">
+                  <h1 className="relative text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-white via-red-200 to-white bg-clip-text text-transparent mb-6 drop-shadow-[0_0_20px_rgba(255,100,100,0.5)]">
                     Initialize Server
                   </h1>
                 </div>
@@ -230,7 +237,7 @@ export default function HorizontalParallax() {
                       Generate Code
                     </h1>
                   </div>
-                  <h1 className="relative text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-white via-red-200 to-white bg-clip-text text-transparent mb-6">
+                  <h1 className="relative text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-white via-red-200 to-white bg-clip-text text-transparent mb-6 drop-shadow-[0_0_20px_rgba(255,100,100,0.5)]">
                     Generate Code
                   </h1>
                 </div>
@@ -301,7 +308,7 @@ export default function HorizontalParallax() {
                       Deploy Instantly
                     </h1>
                   </div>
-                  <h1 className="relative text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-white via-red-200 to-white bg-clip-text text-transparent mb-6">
+                  <h1 className="relative text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-white via-red-200 to-white bg-clip-text text-transparent mb-6 drop-shadow-[0_0_20px_rgba(255,100,100,0.5)]">
                     Deploy Instantly
                   </h1>
                 </div>
@@ -312,8 +319,14 @@ export default function HorizontalParallax() {
                   <span className="animate-pulse text-red-400">_</span>
                 </p>
 
-                <button className="relative group/btn bg-black/80 border-2 border-red-400/50 text-red-400 px-8 py-4 rounded-xl font-mono font-bold hover:border-red-400 hover:text-red-300 transition-all duration-500 overflow-hidden">
+                <button className="relative cursor-pointer group/btn bg-black/80 border-2 border-red-400/50 text-red-400 px-8 py-4 rounded-xl font-mono font-bold 
+                  hover:border-red-400 hover:text-red-300 
+                  hover:shadow-[0_0_25px_rgba(255,80,80,0.8)] 
+                  hover:scale-105 
+                  transition-all duration-500 overflow-hidden">
+                  
                   <div className="absolute inset-0 bg-gradient-to-r from-red-400/10 to-red-600/10 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500" />
+                      
                   <span className="relative z-10 flex items-center space-x-2">
                     <span>INITIALIZE SYSTEM</span>
                     <ArrowRight
@@ -322,6 +335,7 @@ export default function HorizontalParallax() {
                     />
                   </span>
                 </button>
+
               </div>
 
               <div className="flex items-center justify-center space-x-2 mt-6">
@@ -345,7 +359,8 @@ export default function HorizontalParallax() {
         </ParallaxLayer>
       </Parallax>
 
-      <style jsx>{`
+{/* @ts-expect-error styled-jsx attributes */}
+      <style jsx global>{`
         @keyframes grid-move {
           0% {
             transform: translate(0, 0);

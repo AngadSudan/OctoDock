@@ -194,8 +194,8 @@ function TechStack() {
   return (
     <div className="min-h-screen relative overflow-hidden bg-black">
       {/* Background elements */}
-      <CircuitPattern />
-      <FloatingParticles />
+      {/* <CircuitPattern />
+      <FloatingParticles /> */}
 
       {/* Gradient overlays */}
       <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black opacity-90" />

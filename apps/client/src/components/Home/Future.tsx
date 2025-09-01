@@ -162,12 +162,10 @@ const InteractiveTerminal = () => {
     },
   ];
 
-  // Initialize with first session's commands
   useEffect(() => {
     setDisplayedCommands(terminalSessions[0].commands);
   }, []);
 
-  // Handle session switching
   useEffect(() => {
     const sessionInterval = setInterval(() => {
       setCurrentCommand((prev) => {
@@ -176,12 +174,11 @@ const InteractiveTerminal = () => {
         setCommandIndex(0);
         return next;
       });
-    }, 8000); // Switch sessions every 8 seconds
+    }, 8000); 
 
     return () => clearInterval(sessionInterval);
   }, []);
 
-  // Handle typing animation within session
   useEffect(() => {
     if (displayedCommands.length === 0) return;
 
@@ -357,12 +354,11 @@ const InteractiveTerminal = () => {
   );
 };
 
-// Enhanced Security Lock Component
 const SecurityLock = () => {
   return (
     <div className="flex items-center justify-center py-8">
       <div className="relative">
-        {/* Glow effect */}
+        {/* bg Glowww*/}
         <div
           className="absolute inset-0 bg-red-400/20 rounded-full blur-3xl animate-pulse"
           style={{ transform: "scale(2)" }}
@@ -371,32 +367,15 @@ const SecurityLock = () => {
         <div className="relative bg-black/60 backdrop-blur-md border-2 border-red-400/50 rounded-full p-8 w-32 h-32 flex items-center justify-center">
           <Lock size={40} className="text-red-400" />
 
-          {/* Multiple rotating rings */}
-          <div
+            <div
             className="absolute inset-0 border-2 border-red-400/30 rounded-full animate-spin"
-            style={{ animation: "spin 3s linear infinite" }}
           />
           <div
             className="absolute inset-2 border border-red-400/20 rounded-full animate-spin"
-            style={{ animation: "spin 4s linear infinite reverse" }}
           />
 
-          {/* Status indicators around the circle */}
-          {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, index) => (
-            <div
-              key={index}
-              className="absolute w-2 h-2 bg-red-400 rounded-full"
-              style={{
-                top: "50%",
-                left: "50%",
-                transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-20px)`,
-                animationDelay: `${index * 0.2}s`,
-              }}
-            />
-          ))}
         </div>
 
-        {/* Security label */}
         <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
           <div className="bg-black/60 backdrop-blur-md border border-red-400/30 rounded-lg px-3 py-1">
             <div className="text-red-400 font-mono text-xs text-center">
@@ -419,16 +398,15 @@ function Future() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-black">
-      {/* Background elements */}
+      {/* bg elements */}
       <AnimatedGrid />
       <CircuitPattern />
       <FloatingParticles />
 
-      {/* Gradient overlays */}
       <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black opacity-90" />
       <div className="absolute inset-0 bg-gradient-to-t from-red-900/20 via-transparent to-red-900/20" />
 
-      {/* HUD-style header */}
+      {/* Heads up display */}
       <div className="absolute top-8 left-8 right-8 flex justify-between items-center text-red-400 font-mono text-sm z-20">
         <div className="flex items-center space-x-4">
           <Server size={20} />
@@ -440,13 +418,13 @@ function Future() {
         </div>
       </div>
 
-      {/* Main content */}
+      {/* Main */}
       <div className="relative z-10 min-h-screen">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 h-full">
           <div className="grid lg:grid-cols-2 gap-16 items-center min-h-screen py-20">
-            {/* Left column - Content */}
+
             <div className="space-y-10 lg:pr-8">
-              {/* Empowering tag */}
+              {/* Powerup tag */}
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 bg-black/60 backdrop-blur-md border border-red-400/30 rounded-full flex items-center justify-center">
                   <Zap size={20} className="text-red-400" />
@@ -456,7 +434,7 @@ function Future() {
                 </span>
               </div>
 
-              {/* Main heading */}
+              {/* main text */}
               <div className="space-y-6">
                 <h1 className="text-5xl md:text-4xl lg:text-6xl font-extrabold leading-[0.9] tracking-tight">
                   <div className="text-white mb-2">FUTURE-DRIVEN</div>
@@ -469,7 +447,6 @@ function Future() {
                 </h1>
               </div>
 
-              {/* Description */}
               <div className="max-w-xl">
                 <p className="text-gray-300 text-xl leading-relaxed">
                   We craft high-quality digital solutions that help businesses
@@ -477,26 +454,26 @@ function Future() {
                 </p>
               </div>
 
-              {/* Action buttons */}
+              {/* buttons */}
               <div className="flex flex-col sm:flex-row gap-6 pt-4">
-                <button className="group relative bg-white text-black px-10 py-5 rounded-full font-bold text-lg transition-all duration-300 hover:bg-red-400 hover:text-white overflow-hidden shadow-2xl">
+                <button className="group relative bg-white text-black px-10 py-5 rounded-full font-bold text-lg transition-all duration-300 hover:bg-red-400 hover:scale-[105%] hover:text-white overflow-hidden shadow-2xl hover:cursor-pointer">
                   <span className="relative z-10 flex items-center justify-center">
                     Get Started
                     <ArrowRight
                       size={20}
-                      className="ml-3 group-hover:translate-x-1 transition-transform"
+                      className="ml-3 group-hover:translate-x-3 transition-transform"
                     />
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-red-400 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </button>
 
-                <button className="group relative bg-transparent text-white border-2 border-red-400/50 px-10 py-5 rounded-full font-bold text-lg transition-all duration-300 hover:border-red-400 hover:bg-red-400/10 hover:shadow-lg hover:shadow-red-400/25">
+                <button className="group relative bg-transparent text-white border-2 border-red-400/50 px-10 py-5 rounded-full font-bold text-lg transition-all duration-300 hover:scale-[105%] hover:border-red-400 hover:cursor-pointer hover:bg-red-400/10 hover:shadow-lg hover:shadow-red-400/25">
                   <span className="relative z-10">See Our Projects</span>
                   <div className="absolute inset-0 bg-red-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />
                 </button>
               </div>
 
-              {/* Social media */}
+              {/* social tags */}
               <div className="pt-8">
                 <div className="text-gray-400 font-mono text-sm mb-6">
                   Follow Us
@@ -509,7 +486,7 @@ function Future() {
                   ].map(({ Icon, label }, index) => (
                     <button
                       key={index}
-                      className="w-14 h-14 bg-black/60 backdrop-blur-md border border-red-400/30 rounded-xl flex items-center justify-center text-red-400/70 hover:text-red-400 hover:border-red-400/60 hover:bg-red-400/10 transition-all duration-300 group"
+                      className="w-14 h-14 bg-black/60 backdrop-blur-md border border-red-400/30 rounded-xl flex items-center justify-center text-red-400/70 hover:cursor-pointer hover:text-red-400 hover:border-red-400/60 hover:bg-red-400/10 transition-all duration-300 group"
                       aria-label={label}
                     >
                       <Icon
@@ -522,13 +499,13 @@ function Future() {
               </div>
             </div>
 
-            {/* Right column - Interactive elements */}
+            {/* Right side */}
             <div className="space-y-8 lg:pl-8">
-              {/* Interactive Terminal */}
+              {/* terminal */}
               <div className="relative">
                 <InteractiveTerminal />
 
-                {/* Decorative frame */}
+                {/* round rectangle */}
                 <div className="absolute inset-0 border border-red-400/20 rounded-2xl pointer-events-none">
                   <div className="absolute top-0 left-0 w-8 h-8 border-l-2 border-t-2 border-red-400 rounded-tl-2xl" />
                   <div className="absolute top-0 right-0 w-8 h-8 border-r-2 border-t-2 border-red-400 rounded-tr-2xl" />
@@ -537,10 +514,9 @@ function Future() {
                 </div>
               </div>
 
-              {/* Security section */}
               <SecurityLock />
 
-              {/* Performance Stats */}
+              {/* stats */}
               <div className="grid grid-cols-3 gap-6">
                 <div className="bg-black/60 backdrop-blur-md border border-red-400/30 rounded-2xl p-6 text-center group hover:border-red-400/60 transition-all duration-300">
                   <div className="text-red-400 text-3xl font-bold mb-2">
