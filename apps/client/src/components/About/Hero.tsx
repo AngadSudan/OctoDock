@@ -48,16 +48,7 @@ function Hero() {
     <>
       {/* Hero Section */}
       <div className="min-h-screen w-full bg-gradient-to-br from-gray-950 via-black to-gray-950 relative overflow-hidden">
-        {/* Cyberpunk grid background */}
-        <div className="absolute inset-0 opacity-[0.04]">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23ff4444' stroke-width='0.5'%3E%3Cpath d='M0 40h80M40 0v80'/%3E%3Cpath d='M20 20l40 40M60 20l-40 40'/%3E%3C/g%3E%3C/svg%3E")`,
-              backgroundSize: "80px 80px",
-            }}
-          />
-        </div>
+
 
         {/* Dynamic red ambient effects */}
         <div
@@ -123,7 +114,7 @@ function Hero() {
                   <div className="flex items-center gap-4 my-8">
                     <div className="h-[2px] w-20 bg-gradient-to-r from-red-400 via-red-400/60 to-transparent"></div>
                     <div className="w-3 h-3 rounded-full bg-red-400/60 animate-pulse"></div>
-                    <div className="h-[1px] w-20 bg-gradient-to-r from-transparent via-red-400/30 to-transparent"></div>
+                    <div className="h-[1px] w-20 bg-gradient-to-r from-transparent via-red-400/30 to-red-400 "></div>
                   </div>
 
                   {/* Subtitle */}
@@ -179,7 +170,7 @@ function Hero() {
                     <span className="relative z-10 text-white">
                       [INITIALIZE.SYSTEM]
                     </span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-red-300/20 to-red-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-red-300/20 to-red-500/20 opacity-0 hover:cursor-pointer group-hover:opacity-100 transition-opacity duration-300"></div>
                   </button>
 
                   <button className="px-8 py-4 rounded-2xl font-mono font-medium transition-all duration-300 hover:scale-105 backdrop-blur-xl border border-red-400/30 text-red-400 hover:bg-red-400/10 hover:border-red-400/60 tracking-wider">
@@ -259,19 +250,6 @@ function Hero() {
                           </div>
                         </div>
 
-                        {/* Floating particles */}
-                        {[...Array(8)].map((_, i) => (
-                          <div
-                            key={i}
-                            className="absolute w-1 h-1 bg-red-400/30 rounded-full animate-pulse"
-                            style={{
-                              left: `${20 + i * 10}%`,
-                              top: `${30 + i * 5}%`,
-                              animationDelay: `${i * 0.5}s`,
-                              animationDuration: `${2 + i * 0.3}s`,
-                            }}
-                          />
-                        ))}
                       </div>
                     </div>
                   </div>
@@ -285,13 +263,13 @@ function Hero() {
       {/* Enhanced Stats Section */}
       <div className="bg-gradient-to-b from-black via-gray-950 to-black py-20 relative border-t border-red-400/10">
         <div className="absolute inset-0 opacity-[0.02]">
-          <div
+          {/* <div
             className="absolute inset-0"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23ff4444' stroke-width='0.5'%3E%3Cpath d='M0 20h40M20 0v40'/%3E%3C/g%3E%3C/svg%3E")`,
               backgroundSize: "40px 40px",
             }}
-          />
+          /> */}
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-8">
