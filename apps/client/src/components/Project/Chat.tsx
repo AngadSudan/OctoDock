@@ -10,24 +10,27 @@ export interface chatMessage {
   code?: any[];
   systemResponse?: string;
 }
+
 function Chat({ fileSystem = {} }) {
   const currentRef = useRef(null);
   const params = useParams();
-  const [messages, setMessages] = useState<chatMessage[]>([]);
+  const [messages, setMessages] = useState<chatMessage[]>([
+    {
+      role: "SYSTEM",
+      message: "Octodock generating project",
+      code: fileSystem as any,
+      systemResponse: "Project Initialization completed",
+    },
+  ]);
   const { data, loading, error } = useGetAllPrompt(params.id);
   useEffect(() => {
     if (!loading && data !== undefined) {
-      console.log(data);
-      setMessages(data.getAllPromptPerProject);
+      if (data.getAllPromptPerProject.length > 0) {
+        setMessages(data.getAllPromptPerProject);
+      }
     }
   }, [loading, data]);
-  const scrollToView = () => {
-    if (currentRef.current === null) return;
-    currentRef.current.scrollIntoView({ behavior: "smooth" });
-  };
-  useEffect(() => {
-    scrollToView();
-  }, [messages]);
+
   return (
     <div className="h-[110svh]  w-1/2 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 relative">
       {/* Subtle gradient mesh background */}
@@ -62,13 +65,7 @@ function Chat({ fileSystem = {} }) {
             WebkitScrollbar: { display: "none" },
           }}
         >
-          {messages.map((message, index) => {
-            return (
-              <div ref={currentRef}>
-                <CharCard key={index} messages={[message]} />
-              </div>
-            );
-          })}
+          <CharCard ref={currentRef} messages={messages} />
         </div>
 
         {/* Professional prompt bar container */}

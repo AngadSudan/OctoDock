@@ -50,7 +50,7 @@ class customModel {
       .replace("{software_design_document}", sdd);
 
     const openai = new OpenAI({
-      baseURL: "https://openrouter.ai/api/v1",
+      baseURL: "https://api.groq.com/openai/v1",
       apiKey: openRouterKeys.getAvailableKey(),
     });
 
@@ -60,7 +60,7 @@ class customModel {
       try {
         console.log(`creating file ${codefile} ...`);
         const completion = await openai.chat.completions.create({
-          model: "openai/gpt-oss-20b:free",
+          model: "openai/gpt-oss-120b",
           messages: [
             {
               role: "system",
