@@ -4,15 +4,19 @@ import Editor from "../Project/Editor";
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import configuration from "@/conf/configuration";
-import ActiveArtifact from "../Project/ActiveArtifact";
+
 function StackBlitzIndex() {
   const [fileSystem, setFileSystem] = useState({});
+  const [updatingfileSystem, setUpdatingFileSystem] = useState({});
   const params = useParams();
   const [openFile, setOpenFile] = useState("src/index.js");
   const [updatedCode, setupdatedCode] = useState("src/index.js");
   const { data, loading, error } = usegetProjectInfo(params.id);
   const [initializing, setIsInitialized] = useState("pending");
   useEffect(() => {
+    Object.keys(fileSystem).map((file, index) => {
+      updatingfileSystem[file] = "loading";
+    });
     if (data) {
       setFileSystem({
         ...JSON.parse(data.getProjectById.folderStructure),
@@ -28,10 +32,17 @@ function StackBlitzIndex() {
       sseClient.onmessage = (event: MessageEvent) => {
         try {
           const data = JSON.parse(event.data);
-          console.log("System Metrics:", data);
-          console.log(data.code, data.file);
+          setUpdatingFileSystem({
+            ...updatingfileSystem,
+            [openFile]: "success",
+          });
+
           setupdatedCode(data.code);
           setOpenFile(data.filename);
+          setUpdatingFileSystem({
+            ...updatingfileSystem,
+            [openFile]: "processing",
+          });
         } catch (error) {
           console.error("Failed to parse SSE data:", error);
         }
@@ -42,20 +53,20 @@ function StackBlitzIndex() {
         sseClient.close();
       };
     };
-    if (data) {
-      console.log(data);
-      console.log(data);
-      console.log(data, " ", data.isInitialized);
-    }
-    if (data && !data.isInitialized) {
+    if (data && !data.getProjectById.isInitialized) {
       setIsInitialized("loading");
       startUpdatingFiles();
       setIsInitialized("completed");
     }
+    if (data && data.getProjectById.isInitialized) {
+      Object.keys(fileSystem).map((file, index) => {
+        updatingfileSystem[file] = "success";
+      });
+    }
   }, [data, loading, error]);
   return (
     <div className="overflow-y-hidden flex bg-black h-screen gap-2">
-      <Chat fileSystem={fileSystem} />
+      <Chat fileSystem={updatingfileSystem} />
       <div className="h-full p-0 my-auto bg-black w-2/3">
         {!loading && Object.keys(fileSystem).length > 0 && (
           <Editor

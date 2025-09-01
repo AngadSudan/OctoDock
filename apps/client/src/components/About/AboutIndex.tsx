@@ -10,7 +10,6 @@ function AboutIndex() {
       <Header />
       <Hero />
       <Future />
-
       <TechStack />
     </div>
   );

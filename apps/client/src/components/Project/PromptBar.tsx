@@ -19,7 +19,7 @@ function PromptBar({ chat, setChat }) {
     e.preventDefault();
     if (message.trim()) {
       setIsTyping(true);
-      console.log("Sending message:", message);
+
       setMessage("");
       setShowSuggestions(false);
       setSelectedSuggestion(-1);

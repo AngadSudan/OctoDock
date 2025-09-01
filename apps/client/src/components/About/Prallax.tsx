@@ -1,5 +1,4 @@
 import React, { useRef } from "react";
-import videoSrc from "../../../public/octoloop.mp4";
 import { Parallax, ParallaxLayer } from "@react-spring/parallax";
 import type { IParallax } from "@react-spring/parallax";
 import logo from "../../../public/octodocklogo.png";
@@ -11,7 +10,8 @@ import terraform from "../../../public/terraform.webp";
 import aws from "../../../public/aws.webp";
 
 const sponsorImages = [stackBltz, ollama, gemini, chatgpt, terraform, aws];
-
+const videoSrc =
+  "https://storage.googleapis.com/octodock-bucket-1/octoloop.mp4";
 const SponsorCard = ({ image, x, y }) => {
   return (
     <ParallaxLayer offset={0} speed={0.5 + 2 * 0.1}>

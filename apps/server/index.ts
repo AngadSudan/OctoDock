@@ -121,8 +121,10 @@ app.get("/is-authenticated", (req, res) => {
 app.get(
   "/oauth/redirect/github",
   passport.authenticate("github", {
-    failureRedirect: "http://localhost:5173/auth/error",
-    successRedirect: "http://localhost:5173",
+    failureRedirect:
+      process.env.FRONTEND_URL_FAIL || "http://localhost:5173/auth/error",
+    successRedirect:
+      process.env.FRONTEND_URL_SUCCESS || "http://localhost:5173",
   }),
   function (req, res) {
     res.redirect("/");
@@ -135,9 +137,7 @@ app.post("/push/:id", async (req, res) => {
   const username = req.body.username;
   const foldername = req.body.foldername;
   const projectId = req.params.id;
-  console.log(username);
-  console.log(foldername);
-  console.log(projectId);
+
   const dbUser = await prisma.user.findFirst({
     where: {
       username: username,
@@ -148,8 +148,6 @@ app.post("/push/:id", async (req, res) => {
   const response = await new githubController(
     dbUser.githubToken
   ).commitCodeToGithub(projectId, foldername);
-
-  console.log(response);
 
   return res.status(200).json({ message: "ok" });
 });

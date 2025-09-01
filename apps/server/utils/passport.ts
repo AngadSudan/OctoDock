@@ -17,7 +17,9 @@ passport.use(
     {
       clientID: process.env.GITHUB_OAUTH_CLIENTID!,
       clientSecret: process.env.GITHUB_OAUTH_SECRET!,
-      callbackURL: "http://localhost:8000/oauth/redirect/github",
+      callbackURL:
+        process.env.GITHUB_CALLBACK_URL! ||
+        "http://localhost:8000/oauth/redirect/github",
       passReqToCallback: true,
       scope: ["user", "repo"],
     },
@@ -49,7 +51,7 @@ passport.use(
           console.log("user loggedin ");
         }
       } else {
-        if(!name){
+        if (!name) {
           name = username;
         }
         await userControllers.OAuthRegister(username, email, accessToken, name);

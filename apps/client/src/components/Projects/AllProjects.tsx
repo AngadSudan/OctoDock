@@ -141,7 +141,7 @@ function AllProjects() {
   const handleSubmit = async (userId, project, details) => {
     try {
       const newProject = await createProject(userId, project, details);
-      console.log("✅ Project created:", newProject);
+
       router(`/project/${newProject.id}`);
     } catch (err) {
       console.error("❌ Failed to create project:", err);

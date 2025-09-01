@@ -118,7 +118,6 @@ export default function Editor({ files, loading = true, openfile, code }) {
 
   const handleGitPush = async () => {
     const fileStructure = await getFolderStructure();
-    console.log("folder is: ", fileStructure);
 
     const response = await axios.post(
       `${configuration.backend_url}/push/${param.id}`,
@@ -127,8 +126,6 @@ export default function Editor({ files, loading = true, openfile, code }) {
         foldername: fileStructure,
       }
     );
-
-    console.log(response);
   };
 
   return (
