@@ -16,10 +16,10 @@ jobs:
         env:
           SSH_PASSWORD: ${{ secrets.password }}
         run: |
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no pttl@34.131.170.248 << 'EOF'
+          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no octodock@34.131.170.248 << 'EOF'
             set -e  # stop on error
             pwd
-            cd /octodock
+            cd ~/octodock
             pwd
             git pull origin main
             bun i
