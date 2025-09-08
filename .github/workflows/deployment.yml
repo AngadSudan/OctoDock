@@ -11,7 +11,11 @@ jobs:
     steps:
       - name: Install sshpass
         run: sudo apt-get update && sudo apt-get install -y sshpass
-
+      - name: Install Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
       - name: Deploy using password auth
         env:
           SSH_PASSWORD: ${{ secrets.password }}
@@ -23,6 +27,7 @@ jobs:
             pwd
             git pull origin main
             npm --version
+            npm i -g bun
             bun i
             pm2 list
             pm2 restart 0
