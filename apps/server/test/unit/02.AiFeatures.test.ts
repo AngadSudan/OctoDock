@@ -8,29 +8,29 @@ describe("gemini features test suite ", () => {
     "generate enhanced user given descriptions",
     async () => {
       const data = await AiFeaturesControllers.enhanceUserGivenDescription(
-        TestMap.gemini.userDescription
+        TestMap.gemini.userDescription,
       );
 
       TestMap.gemini.enhancedPrompt = data;
       expect(() => z.string().parse(data)).not.toThrow();
     },
-    { timeout: 100000 }
+    { timeout: 100000 },
   );
 
   it(
     "generateProjectFileStructure",
     async () => {
       const data = await AiFeaturesControllers.generateProjectFileStructure(
-        TestMap.gemini.enhancedPrompt
+        TestMap.gemini.enhancedPrompt,
       );
 
       //   console.log(JSON.stringify(data, null, 2));
       TestMap.gemini.fileStructure = JSON.parse(data).map((f: any) => f.path);
       //   console.log(TestMap.gemini.fileStructure);
       expect(() =>
-        z.array(z.string()).parse(TestMap.gemini.fileStructure)
+        z.array(z.string()).parse(TestMap.gemini.fileStructure),
       ).not.toThrow();
     },
-    { timeout: 100000 }
+    { timeout: 100000 },
   );
 });

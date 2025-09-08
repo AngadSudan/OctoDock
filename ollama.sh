@@ -17,3 +17,5 @@ ollama serve
 
 # Wait forever (so container doesn't exit)
 wait
+
+

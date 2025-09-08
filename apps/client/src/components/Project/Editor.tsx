@@ -49,7 +49,7 @@ export default function Editor({ files, loading = true, openfile, code }) {
               height: "100%",
               width: "100%",
               hideExplorer: false,
-            }
+            },
           )
           .then((vm) => {
             if (!cancelled) {
@@ -124,7 +124,7 @@ export default function Editor({ files, loading = true, openfile, code }) {
       {
         username,
         foldername: fileStructure,
-      }
+      },
     );
   };
 

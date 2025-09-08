@@ -45,7 +45,7 @@ function useMotionHighlight<T extends string>(): MotionHighlightContextType<T> {
   const context = React.useContext(MotionHighlightContext);
   if (!context) {
     throw new Error(
-      "useMotionHighlight must be used within a MotionHighlightProvider"
+      "useMotionHighlight must be used within a MotionHighlightProvider",
     );
   }
   return context as unknown as MotionHighlightContextType<T>;
@@ -113,7 +113,7 @@ type MotionHighlightProps<T extends string> = React.ComponentProps<"div"> &
 const MotionHighlight = React.forwardRef(
   <T extends string>(
     props: MotionHighlightProps<T>,
-    ref: React.Ref<HTMLDivElement>
+    ref: React.Ref<HTMLDivElement>,
   ) => {
     const {
       children,
@@ -134,7 +134,7 @@ const MotionHighlight = React.forwardRef(
     React.useImperativeHandle(ref, () => localRef.current as HTMLDivElement);
 
     const [activeValue, setActiveValueState] = React.useState<T | null>( // Correct: activeValue is state, setActiveValueState is setter
-      value ?? defaultValue ?? null
+      value ?? defaultValue ?? null,
     );
     const [boundsState, setBoundsState] = React.useState<Bounds | null>(null);
     const [activeClassNameState, setActiveClassNameState] =
@@ -145,7 +145,7 @@ const MotionHighlight = React.forwardRef(
         setActiveValueState((prev) => (prev === id ? prev : id));
         if (id !== activeValue) onValueChange?.(id as T); // Corrected: use activeValue
       },
-      [activeValue, onValueChange, setActiveValueState] // Corrected: dependency on activeValue
+      [activeValue, onValueChange, setActiveValueState], // Corrected: dependency on activeValue
     );
 
     const safeSetBounds = React.useCallback(
@@ -178,7 +178,7 @@ const MotionHighlight = React.forwardRef(
           return newBounds;
         });
       },
-      [props]
+      [props],
     );
 
     const clearBounds = React.useCallback(() => {
@@ -199,7 +199,7 @@ const MotionHighlight = React.forwardRef(
       const onScroll = () => {
         if (!activeValue) return; // Corrected: use activeValue
         const activeEl = container.querySelector<HTMLElement>(
-          `[data-value="${activeValue}"][data-highlight="true"]` // Corrected: use activeValue
+          `[data-value="${activeValue}"][data-highlight="true"]`, // Corrected: use activeValue
         );
         if (activeEl) safeSetBounds(activeEl.getBoundingClientRect());
       };
@@ -216,7 +216,7 @@ const MotionHighlight = React.forwardRef(
               data-slot="motion-highlight-container"
               className={cn(
                 "relative",
-                (props as ParentModeMotionHighlightProps)?.containerClassName
+                (props as ParentModeMotionHighlightProps)?.containerClassName,
               )}
             >
               <AnimatePresence initial={false}>
@@ -248,7 +248,7 @@ const MotionHighlight = React.forwardRef(
                     className={cn(
                       "absolute bg-muted z-0",
                       className,
-                      activeClassNameState
+                      activeClassNameState,
                     )}
                   />
                 )}
@@ -267,7 +267,7 @@ const MotionHighlight = React.forwardRef(
         exitDelay,
         className,
         activeClassNameState,
-      ]
+      ],
     );
 
     return (
@@ -313,20 +313,20 @@ const MotionHighlight = React.forwardRef(
                       {child}
                     </MotionHighlightItem>
                   );
-                })
+                }),
               )
           : children}
       </MotionHighlightContext.Provider>
     );
-  }
+  },
 ) as <T extends string>(
-  props: MotionHighlightProps<T> & { ref?: React.Ref<HTMLDivElement> }
+  props: MotionHighlightProps<T> & { ref?: React.Ref<HTMLDivElement> },
 ) => React.ReactElement;
 (MotionHighlight as any).displayName = "MotionHighlight";
 
 function getNonOverridingDataAttributes(
   element: React.ReactElement,
-  dataAttributes: Record<string, unknown>
+  dataAttributes: Record<string, unknown>,
 ): Record<string, unknown> {
   return Object.keys(dataAttributes).reduce<Record<string, unknown>>(
     (acc, key) => {
@@ -335,7 +335,7 @@ function getNonOverridingDataAttributes(
       }
       return acc;
     },
-    {}
+    {},
   );
 }
 
@@ -380,7 +380,7 @@ const MotionHighlightItem = React.forwardRef<
       forceUpdateBounds,
       ...props
     },
-    ref
+    ref,
   ) => {
     const itemId = React.useId();
     const {
@@ -512,7 +512,7 @@ const MotionHighlightItem = React.forwardRef<
                   className={cn(
                     "absolute inset-0 bg-muted z-0",
                     contextClassName,
-                    activeClassName
+                    activeClassName,
                   )}
                   transition={itemTransition}
                   initial={{ opacity: 0 }}
@@ -537,7 +537,7 @@ const MotionHighlightItem = React.forwardRef<
             >
               {element.props.children}
             </div>
-          </>
+          </>,
         );
       }
       return React.cloneElement(element, {
@@ -569,7 +569,7 @@ const MotionHighlightItem = React.forwardRef<
                 className={cn(
                   "absolute inset-0 bg-muted z-0",
                   contextClassName,
-                  activeClassName
+                  activeClassName,
                 )}
                 transition={itemTransition}
                 initial={{ opacity: 0 }}
@@ -599,7 +599,7 @@ const MotionHighlightItem = React.forwardRef<
     ) : (
       children
     );
-  }
+  },
 );
 (MotionHighlightItem as any).displayName = "MotionHighlightItem";
 
@@ -610,7 +610,7 @@ type TabsContextType<T extends string> = {
 };
 
 const TabsContext = React.createContext<TabsContextType<any> | undefined>(
-  undefined
+  undefined,
 );
 
 export function useTabs<T extends string = string>(): TabsContextType<T> {
@@ -650,7 +650,7 @@ export const Component = <T extends string = string>({
   ...props
 }: TabsProps<T>) => {
   const [activeValue, setActiveValue] = React.useState<T | undefined>(
-    defaultValue ?? undefined
+    defaultValue ?? undefined,
   );
   const triggersRef = React.useRef(new Map<string, HTMLElement>());
   const initialSet = React.useRef(false);
@@ -740,7 +740,7 @@ export const TabsList = ({
         data-slot="tabs-list"
         className={cn(
           "bg-muted text-muted-foreground inline-flex h-10 w-fit items-center justify-center rounded-lg p-[4px]",
-          className
+          className,
         )}
         {...props}
       >
@@ -815,7 +815,7 @@ export const TabsTrigger = React.forwardRef<
           // Layering
           "z-10 overflow-hidden",
 
-          className
+          className,
         )}
         style={{
           backdropFilter: "blur(20px) saturate(180%)",
@@ -855,7 +855,7 @@ export const TabsTrigger = React.forwardRef<
             "absolute bottom-0 left-1/2 h-px -translate-x-1/2 transition-all duration-500",
             isActive
               ? "w-3/4 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-              : "w-0 bg-white/20"
+              : "w-0 bg-white/20",
           )}
         />
       </motion.button>
@@ -889,7 +889,7 @@ export const TabsContents = ({
       typeof child.props === "object" &&
       child.props !== null &&
       "value" in child.props &&
-      (child.props as { value: string }).value === activeValue
+      (child.props as { value: string }).value === activeValue,
   );
 
   return (

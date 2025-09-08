@@ -7,12 +7,12 @@ describe("chatgpt test suites", () => {
     "generating project file structure",
     async () => {
       const data = await gptFeaturesControllers.generateProjectFolderStructure(
-        TestMap.gemini.enhancedPrompt
+        TestMap.gemini.enhancedPrompt,
       );
       console.log(data);
       TestMap.chatgpt.fileStructure = data as any;
       expect(() => z.array(z.string()).parse(data)).not.toThrow();
     },
-    { timeout: 100000 }
+    { timeout: 100000 },
   );
 });

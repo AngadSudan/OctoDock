@@ -13,7 +13,7 @@ class GptFeatures {
   async generateProjectFolderStructure(description: string) {
     const prompt = generateFileStructurePrompt.replace(
       "{detailed_project_planning}",
-      description
+      description,
     );
 
     const completion = await this.client.chat.completions.create({
@@ -37,7 +37,7 @@ class GptFeatures {
     // If it's a stringified array of paths or objects, return parsed JSON
     try {
       const parsed = JSON.parse(
-        rawText.replace("```json", "").replace("```", "")
+        rawText.replace("```json", "").replace("```", ""),
       );
       return parsed;
     } catch {

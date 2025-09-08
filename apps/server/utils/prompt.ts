@@ -109,7 +109,9 @@ Respond with **only** a JavaScript or django or springboot array of file paths, 
 - Do **not** include folder names as objects — just file paths as strings.
 - Do **not** include file content, metadata, or explanations — just the file paths.
 - Avoid frontend or client files — backend only.
+- Generate project for advance pipelines as well (eg:- websockets, WebRTC is mentioned)
 - Maindatorily add a package.json if its a javascript project
+- Keep a file which tells what all are the enviornment variables used
 
 ### Input SRS:
 {detailed_project_planning}

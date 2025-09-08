@@ -34,7 +34,7 @@ const AnimatedText = React.forwardRef<HTMLDivElement, AnimatedTextProps>(
       underlineDuration = 1.5,
       ...props
     },
-    ref
+    ref,
   ) => {
     const pathVariants: Variants = {
       hidden: {
@@ -56,14 +56,14 @@ const AnimatedText = React.forwardRef<HTMLDivElement, AnimatedTextProps>(
         ref={ref}
         className={cn(
           "flex flex-col items-center justify-center gap-2 bg-transparent",
-          props.className
+          props.className,
         )}
       >
         <div className="relative">
           <motion.h1
             className={cn(
               "text-4xl font-bold text-center text-white",
-              textClassName
+              textClassName,
             )}
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -99,7 +99,7 @@ const AnimatedText = React.forwardRef<HTMLDivElement, AnimatedTextProps>(
         </div>
       </div>
     );
-  }
+  },
 );
 
 AnimatedText.displayName = "AnimatedText";

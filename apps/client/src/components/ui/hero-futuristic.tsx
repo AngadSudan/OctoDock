@@ -64,7 +64,7 @@ const PostProcessing = ({
     const withScanEffect = mix(
       scenePassColor,
       add(scenePassColor, redOverlay),
-      fullScreenEffect ? smoothstep(0.9, 1.0, oneMinus(scanLine)) : 1.0
+      fullScreenEffect ? smoothstep(0.9, 1.0, oneMinus(scanLine)) : 1.0,
     );
 
     // Add bloom effect after scan effect
@@ -111,7 +111,7 @@ const Scene = () => {
 
     const tMap = texture(
       rawMap,
-      uv().add(tDepthMap.r.mul(uPointer).mul(strength))
+      uv().add(tDepthMap.r.mul(uPointer).mul(strength)),
     );
 
     const aspect = float(WIDTH).div(HEIGHT);

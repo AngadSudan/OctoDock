@@ -24,7 +24,7 @@ function Header() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated
+    (state: RootState) => state.auth.isAuthenticated,
   );
   const user = useSelector((state: RootState) => state.auth.user);
 
@@ -34,14 +34,14 @@ function Header() {
         configuration.backend_url + "/is-authenticated",
         {
           withCredentials: true,
-        }
+        },
       );
       if (response.data.authenticated) {
         dispatch(
           setAuthState({
             isAuthenticated: true,
             user: response.data.user._json,
-          })
+          }),
         );
       } else {
         dispatch(setAuthState({ isAuthenticated: false, user: null }));

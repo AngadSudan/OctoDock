@@ -57,7 +57,7 @@ class githubController {
     owner: string,
     url: string,
     name: string,
-    description
+    description,
   ) {
     try {
       const projectData = await this.octokit.rest.repos.update({
@@ -129,7 +129,7 @@ class githubController {
   async createTree(
     owner: string,
     repo: string,
-    treeEntries: any[]
+    treeEntries: any[],
   ): Promise<any> {
     const response = await this.octokit.rest.git.createTree({
       owner: owner,

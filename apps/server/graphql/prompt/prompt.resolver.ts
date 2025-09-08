@@ -12,7 +12,7 @@ const mutations = {
       userId,
       projectId,
       prompt,
-    }: { userId: string; projectId: string; prompt: string }
+    }: { userId: string; projectId: string; prompt: string },
   ) => {
     return await promptControllers.createPrompt(userId, projectId, prompt);
   },

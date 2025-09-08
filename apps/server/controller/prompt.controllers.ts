@@ -19,7 +19,7 @@ class promptControllers {
     if (!dbProject) throw new Error("no such registered Project");
     const generatedPrompt = await AiFeaturesControllers.enhanceFeedbackPrompt(
       "srs",
-      prompt
+      prompt,
     );
     const originalFolderStructure = JSON.parse(dbProject.folderStructure);
 
@@ -34,7 +34,7 @@ class promptControllers {
     const answerText = await AiFeaturesControllers.getResponseText(
       originalFolderStructure,
       updatedFolderStructure,
-      prompt
+      prompt,
     );
 
     // const reportedAnswer =

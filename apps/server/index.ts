@@ -45,7 +45,7 @@ app.use(
       secure: false, // true if using HTTPS
       sameSite: "lax", // "none" if cross-origin over HTTPS
     },
-  })
+  }),
 );
 app.use(passport.initialize() as any);
 app.use(passport.session());
@@ -71,7 +71,7 @@ app.use(
       "Origin",
       "Accept",
     ],
-  })
+  }),
 );
 const apiProxy = proxy("http://localhost:4000", {
   proxyReqPathResolver: (req) => url.parse(req.baseUrl).path,
@@ -107,7 +107,7 @@ app.get("/health", async (req, res) => {
 // OAuth Routes
 app.get(
   "/auth/github",
-  passport.authenticate("github", { scope: ["user", "repo"] })
+  passport.authenticate("github", { scope: ["user", "repo"] }),
 );
 app.get("/is-authenticated", (req, res) => {
   const isAuthenticated = req.isAuthenticated();
@@ -128,7 +128,7 @@ app.get(
   }),
   function (req, res) {
     res.redirect("/");
-  }
+  },
 );
 
 // SSE ROUTING
@@ -146,7 +146,7 @@ app.post("/push/:id", async (req, res) => {
 
   if (!dbUser) throw new Error("not a registered user");
   const response = await new githubController(
-    dbUser.githubToken
+    dbUser.githubToken,
   ).commitCodeToGithub(projectId, foldername);
 
   return res.status(200).json({ message: "ok" });
@@ -155,7 +155,7 @@ const errorHandler = (
   error: any,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   console.error("Error:", error.message);
   console.error("Stack:", error.stack);

@@ -34,8 +34,8 @@ const router = createBrowserRouter(
       />
       <Route path="project" element={<PromptBar />} loader={() => {}} />
       <Route path="project/:id" element={<Project />} loader={() => {}} />
-    </Route>
-  )
+    </Route>,
+  ),
 );
 
 createRoot(document.getElementById("root")!).render(
@@ -45,5 +45,5 @@ createRoot(document.getElementById("root")!).render(
         <RouterProvider router={router} />
       </Provider>
     </ApolloProvider>
-  </StrictMode>
+  </StrictMode>,
 );

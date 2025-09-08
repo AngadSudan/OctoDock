@@ -150,7 +150,7 @@ function Structure({ project }) {
           <div className="overflow-hidden">
             <div className="animate-fadeIn">
               {Object.entries(node.children).map(([childName, childNode]) =>
-                renderTree(childNode, childName, level + 1, currentPath)
+                renderTree(childNode, childName, level + 1, currentPath),
               )}
             </div>
           </div>
@@ -210,7 +210,7 @@ function Structure({ project }) {
                   `}</style>
 
                   {Object.entries(fileTree).map(([name, node]) =>
-                    renderTree(node, name)
+                    renderTree(node, name),
                   )}
                 </div>
 

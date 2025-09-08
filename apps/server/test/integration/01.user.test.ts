@@ -118,7 +118,7 @@ describe("User Controller Tests", () => {
       testUser.username,
       testUser.githubUsername,
       testUser.email,
-      testUser.password
+      testUser.password,
     );
 
     expect(createdUser).toBeDefined();
@@ -129,7 +129,7 @@ describe("User Controller Tests", () => {
   it("logs in the user", async () => {
     const result = await userControllers.loginUser(
       testUser.email,
-      testUser.password
+      testUser.password,
     );
 
     expect(result).toBeDefined();

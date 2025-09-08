@@ -28,7 +28,7 @@ passport.use(
       accessToken: string,
       refreshToken: string,
       profile: any,
-      done: any
+      done: any,
     ) {
       //TODO: just complete the user authentication with the controller
 
@@ -59,6 +59,6 @@ passport.use(
       }
 
       return done(null, profile);
-    }
-  )
+    },
+  ),
 );

@@ -54,7 +54,7 @@ function PromptBar({ chat, setChat }) {
   const filteredSuggestions = suggestions.filter(
     (suggestion) =>
       suggestion.toLowerCase().includes(message.toLowerCase()) &&
-      message.trim() !== ""
+      message.trim() !== "",
   );
 
   const handleKeyDown = (e) => {
@@ -62,14 +62,14 @@ function PromptBar({ chat, setChat }) {
       if (e.key === "ArrowDown") {
         e.preventDefault();
         setSelectedSuggestion((prev) =>
-          prev < filteredSuggestions.length - 1 ? prev + 1 : 0
+          prev < filteredSuggestions.length - 1 ? prev + 1 : 0,
         );
         return;
       }
       if (e.key === "ArrowUp") {
         e.preventDefault();
         setSelectedSuggestion((prev) =>
-          prev > 0 ? prev - 1 : filteredSuggestions.length - 1
+          prev > 0 ? prev - 1 : filteredSuggestions.length - 1,
         );
         return;
       }
@@ -199,7 +199,7 @@ function PromptBar({ chat, setChat }) {
                 onKeyDown={handleKeyDown}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
-                placeholder="Ask Claude anything..."
+                placeholder="Ask Octobot anything..."
                 className="w-full bg-transparent text-white placeholder-white/50 resize-none outline-none text-base leading-relaxed max-h-48 min-h-[56px] py-4 px-6 rounded-2xl transition-all duration-300 font-medium"
                 style={{
                   height: "56px",

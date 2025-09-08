@@ -8,7 +8,7 @@ import { client } from "./mailTrap";
 
 export const sendVerificationEmail = async (
   email: string,
-  verificationToken: string
+  verificationToken: string,
 ) => {
   try {
     const response = await client.sendMail({
@@ -17,10 +17,10 @@ export const sendVerificationEmail = async (
       subject: "Verify your email",
       html: VERIFICATION_EMAIL_TEMPLATE.replace(
         "{verificationCode}",
-        verificationToken
+        verificationToken,
       ).replace(
         "{VERIFICATION_LINK}",
-        process.env.CORS_ORIGIN + "/verify-email?email=" + email
+        process.env.CORS_ORIGIN + "/verify-email?email=" + email,
       ),
     });
 
@@ -39,7 +39,7 @@ export const sendWelcomeEmail = async (email: string, name: string) => {
       subject: "Logged in Success",
       html: WELCOME_EMAIL.replace(
         "{company_info_name}",
-        "Open Source Chandigarh"
+        "Open Source Chandigarh",
       )
         .replace("{name}", name)
         .replace("{company_info_address}", "Test_Company_info_address")
@@ -57,7 +57,7 @@ export const sendWelcomeEmail = async (email: string, name: string) => {
 export const sendPasswordResetEmail = async (
   email: string,
   otp: string,
-  resetURL: string
+  resetURL: string,
 ) => {
   try {
     const response = await client.sendMail({
@@ -66,7 +66,7 @@ export const sendPasswordResetEmail = async (
       subject: "Reset Your Password",
       html: PASSWORD_RESET_REQUEST_TEMPLATE.replace(
         "{resetURL}",
-        resetURL
+        resetURL,
       ).replace("{OTP}", otp),
     });
 

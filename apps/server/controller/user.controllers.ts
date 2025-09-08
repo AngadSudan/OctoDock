@@ -8,7 +8,7 @@ class userController {
     username: string,
     githubUsername: string,
     email: string,
-    password: string
+    password: string,
   ) {
     try {
       const dbUser = await prisma.user.findFirst({
@@ -25,28 +25,28 @@ class userController {
         .update(password)
         .digest("hex");
 
-        let createdUser:any= '';
-      if(!name){
+      let createdUser: any = "";
+      if (!name) {
         createdUser = await prisma.user.create({
           data: {
             name: name || username,
             username,
             githubUsername,
             email,
-          password: hashPassword,
-        },
-      });
-    }else{
-      createdUser = await prisma.user.create({
+            password: hashPassword,
+          },
+        });
+      } else {
+        createdUser = await prisma.user.create({
           data: {
             name: name || username,
             username,
             githubUsername,
             email,
-          password: hashPassword,
-        },
-      });
-    }
+            password: hashPassword,
+          },
+        });
+      }
       if (!createdUser) throw new Error("no user created");
       return createdUser;
     } catch (error) {
@@ -124,7 +124,7 @@ class userController {
     username: string,
     email: string,
     accessToken: string,
-    name: string
+    name: string,
   ) {
     console.log(username, email, accessToken, name);
     try {
