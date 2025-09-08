@@ -77,27 +77,20 @@ function Header() {
 
   return (
     <nav className="relative">
-      {/* Cyberpunk background layers */}
       <div className="absolute inset-0 bg-gradient-to-b from-gray-900/95 via-slate-900/90 to-gray-900/95"></div>
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/5 via-orange-500/5 to-transparent"></div>
 
-      {/* Animated circuit lines */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-red-400/30 to-transparent"></div>
-        <div className="absolute top-0 right-1/4 w-px h-full bg-gradient-to-b from-transparent via-orange-400/30 to-transparent"></div>
-        <div className="absolute left-0 top-1/2 w-full h-px bg-gradient-to-r from-transparent via-red-400/20 to-transparent"></div>
-      </div>
-
-      {/* Main navbar content */}
+     
+      {/* main bar*/}
       <div className="relative backdrop-blur-xl bg-black/60 border-b border-red-500/20 shadow-2xl">
-        {/* Top accent line */}
+        {/* top */}
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-red-400/50 via-orange-400/50 to-transparent"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
-            {/* Logo Section */}
+            {/* logo*/}
             <Link to="/" className="flex items-center space-x-4 group relative">
-              {/* Glow effect behind logo */}
+              {/* glow*/}
               <div className="absolute -inset-2 bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
               <div className="relative">
@@ -107,7 +100,7 @@ function Header() {
                     alt="OctoDock Logo"
                     className="object-contain w-20 h-20 transition-all duration-300 group-hover:drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]"
                   />
-                  {/* Corner accents for logo */}
+                  {/* frame holder */}
                   <div className="absolute -top-1 -left-1 w-3 h-3 border-l-2 border-t-2 border-red-400/60 rounded-tl"></div>
                   <div className="absolute -top-1 -right-1 w-3 h-3 border-r-2 border-t-2 border-red-400/60 rounded-tr"></div>
                   <div className="absolute -bottom-1 -left-1 w-3 h-3 border-l-2 border-b-2 border-red-400/60 rounded-bl"></div>
@@ -139,7 +132,7 @@ function Header() {
                       to={link.to}
                       className="relative flex items-center space-x-2 text-gray-300 hover:text-red-400 px-4 py-2 rounded-lg border border-transparent hover:border-red-500/30 hover:bg-red-500/10 transition-all duration-300 group font-mono"
                     >
-                      {/* Background glow */}
+                      {/* bg glow */}
                       <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                       <IconComponent className="h-4 w-4 group-hover:scale-110 transition-transform duration-300 relative z-10" />
@@ -147,21 +140,21 @@ function Header() {
                         {link.label}
                       </span>
 
-                      {/* Corner indicators */}
+                      {/* corner dot */}
                       <div className="absolute top-0 right-0 w-1 h-1 bg-red-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </Link>
                   );
                 })}
               </div>
 
-              {/* Authentication Section */}
+              {/* Auth*/}
               {isAuthenticated ? (
                 <div className="relative">
                   <button
                     onClick={() => setIsProfileOpen(!isProfileOpen)}
                     className="relative flex items-center space-x-3 bg-gray-900/80 hover:bg-red-900/30 backdrop-blur-md rounded-xl px-4 py-3 border border-red-500/30 hover:border-red-400/60 transition-all duration-300 shadow-xl group"
                   >
-                    {/* Background circuit pattern */}
+                    {/* bg pattern */}
                     <div className="absolute inset-0 rounded-xl overflow-hidden">
                       <div className="absolute top-0 left-1/2 w-px h-full bg-gradient-to-b from-red-400/30 to-transparent"></div>
                       <div className="absolute left-0 top-1/2 w-full h-px bg-gradient-to-r from-red-400/30 to-transparent"></div>
