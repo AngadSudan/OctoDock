@@ -10,4 +10,4 @@ jobs:
       - name: Global bun Installation
         run: npm i -g bun
       - name: Format Code Files
-        run: bun run format
+        run: cd ~/octodock && bun run format
