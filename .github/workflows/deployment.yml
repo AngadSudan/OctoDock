@@ -22,6 +22,7 @@ jobs:
             cd ~/octodock
             pwd
             git pull origin main
+            npm --version
             bun i
             pm2 list
             pm2 restart 0
