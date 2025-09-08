@@ -21,12 +21,13 @@ jobs:
         run: |
           sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no octodock@34.131.170.248 << 'EOF'
             set -e  # stop on error
-            pwd
+            pwd 
             cd ~/octodock
             pwd
             git pull origin main
             npm --version
             npm i -g bun
+            bun --version
             bun i
             pm2 list
             pm2 restart 0
