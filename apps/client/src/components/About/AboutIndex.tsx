@@ -1,4 +1,3 @@
-import React from "react";
 import Header from "../general/Header";
 import Hero from "./Hero";
 import Future from "../Home/Future";
