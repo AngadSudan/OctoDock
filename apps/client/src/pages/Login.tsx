@@ -54,7 +54,7 @@ const OctoDockLogin = () => {
                 deploy with confidence.
               </p>
 
-              <div className="space-y-4 text-slate-400 text-sm">
+              <div className="space-y-4 text-white text-sm">
                 <div className="flex items-center justify-center gap-3">
                   <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
                   <span>Real-time collaboration</span>
@@ -135,7 +135,7 @@ const OctoDockLogin = () => {
             onClick={handleGitHubLogin}
             className="
               w-full bg-white/10 hover:bg-white/15 backdrop-blur-sm
-              border border-white/20 hover:border-white/30
+              border border-white/20 hover:border-white/30 hover:cursor-pointer
               text-white font-medium py-4 px-6 rounded-xl
               transition-all duration-300 ease-out
               flex items-center justify-center gap-3

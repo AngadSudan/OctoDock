@@ -222,8 +222,6 @@ function TechDesign() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-black">
-      {/* Background elements */}
-      <AnimatedGrid />
       <CircuitPattern />
       <FloatingParticles />
 
@@ -320,7 +318,7 @@ function TechDesign() {
 
             {/* Right column - Architecture diagram */}
             <div className="relative">
-              <div className="bg-black/40 backdrop-blur-md border border-red-400/30 rounded-2xl p-8 h-[170svh] overflow-hidden">
+              <div className="bg-black/40 backdrop-blur-md border border-red-400/30 rounded-2xl p-8 h-[100svh] overflow-hidden">
                 <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
                   <Database size={24} className="text-red-400 mr-3" />
                   System Architecture
