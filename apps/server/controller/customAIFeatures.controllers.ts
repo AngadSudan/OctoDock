@@ -6,6 +6,7 @@ import {
 } from "../utils/prompt";
 import OpenAI from "openai";
 import openRouterKeys from "../utils/openRouter";
+import logger from "../utils/Logger";
 
 class customModel {
   ollama: Ollama;
@@ -18,11 +19,11 @@ class customModel {
   async generateFileBasedOnFeatures(
     srs: string,
     description: string,
-    gitSummary: string,
+    gitSummary: string
   ) {
     const prompt = CodeGenerationForFeature.replace(
       "{srs_documentdetails}",
-      srs,
+      srs
     )
       .replace("{current_feature}", description)
       .replace("{git_summary}", gitSummary);
@@ -40,7 +41,7 @@ class customModel {
     codefile,
     gitSummary,
     currentStatus,
-    sdd,
+    sdd
   ) {
     let response = "";
     const prompt = CodeGenerationForFile.replace("{srs_documentdetails}", srs)
@@ -58,7 +59,9 @@ class customModel {
 
     while (!success) {
       try {
-        console.log(`creating file ${codefile} ...`);
+        logger.logData({
+          message: `creating file ${codefile} ...`,
+        });
         const completion = await openai.chat.completions.create({
           model: "openai/gpt-oss-120b",
           messages: [
@@ -77,7 +80,12 @@ class customModel {
         response = completion.choices[0].message.content;
         success = true;
       } catch (error) {
-        console.error("Error occurred, rotating key and retrying...", error);
+        logger.logData({
+          message:
+            "Error occurred, rotating key and retrying: " + error.message,
+          loggingLevel: "error",
+          error: error,
+        });
         openRouterKeys.rotateToNextKey();
       }
     }
@@ -87,11 +95,11 @@ class customModel {
   async generateCorrectnessInFileOnBuggyFeature(
     srs: string,
     codefile: string,
-    gitSummary: string,
+    gitSummary: string
   ) {
     const prompt = CodeGenerationForCorrection.replace(
       "{srs_documentdetails}",
-      srs,
+      srs
     )
       .replace("{current_code}", codefile)
       .replace("{git_summary}", gitSummary);

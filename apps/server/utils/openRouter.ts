@@ -1,3 +1,5 @@
+import logger from "./Logger";
+
 class OpenRouterManager {
   apiKeys: string[];
   currentKeyIndex: number;
@@ -17,7 +19,7 @@ class OpenRouterManager {
           isRateLimited: false,
           rateLimitExpiry: null,
         },
-      ]),
+      ])
     );
   }
 
@@ -94,7 +96,11 @@ class OpenRouterManager {
 
         return response;
       } catch (err) {
-        console.error(`Request failed with key ${key}:`, err);
+        logger.logData({
+          message: `Request failed with key ${key}: ` + err.message,
+          error: err,
+          loggingLevel: "error",
+        });
         this.rotateToNextKey();
       }
     }
@@ -104,7 +110,7 @@ class OpenRouterManager {
 }
 
 const openRouterKeys = new OpenRouterManager(
-  process.env.OPENROUTER_KEYS!.split(","),
+  process.env.OPENROUTER_KEYS!.split(",")
 );
 
 export default openRouterKeys;

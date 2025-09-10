@@ -21,14 +21,14 @@ import projectControllers from "./controller/project.controllers";
 import githubController from "./controller/github.controllers";
 import prisma from "./utils/prisma";
 import logger from "./utils/Logger";
-
+import morgan from "morgan";
 const app: Express = express();
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
   limit: 200,
   message: "Too many requests from this IP, please try again after 10 minutes",
 });
-
+app.use(morgan("dev") as any);
 //websecurity
 app.use(helmet());
 app.use("/api", limiter);
@@ -74,7 +74,19 @@ app.use(
 const apiProxy = proxy("http://localhost:4000", {
   proxyReqPathResolver: (req) => url.parse(req.baseUrl).path,
 });
-app.use("/graphql", apiProxy);
+app.use(
+  "/graphql",
+  (req, res, next) => {
+    const isAuthenticated = req.isAuthenticated();
+    if (isAuthenticated) {
+      console.log("from /graphql", req.user);
+      // @ts-ignore
+      req.headers["x-user-id"] = (req.user.username || "guest") as any;
+    }
+    next();
+  },
+  apiProxy
+);
 
 //error handling
 
@@ -155,10 +167,17 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.error("Error:", error.message);
-  console.error("Stack:", error.stack);
+  logger.logData({
+    error: error,
+    message: "Error: " + error.message,
+    loggingLevel: "error",
+  });
+  logger.logData({
+    error: error,
+    message: "Stack: " + error.message,
+    loggingLevel: "error",
+  });
 
-  // Handle specific error types
   if (error.name === "ValidationError") {
     return res.status(400).json({
       status: "error",
@@ -171,6 +190,7 @@ const errorHandler = (
     return res.status(400).json({
       status: "error",
       message: "Invalid ID format",
+      user: "SYSTEM",
     });
   }
 
@@ -178,6 +198,7 @@ const errorHandler = (
     return res.status(409).json({
       status: "error",
       message: "Duplicate key error",
+      user: "SYSTEM",
     });
   }
 
@@ -199,7 +220,6 @@ app.use((req, res) => {
 createApolloServer()
   .then(() => {
     const server = app.listen(process.env.PORT || 8000, () => {
-      // logger.log("system", '{"message":"application started on port 8000"}');
       logger.logData({
         message: "application started on port 8000",
         loggingLevel: "info",
@@ -211,13 +231,12 @@ createApolloServer()
     server.setTimeout(0);
   })
   .catch((error: any) => {
-    console.log(error);
+    logger.logData({
+      message: error.message,
+      loggingLevel: "error",
+      error: "ERROR",
+    });
     process.exit();
   });
 
-// app.listen(process.env.PORT || 8000, () => {
-//   console.log(
-//     `Server is running on port ${8000} and the enviornment is ${process.env.NODE_ENV} mode`
-//   );
-// });
 export { app as default };

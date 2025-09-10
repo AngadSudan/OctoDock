@@ -1,3 +1,4 @@
+import logger from "../utils/Logger";
 import prisma from "../utils/prisma";
 import AiFeaturesControllers from "./AiFeatures.controllers";
 class promptControllers {
@@ -19,7 +20,7 @@ class promptControllers {
     if (!dbProject) throw new Error("no such registered Project");
     const generatedPrompt = await AiFeaturesControllers.enhanceFeedbackPrompt(
       "srs",
-      prompt,
+      prompt
     );
     const originalFolderStructure = JSON.parse(dbProject.folderStructure);
 
@@ -34,7 +35,7 @@ class promptControllers {
     const answerText = await AiFeaturesControllers.getResponseText(
       originalFolderStructure,
       updatedFolderStructure,
-      prompt,
+      prompt
     );
 
     // const reportedAnswer =
@@ -48,7 +49,9 @@ class promptControllers {
         folderStructure: updatedFolderStructure,
       },
     });
-    console.log(createdPrompt);
+    logger.logData({
+      message: "Prompt has been created " + JSON.stringify(createdPrompt),
+    });
     return createdPrompt;
   }
   async getAllPromptPerProject(projectId: string) {
@@ -72,14 +75,22 @@ class promptControllers {
 
       return dbPrompts;
     } catch (error) {
-      console.log(error);
+      logger.logData({
+        message: "Error: " + error.message,
+        loggingLevel: "error",
+        error: error,
+      });
       return null;
     }
   }
   async changeFileStructureBasedOnPrompt(promptId: string) {
     try {
     } catch (error) {
-      console.log(error);
+      logger.logData({
+        message: "Error: " + error.message,
+        loggingLevel: "error",
+        error: error,
+      });
       return null;
     }
   }

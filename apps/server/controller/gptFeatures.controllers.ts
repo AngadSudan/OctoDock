@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { generateFileStructurePrompt } from "../utils/prompt";
+import logger from "../utils/Logger";
 
 class GptFeatures {
   client: OpenAI;
@@ -13,7 +14,7 @@ class GptFeatures {
   async generateProjectFolderStructure(description: string) {
     const prompt = generateFileStructurePrompt.replace(
       "{detailed_project_planning}",
-      description,
+      description
     );
 
     const completion = await this.client.chat.completions.create({
@@ -37,11 +38,14 @@ class GptFeatures {
     // If it's a stringified array of paths or objects, return parsed JSON
     try {
       const parsed = JSON.parse(
-        rawText.replace("```json", "").replace("```", ""),
+        rawText.replace("```json", "").replace("```", "")
       );
       return parsed;
     } catch {
-      console.warn("Warning: Output is not valid JSON, returning raw string.");
+      logger.logData({
+        message: "Warning: Output is not valid JSON, returning raw string.",
+        loggingLevel: "warn",
+      });
       return rawText.replace("```json", "").replace("```", "");
     }
   }

@@ -8,6 +8,9 @@ const isJson = process.env.ISJSON! === "true" ? true : false;
 const interval = Number.parseInt(process.env.LOKI_INTERVAL!);
 
 const logger = createLogger(host, username, apiKey, labels, isJson, interval);
+logger.loggerInstance.on("error", (err) => {
+  console.error("Logger error:", err);
+});
 export default logger;
 /**
  * Use Like logger.log(<logging_level>,<message_string>)

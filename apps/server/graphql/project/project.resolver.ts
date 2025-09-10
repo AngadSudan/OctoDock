@@ -4,7 +4,6 @@ const queries = {
     return await projectController.getAllUserProject(id);
   },
   getProjectById: async (_, { id }: { id: string }) => {
-    console.log("id is : ", id);
     return await projectController.getProjectById(id);
   },
 };
@@ -15,13 +14,13 @@ const mutations = {
       userId,
       name,
       description,
-    }: { userId: string; name: string; description: string },
+    }: { userId: string; name: string; description: string }
   ) => {
     return await projectController.createNewProject(userId, name, description);
   },
   deleteProject: async (
     _,
-    { projectId, userId }: { projectId: string; userId: string },
+    { projectId, userId }: { projectId: string; userId: string }
   ) => {
     return await projectController.deleteProject(projectId, userId);
   },
@@ -32,13 +31,13 @@ const mutations = {
       projectId,
       userId,
       description,
-    }: { name: string; projectId: string; userId: string; description: string },
+    }: { name: string; projectId: string; userId: string; description: string }
   ) => {
     return await projectController.updateProject(
       name,
       projectId,
       userId,
-      description,
+      description
     );
   },
 };
