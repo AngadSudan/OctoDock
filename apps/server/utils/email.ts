@@ -24,11 +24,11 @@ export const sendVerificationEmail = async (
         process.env.CORS_ORIGIN + "/verify-email?email=" + email
       ),
     });
-    logger.logData({
+    console.log({
       message: "Email Sent SuccessFully" + JSON.stringify(response),
     });
   } catch (error) {
-    logger.logData({
+    console.log({
       message: "Email Sent Failed" + error.message,
       loggingLevel: "error",
     });
@@ -52,7 +52,7 @@ export const sendWelcomeEmail = async (email: string, name: string) => {
         .replace("{company_info_zip_code}", "140401")
         .replace("{company_info_country}", "India"),
     });
-    logger.logData({
+    console.log({
       message: "Welcome Email Sent SuccessFully" + JSON.stringify(response),
     });
   } catch (error) {
@@ -75,12 +75,12 @@ export const sendPasswordResetEmail = async (
         resetURL
       ).replace("{OTP}", otp),
     });
-    logger.logData({
+    console.log({
       message:
         "Password Reset Email Sent SuccessFully" + JSON.stringify(response),
     });
   } catch (error) {
-    logger.logData({
+    console.log({
       message: error.message,
       loggingLevel: "error",
       error: error,
@@ -97,13 +97,13 @@ export const sendResetSuccessfullEmail = async (email: string) => {
       subject: "Password Reset Successful",
       html: PASSWORD_RESET_SUCCESS_TEMPLATE,
     });
-    logger.logData({
+    console.log({
       message:
         "Password Reset Success Email Sent SuccessFully" +
         JSON.stringify(response),
     });
   } catch (error) {
-    logger.logData({
+    console.log({
       message: error.message,
       loggingLevel: "error",
       error: error,

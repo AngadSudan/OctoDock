@@ -4,7 +4,6 @@ import { useAspect, useTexture } from "@react-three/drei";
 import { useMemo, useRef, useState, useEffect } from "react";
 import * as THREE from "three";
 import { Anchor, Cpu, Zap, Code, Database, Wifi } from "lucide-react";
-import logger from "@/lib/logger";
 
 const card1 =
   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwIiBoZWlnaHQ9IjE2MCIgdmlld0JveD0iMCAwIDE2MCAxNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNjAiIGhlaWdodD0iMTYwIiByeD0iMjAiIGZpbGw9InVybCgjZ3JhZGllbnQwX2xpbmVhcl8xXzEpIi8+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWRpZW50MF9saW5lYXJfMV8xIiB4MT0iMCIgeTE9IjAiIHgyPSIxNjAiIHkyPSIxNjAiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iI0ZGNjU2NSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNGRjAwMDAiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K";
@@ -223,11 +222,11 @@ const PostProcessing = ({
       postProcessing.addPass(scenePass);
       return postProcessing;
     } catch (error) {
-      logger.logData({
-        message:"PostProcessing not available:",
-        loggingLevel:"warn",
-        error:error
-      })
+      console.log({
+        message: "PostProcessing not available:",
+        loggingLevel: "warn",
+        error: error,
+      });
       return null;
     }
   }, [camera, gl, scene, strength, threshold, fullScreenEffect]);

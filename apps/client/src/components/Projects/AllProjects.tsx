@@ -21,7 +21,6 @@ import type { RootState } from "@/redux";
 import { useSelector } from "react-redux";
 import { useCreateProject, useGetAllProjectData } from "@/Hooks/api/project";
 import { Link, useNavigate } from "react-router";
-import logger from "@/lib/logger";
 
 interface project {
   id: string;
@@ -51,7 +50,7 @@ function AllProjects() {
     return authors.sort();
   }, []);
   const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated,
+    (state: RootState) => state.auth.isAuthenticated
   );
   let userId;
   if (!isAuthenticated) {
@@ -145,7 +144,11 @@ function AllProjects() {
 
       router(`/project/${newProject.id}`);
     } catch (err) {
-      logger.logData({message:"❌ Failed to create project:"+error.message,loggingLevel:"error",error:String(error)});
+      console.log({
+        message: "❌ Failed to create project:" + error.message,
+        loggingLevel: "error",
+        error: String(error),
+      });
     }
   };
 

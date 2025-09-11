@@ -49,7 +49,7 @@ class promptControllers {
         folderStructure: updatedFolderStructure,
       },
     });
-    logger.logData({
+    console.log({
       message: "Prompt has been created " + JSON.stringify(createdPrompt),
     });
     return createdPrompt;
@@ -75,7 +75,7 @@ class promptControllers {
 
       return dbPrompts;
     } catch (error) {
-      logger.logData({
+      console.log({
         message: "Error: " + error.message,
         loggingLevel: "error",
         error: error,
@@ -86,7 +86,7 @@ class promptControllers {
   async changeFileStructureBasedOnPrompt(promptId: string) {
     try {
     } catch (error) {
-      logger.logData({
+      console.log({
         message: "Error: " + error.message,
         loggingLevel: "error",
         error: error,

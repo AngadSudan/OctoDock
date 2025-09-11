@@ -1,5 +1,5 @@
 import React from "react";
-import GithubCard from "./githubCard";
+import GithubCard from "./GithubCard";
 import {
   Component,
   TabsList,

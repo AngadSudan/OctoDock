@@ -45,7 +45,7 @@ passport.use(
       if (dbUser) {
         const userLogin = await userControllers.OAuthLogin(email, accessToken);
         if (userLogin) {
-          logger.logData({
+          console.log({
             message: "",
           });
           console.log("user loggedin ");

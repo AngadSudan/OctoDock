@@ -59,7 +59,7 @@ class customModel {
 
     while (!success) {
       try {
-        logger.logData({
+        console.log({
           message: `creating file ${codefile} ...`,
         });
         const completion = await openai.chat.completions.create({
@@ -80,7 +80,7 @@ class customModel {
         response = completion.choices[0].message.content;
         success = true;
       } catch (error) {
-        logger.logData({
+        console.log({
           message:
             "Error occurred, rotating key and retrying: " + error.message,
           loggingLevel: "error",

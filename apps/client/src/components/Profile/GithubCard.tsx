@@ -171,7 +171,7 @@ function GithubCard() {
                           DEVELOPER
                         </span>
                       </div>
-
+                      {/* @ts-ignore  */}
                       {userData.site_admin && (
                         <div className="px-4 py-2 bg-gradient-to-r from-red-500/20 to-pink-500/20 rounded-full border border-red-500/40 backdrop-blur-md">
                           <span className="text-red-300 text-sm font-bold">

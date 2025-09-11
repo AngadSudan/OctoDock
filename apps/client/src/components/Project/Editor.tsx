@@ -5,7 +5,7 @@ import configuration from "@/conf/configuration";
 import { useParams } from "react-router";
 import type { RootState } from "@/redux";
 import { useSelector } from "react-redux";
-import logger from "@/lib/logger";
+
 export default function Editor({ files, loading = true, openfile, code }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const vmRef = useRef<VM | null>(null);
@@ -50,7 +50,7 @@ export default function Editor({ files, loading = true, openfile, code }) {
               height: "100%",
               width: "100%",
               hideExplorer: false,
-            },
+            }
           )
           .then((vm) => {
             if (!cancelled) {
@@ -59,7 +59,11 @@ export default function Editor({ files, loading = true, openfile, code }) {
             }
           })
           .catch((err) => {
-            logger.logData({message:"StackBlitz embed error:"+ err.message,loggingLevel:"error",error:err});
+            console.log({
+              message: "StackBlitz embed error:" + err.message,
+              loggingLevel: "error",
+              error: err,
+            });
             setError(err?.message || "Failed to load StackBlitz");
           });
       }, 300);
@@ -78,7 +82,10 @@ export default function Editor({ files, loading = true, openfile, code }) {
   }, [openfile, code]);
   const updateFileContent = async (file: string, text: string) => {
     if (!vmRef.current) {
-      logger.logData({message:"StackBlitz VM is not available",loggingLevel:"error"});
+      console.log({
+        message: "StackBlitz VM is not available",
+        loggingLevel: "error",
+      });
       return;
     }
     try {
@@ -89,19 +96,30 @@ export default function Editor({ files, loading = true, openfile, code }) {
         destroy: [],
       });
     } catch (err) {
-      logger.logData({message:"Failed to update file:"+ err.message,loggingLevel:"error",error:err});
+      console.log({
+        message: "Failed to update file:" + err.message,
+        loggingLevel: "error",
+        error: err,
+      });
     }
   };
 
   const openFile = async (file: string) => {
     if (!vmRef.current) {
-      logger.logData({message:"StackBlitz VM is not available",loggingLevel:"error"});
+      console.log({
+        message: "StackBlitz VM is not available",
+        loggingLevel: "error",
+      });
       return;
     }
     try {
       await vmRef.current.editor.openFile(file);
     } catch (err) {
-      logger.logData({message:"Failed to open file:"+ err.message,loggingLevel:"error",error:err});
+      console.log({
+        message: "Failed to open file:" + err.message,
+        loggingLevel: "error",
+        error: err,
+      });
     }
   };
 
@@ -112,8 +130,11 @@ export default function Editor({ files, loading = true, openfile, code }) {
       const response = await vmRef.current.getFsSnapshot();
       return response;
     } catch (error) {
-    logger.logData({message:error.message,loggingLevel:"error",error:error});
-
+      console.log({
+        message: error.message,
+        loggingLevel: "error",
+        error: error,
+      });
     }
   };
   const username = useSelector((state: RootState) => state.auth.user.login);
@@ -126,7 +147,7 @@ export default function Editor({ files, loading = true, openfile, code }) {
       {
         username,
         foldername: fileStructure,
-      },
+      }
     );
   };
 

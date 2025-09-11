@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from "@apollo/client";
 import { CREATE_PROMPT, GET_ALL_PROMPT } from "../prompt";
-import logger from "@/lib/logger";
+
 export const useGetAllPrompt = (projectID) => {
   const { data, loading, error } = useQuery(GET_ALL_PROMPT, {
     variables: { projectID: projectID },
@@ -25,7 +25,11 @@ export const useCreatePrompt = () => {
       });
       return response.data?.createPrompt; // ✅ Corrected line
     } catch (err) {
-            logger.logData({message:"Create prompt error:"+ err.message,loggingLevel:"error",error:err});
+      console.log({
+        message: "Create prompt error:" + err.message,
+        loggingLevel: "error",
+        error: err,
+      });
 
       throw err;
     }

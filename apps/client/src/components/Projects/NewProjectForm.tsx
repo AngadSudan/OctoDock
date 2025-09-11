@@ -7,7 +7,6 @@ import { Link } from "react-router";
 import { useCreateProject } from "@/Hooks/api/project";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/redux";
-import logger from "@/lib/logger";
 
 type OverlayFormModalProps = {
   isOpen: boolean;
@@ -61,7 +60,7 @@ const OverlayFormModal: React.FC<OverlayFormModalProps> = ({
   }, [isOpen, isLoading, onClose]);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -96,7 +95,11 @@ const OverlayFormModal: React.FC<OverlayFormModalProps> = ({
       await onSubmit(userId, formData.name, formData.details);
       onClose();
     } catch (error) {
-      logger.logData({message:"Error"+error.message,loggingLevel:"error",error:error});
+      console.log({
+        message: "Error" + error.message,
+        loggingLevel: "error",
+        error: error,
+      });
     } finally {
       setIsLoading(false);
     }

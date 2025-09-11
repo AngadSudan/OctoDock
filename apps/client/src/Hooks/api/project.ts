@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client";
-import logger from "@/lib/logger";
+
 import {
   CREATE_PROJECT,
   DELETE_PROJECT,
@@ -23,7 +23,11 @@ export const useCreateProject = () => {
       });
       return response.data?.createNewProject;
     } catch (err) {
-      logger.logData({message:"Create project error:"+ err.message,loggingLevel:"error",error:err});
+      console.log({
+        message: "Create project error:" + err.message,
+        loggingLevel: "error",
+        error: err,
+      });
       throw err;
     }
   };
@@ -45,7 +49,11 @@ export const useDeleteProject = () => {
       });
       return response.data?.deleteProject;
     } catch (err) {
-      logger.logData({message:"Create project error:"+ err.message,loggingLevel:"error",error:err});
+      console.log({
+        message: "Create project error:" + err.message,
+        loggingLevel: "error",
+        error: err,
+      });
       throw err;
     }
   };
@@ -69,7 +77,11 @@ export const useUpdateProject = () => {
       });
       return response.data?.updateProject;
     } catch (err) {
-      logger.logData({message:"Create project error:"+ err.message,loggingLevel:"error",error:err});
+      console.log({
+        message: "Create project error:" + err.message,
+        loggingLevel: "error",
+        error: err,
+      });
 
       throw err;
     }

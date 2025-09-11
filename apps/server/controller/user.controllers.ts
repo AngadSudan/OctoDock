@@ -51,7 +51,7 @@ class userController {
       if (!createdUser) throw new Error("no user created");
       return createdUser;
     } catch (error) {
-      logger.logData({
+      console.log({
         message: "Error: " + error.message,
         loggingLevel: "error",
         error: error,
@@ -121,7 +121,7 @@ class userController {
         accessToken: generatedAccessToken,
       };
     } catch (error) {
-      logger.logData({
+      console.log({
         message: "Error: " + error.message,
         loggingLevel: "error",
         error: error,
@@ -150,7 +150,7 @@ class userController {
 
       return createdUser;
     } catch (error) {
-      logger.logData({
+      console.log({
         message: "Error: " + error.message,
         loggingLevel: "error",
         error: error,

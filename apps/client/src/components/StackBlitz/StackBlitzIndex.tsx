@@ -4,7 +4,6 @@ import Editor from "../Project/Editor";
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import configuration from "@/conf/configuration";
-import logger from "@/lib/logger";
 
 function StackBlitzIndex() {
   const [fileSystem, setFileSystem] = useState({});
@@ -45,12 +44,16 @@ function StackBlitzIndex() {
             [openFile]: "processing",
           });
         } catch (error) {
-          logger.logData({message:"Failed to parse SSE data:"+error.message,loggingLevel:"error",error:error});
+          console.log({
+            message: "Failed to parse SSE data:" + error.message,
+            loggingLevel: "error",
+            error: error,
+          });
         }
       };
 
       sseClient.onerror = (err) => {
-        logger.logData({message:"SSE connection error:"+ err});
+        console.log({ message: "SSE connection error:" + err });
         sseClient.close();
       };
     };

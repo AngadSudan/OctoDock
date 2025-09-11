@@ -22,6 +22,7 @@ import githubController from "./controller/github.controllers";
 import prisma from "./utils/prisma";
 import logger from "./utils/Logger";
 import morgan from "morgan";
+import LoggingController from "./controller/Logging.controller";
 const app: Express = express();
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
@@ -127,7 +128,9 @@ app.get("/is-authenticated", (req, res) => {
     res.json({ authenticated: false });
   }
 });
-
+app.get("/error/logs", (req, res) =>
+  LoggingController.servePaginatedLogic(req, res)
+);
 app.get(
   "/oauth/redirect/github",
   passport.authenticate("github", {
@@ -167,12 +170,12 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  logger.logData({
+  console.log({
     error: error,
     message: "Error: " + error.message,
     loggingLevel: "error",
   });
-  logger.logData({
+  console.log({
     error: error,
     message: "Stack: " + error.message,
     loggingLevel: "error",
@@ -220,7 +223,7 @@ app.use((req, res) => {
 createApolloServer()
   .then(() => {
     const server = app.listen(process.env.PORT || 8000, () => {
-      logger.logData({
+      console.log({
         message: "application started on port 8000",
         loggingLevel: "info",
         error: null,
@@ -231,7 +234,7 @@ createApolloServer()
     server.setTimeout(0);
   })
   .catch((error: any) => {
-    logger.logData({
+    console.log({
       message: error.message,
       loggingLevel: "error",
       error: "ERROR",

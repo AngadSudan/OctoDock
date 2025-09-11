@@ -96,7 +96,7 @@ class OpenRouterManager {
 
         return response;
       } catch (err) {
-        logger.logData({
+        console.log({
           message: `Request failed with key ${key}: ` + err.message,
           error: err,
           loggingLevel: "error",

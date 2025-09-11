@@ -22,14 +22,14 @@ class githubController {
         name: newRepo.data.name,
         userInfo: newRepo.data.owner,
       };
-      logger.logData({
+      console.log({
         message:
           "Repository Created with the following information" +
           JSON.stringify(repoInformation),
       });
       return repoInformation;
     } catch (error: any) {
-      logger.logData({
+      console.log({
         message: "Error: " + error.message,
         loggingLevel: "error",
         error: error,
@@ -50,7 +50,7 @@ class githubController {
 
       return "OK";
     } catch (error) {
-      logger.logData({
+      console.log({
         message: "Error in archiving repo: " + error.message,
         loggingLevel: "error",
         error: error,
@@ -75,7 +75,7 @@ class githubController {
       if (!projectData) throw new Error("project couldn't be initialized");
       return "OK";
     } catch (error) {
-      logger.logData({
+      console.log({
         message: "Error: " + error.message,
         loggingLevel: "error",
         error: error,
@@ -106,7 +106,7 @@ class githubController {
       if (!createdCommit) throw new Error("commit couln't be updated");
       return "OK";
     } catch (error: any) {
-      logger.logData({
+      console.log({
         message: "Error: " + error.message,
         loggingLevel: "error",
         error: error,
@@ -122,7 +122,7 @@ class githubController {
         content: folder[file],
         encoding: "utf-8",
       });
-      logger.logData({
+      console.log({
         message:
           "Blob created for:" + file + "with SHA:" + createdBlob.data.sha,
       });
@@ -161,7 +161,7 @@ class githubController {
       ref: "heads/main",
     });
     const latestCommitSha = refData.object.sha;
-    logger.logData({
+    console.log({
       message: "✅ Latest commit on main:" + latestCommitSha,
     });
 

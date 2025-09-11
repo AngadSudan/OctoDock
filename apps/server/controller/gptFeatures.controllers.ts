@@ -42,7 +42,7 @@ class GptFeatures {
       );
       return parsed;
     } catch {
-      logger.logData({
+      console.log({
         message: "Warning: Output is not valid JSON, returning raw string.",
         loggingLevel: "warn",
       });

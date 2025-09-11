@@ -14,6 +14,7 @@ import Project from "./pages/Project.tsx";
 import Projects from "./pages/Projects.tsx";
 import client from "./lib/graphqlClient.ts";
 import { ApolloProvider } from "@apollo/client";
+import Logs from "./pages/Logs.tsx";
 import About from "./pages/About.tsx";
 
 import { Provider } from "react-redux";
@@ -34,8 +35,9 @@ const router = createBrowserRouter(
       />
       <Route path="project" element={<PromptBar />} loader={() => {}} />
       <Route path="project/:id" element={<Project />} loader={() => {}} />
-    </Route>,
-  ),
+      <Route path="error/logs" element={<Logs />} loader={() => {}} />
+    </Route>
+  )
 );
 
 createRoot(document.getElementById("root")!).render(
@@ -45,5 +47,5 @@ createRoot(document.getElementById("root")!).render(
         <RouterProvider router={router} />
       </Provider>
     </ApolloProvider>
-  </StrictMode>,
+  </StrictMode>
 );
