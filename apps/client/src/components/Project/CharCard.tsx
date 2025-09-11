@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import logger from "@/lib/logger";
 import {
   FileText,
   Code,
@@ -98,7 +99,7 @@ const ChatCard = ({ ref, messages }) => {
     );
   };
   if (messages.length > 0) {
-    console.log("messages to be displayed are ", messages[0]);
+    logger.logData({message:"messages to be displayed are "+ messages[0]});
   }
   return (
     <div className="flex flex-col space-y-6 p-6 bg-slate-950/30 min-h-screen">

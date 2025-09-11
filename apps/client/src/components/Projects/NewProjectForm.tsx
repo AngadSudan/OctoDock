@@ -7,6 +7,7 @@ import { Link } from "react-router";
 import { useCreateProject } from "@/Hooks/api/project";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/redux";
+import logger from "@/lib/logger";
 
 type OverlayFormModalProps = {
   isOpen: boolean;
@@ -95,7 +96,7 @@ const OverlayFormModal: React.FC<OverlayFormModalProps> = ({
       await onSubmit(userId, formData.name, formData.details);
       onClose();
     } catch (error) {
-      console.error("Form submission failed:", error);
+      logger.logData({message:"Error"+error.message,loggingLevel:"error",error:error});
     } finally {
       setIsLoading(false);
     }

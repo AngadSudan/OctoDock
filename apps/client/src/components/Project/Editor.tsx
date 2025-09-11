@@ -5,6 +5,7 @@ import configuration from "@/conf/configuration";
 import { useParams } from "react-router";
 import type { RootState } from "@/redux";
 import { useSelector } from "react-redux";
+import logger from "@/lib/logger";
 export default function Editor({ files, loading = true, openfile, code }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const vmRef = useRef<VM | null>(null);
@@ -58,7 +59,7 @@ export default function Editor({ files, loading = true, openfile, code }) {
             }
           })
           .catch((err) => {
-            console.error("StackBlitz embed error:", err);
+            logger.logData({message:"StackBlitz embed error:"+ err.message,loggingLevel:"error",error:err});
             setError(err?.message || "Failed to load StackBlitz");
           });
       }, 300);
@@ -77,7 +78,7 @@ export default function Editor({ files, loading = true, openfile, code }) {
   }, [openfile, code]);
   const updateFileContent = async (file: string, text: string) => {
     if (!vmRef.current) {
-      console.error("StackBlitz VM is not available");
+      logger.logData({message:"StackBlitz VM is not available",loggingLevel:"error"});
       return;
     }
     try {
@@ -88,19 +89,19 @@ export default function Editor({ files, loading = true, openfile, code }) {
         destroy: [],
       });
     } catch (err) {
-      console.error("Failed to update file:", err);
+      logger.logData({message:"Failed to update file:"+ err.message,loggingLevel:"error",error:err});
     }
   };
 
   const openFile = async (file: string) => {
     if (!vmRef.current) {
-      console.error("StackBlitz VM is not available");
+      logger.logData({message:"StackBlitz VM is not available",loggingLevel:"error"});
       return;
     }
     try {
       await vmRef.current.editor.openFile(file);
     } catch (err) {
-      console.error("Failed to open file:", err);
+      logger.logData({message:"Failed to open file:"+ err.message,loggingLevel:"error",error:err});
     }
   };
 
@@ -111,7 +112,8 @@ export default function Editor({ files, loading = true, openfile, code }) {
       const response = await vmRef.current.getFsSnapshot();
       return response;
     } catch (error) {
-      console.log(error);
+    logger.logData({message:error.message,loggingLevel:"error",error:error});
+
     }
   };
   const username = useSelector((state: RootState) => state.auth.user.login);

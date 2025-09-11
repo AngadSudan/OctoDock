@@ -21,6 +21,7 @@ import type { RootState } from "@/redux";
 import { useSelector } from "react-redux";
 import { useCreateProject, useGetAllProjectData } from "@/Hooks/api/project";
 import { Link, useNavigate } from "react-router";
+import logger from "@/lib/logger";
 
 interface project {
   id: string;
@@ -144,7 +145,7 @@ function AllProjects() {
 
       router(`/project/${newProject.id}`);
     } catch (err) {
-      console.error("❌ Failed to create project:", err);
+      logger.logData({message:"❌ Failed to create project:"+error.message,loggingLevel:"error",error:String(error)});
     }
   };
 
@@ -417,9 +418,9 @@ function AllProjects() {
                 key={project.id}
                 project={project as any}
                 isList={viewMode === "list"}
-                onView={(project) => console.log("View:", project.name)}
-                onEdit={(project) => console.log("Edit:", project.name)}
-                onDelete={(project) => console.log("Delete:", project.name)}
+                onView={(project) => {}}
+                onEdit={(project) => {}}
+                onDelete={(project) => {}}
               />
             ))}
           </div>
