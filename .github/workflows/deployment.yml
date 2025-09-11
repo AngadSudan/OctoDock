@@ -11,17 +11,23 @@ jobs:
     steps:
       - name: Install sshpass
         run: sudo apt-get update && sudo apt-get install -y sshpass
-
+      - name: Install Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
       - name: Deploy using password auth
         env:
           SSH_PASSWORD: ${{ secrets.password }}
         run: |
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no octodock@34.131.170.248 << 'EOF'
+          sshpass -p "$SSH_PASSWORD" ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no octodock@34.131.170.248 << 'EOF'
             set -e  # stop on error
-            pwd
+            pwd 
             cd ~/octodock
             pwd
             git pull origin main
+            npm --version
+            npm i -g bun
+            bun --version
             bun i
             pm2 list
             pm2 restart 0

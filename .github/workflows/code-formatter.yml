@@ -1,13 +1,13 @@
-name: Code Formating
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
-jobs:
-  Install-Dependency:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Event Logging
-        run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - name: Global bun Installation
-        run: npm i -g bun
-      - name: Format Code Files
-        run: bun run format
+# name: Code Formating
+# run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+# on: [push]
+# jobs:
+#   Install-Dependency:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Event Logging
+#         run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+#       - name: Global bun Installation
+#         run: npm i -g bun
+#       - name: Format Code Files
+#         run: cd ~/octodock && bun run format

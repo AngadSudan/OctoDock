@@ -39,7 +39,8 @@
     "tailwindcss": "^4.1.11",
     "three": "^0.178.0",
     "unicornstudio-react": "^1.4.29-1",
-    "vite-plugin-pwa": "^1.0.1"
+    "vite-plugin-pwa": "^1.0.1",
+    "octolog":"workspace:*"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
