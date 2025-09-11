@@ -6,7 +6,6 @@ import express, {
 import dotenv from "dotenv";
 dotenv.config({ path: "../.env" });
 import cors from "cors";
-import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
@@ -15,22 +14,21 @@ import createApolloServer from "./graphql/index";
 import "dotenv/config";
 import passport from "passport";
 import "./utils/passport";
-import bodyParser from "body-parser";
-import session from "express-session";
-import { createProxyMiddleware } from "http-proxy-middleware";
 import type { Express } from "express";
 import proxy from "express-http-proxy";
 import url from "url";
 import projectControllers from "./controller/project.controllers";
 import githubController from "./controller/github.controllers";
 import prisma from "./utils/prisma";
+import logger from "./utils/Logger";
+import morgan from "morgan";
 const app: Express = express();
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
   limit: 200,
   message: "Too many requests from this IP, please try again after 10 minutes",
 });
-
+app.use(morgan("dev") as any);
 //websecurity
 app.use(helmet());
 app.use("/api", limiter);
@@ -45,7 +43,7 @@ app.use(
       secure: false, // true if using HTTPS
       sameSite: "lax", // "none" if cross-origin over HTTPS
     },
-  }),
+  })
 );
 app.use(passport.initialize() as any);
 app.use(passport.session());
@@ -71,12 +69,24 @@ app.use(
       "Origin",
       "Accept",
     ],
-  }),
+  })
 );
 const apiProxy = proxy("http://localhost:4000", {
   proxyReqPathResolver: (req) => url.parse(req.baseUrl).path,
 });
-app.use("/graphql", apiProxy);
+app.use(
+  "/graphql",
+  (req, res, next) => {
+    const isAuthenticated = req.isAuthenticated();
+    if (isAuthenticated) {
+      console.log("from /graphql", req.user);
+      // @ts-ignore
+      req.headers["x-user-id"] = (req.user.username || "guest") as any;
+    }
+    next();
+  },
+  apiProxy
+);
 
 //error handling
 
@@ -107,7 +117,7 @@ app.get("/health", async (req, res) => {
 // OAuth Routes
 app.get(
   "/auth/github",
-  passport.authenticate("github", { scope: ["user", "repo"] }),
+  passport.authenticate("github", { scope: ["user", "repo"] })
 );
 app.get("/is-authenticated", (req, res) => {
   const isAuthenticated = req.isAuthenticated();
@@ -128,7 +138,7 @@ app.get(
   }),
   function (req, res) {
     res.redirect("/");
-  },
+  }
 );
 
 // SSE ROUTING
@@ -146,7 +156,7 @@ app.post("/push/:id", async (req, res) => {
 
   if (!dbUser) throw new Error("not a registered user");
   const response = await new githubController(
-    dbUser.githubToken,
+    dbUser.githubToken
   ).commitCodeToGithub(projectId, foldername);
 
   return res.status(200).json({ message: "ok" });
@@ -155,12 +165,19 @@ const errorHandler = (
   error: any,
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
-  console.error("Error:", error.message);
-  console.error("Stack:", error.stack);
+  logger.logData({
+    error: error,
+    message: "Error: " + error.message,
+    loggingLevel: "error",
+  });
+  logger.logData({
+    error: error,
+    message: "Stack: " + error.message,
+    loggingLevel: "error",
+  });
 
-  // Handle specific error types
   if (error.name === "ValidationError") {
     return res.status(400).json({
       status: "error",
@@ -173,6 +190,7 @@ const errorHandler = (
     return res.status(400).json({
       status: "error",
       message: "Invalid ID format",
+      user: "SYSTEM",
     });
   }
 
@@ -180,6 +198,7 @@ const errorHandler = (
     return res.status(409).json({
       status: "error",
       message: "Duplicate key error",
+      user: "SYSTEM",
     });
   }
 
@@ -201,19 +220,23 @@ app.use((req, res) => {
 createApolloServer()
   .then(() => {
     const server = app.listen(process.env.PORT || 8000, () => {
-      console.log(`🚀 Server ready at http://localhost:8000/`);
+      logger.logData({
+        message: "application started on port 8000",
+        loggingLevel: "info",
+        error: null,
+      });
+      console.log("application started on port 8000");
     });
 
     server.setTimeout(0);
   })
   .catch((error: any) => {
-    console.log(error);
+    logger.logData({
+      message: error.message,
+      loggingLevel: "error",
+      error: "ERROR",
+    });
     process.exit();
   });
 
-// app.listen(process.env.PORT || 8000, () => {
-//   console.log(
-//     `Server is running on port ${8000} and the enviornment is ${process.env.NODE_ENV} mode`
-//   );
-// });
 export { app as default };

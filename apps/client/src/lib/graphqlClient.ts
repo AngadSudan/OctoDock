@@ -12,6 +12,7 @@ await persistCache({
 const client = new ApolloClient({
   uri: configuration.backend_url + "/graphql",
   cache,
+  credentials: "include",
 });
 
 export default client;

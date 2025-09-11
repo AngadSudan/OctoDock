@@ -1,6 +1,7 @@
 import prisma from "../utils/prisma";
 import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
+import logger from "../utils/Logger";
 class userController {
   // create a user
   async registerUser(
@@ -8,7 +9,7 @@ class userController {
     username: string,
     githubUsername: string,
     email: string,
-    password: string,
+    password: string
   ) {
     try {
       const dbUser = await prisma.user.findFirst({
@@ -50,7 +51,11 @@ class userController {
       if (!createdUser) throw new Error("no user created");
       return createdUser;
     } catch (error) {
-      console.log(error);
+      logger.logData({
+        message: "Error: " + error.message,
+        loggingLevel: "error",
+        error: error,
+      });
     }
   }
   async generateToken(id: string): Promise<any> {
@@ -116,7 +121,11 @@ class userController {
         accessToken: generatedAccessToken,
       };
     } catch (error) {
-      console.log(error);
+      logger.logData({
+        message: "Error: " + error.message,
+        loggingLevel: "error",
+        error: error,
+      });
     }
   }
 
@@ -124,9 +133,8 @@ class userController {
     username: string,
     email: string,
     accessToken: string,
-    name: string,
+    name: string
   ) {
-    console.log(username, email, accessToken, name);
     try {
       const createdUser = await prisma.user.create({
         data: {
@@ -142,7 +150,11 @@ class userController {
 
       return createdUser;
     } catch (error) {
-      console.log(error);
+      logger.logData({
+        message: "Error: " + error.message,
+        loggingLevel: "error",
+        error: error,
+      });
     }
   }
 

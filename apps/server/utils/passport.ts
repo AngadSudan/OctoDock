@@ -4,6 +4,7 @@ import prisma from "./prisma";
 import githubControllers from "../controller/github.controllers";
 import { isNamedType } from "graphql";
 import userControllers from "../controller/user.controllers";
+import logger from "./Logger";
 passport.serializeUser(function (user, done) {
   done(null, user);
 });
@@ -28,13 +29,9 @@ passport.use(
       accessToken: string,
       refreshToken: string,
       profile: any,
-      done: any,
+      done: any
     ) {
       //TODO: just complete the user authentication with the controller
-
-      // console.log(JSON.stringify(profile, null, 2));
-      console.log(profile);
-      console.log(profile.username);
       const username = profile.username || profile._json.login;
       const email = profile.emails?.[0]?.value;
       let name = profile._json.name;
@@ -44,10 +41,13 @@ passport.use(
           email,
         },
       });
-      console.log("db user is ", dbUser);
+
       if (dbUser) {
         const userLogin = await userControllers.OAuthLogin(email, accessToken);
         if (userLogin) {
+          logger.logData({
+            message: "",
+          });
           console.log("user loggedin ");
         }
       } else {
@@ -59,6 +59,6 @@ passport.use(
       }
 
       return done(null, profile);
-    },
-  ),
+    }
+  )
 );

@@ -1,3 +1,4 @@
+import logger from "../utils/Logger";
 import prisma from "../utils/prisma";
 import { Octokit } from "octokit";
 class githubController {
@@ -12,26 +13,27 @@ class githubController {
 
   async createRepository(name: string, description: string): Promise<any> {
     try {
-      console.log(name);
-      console.log(description);
-      console.log(this.token);
       const newRepo = await this.octokit.rest.repos.createForAuthenticatedUser({
         name,
         auto_init: true,
-        // headers: {
-        //   authorization: `Authorization: Bearer ${this.token}`,
-        // },
       });
-      console.log(JSON.stringify(newRepo));
       const repoInformation = {
         url: newRepo.data.url,
         name: newRepo.data.name,
         userInfo: newRepo.data.owner,
       };
-      // console.log(repoInformation)
+      logger.logData({
+        message:
+          "Repository Created with the following information" +
+          JSON.stringify(repoInformation),
+      });
       return repoInformation;
     } catch (error: any) {
-      console.log(JSON.stringify(error, null, 2));
+      logger.logData({
+        message: "Error: " + error.message,
+        loggingLevel: "error",
+        error: error,
+      });
       return null;
     }
   }
@@ -48,7 +50,11 @@ class githubController {
 
       return "OK";
     } catch (error) {
-      console.error("Error archiving repo:", error);
+      logger.logData({
+        message: "Error in archiving repo: " + error.message,
+        loggingLevel: "error",
+        error: error,
+      });
       return null;
     }
   }
@@ -57,7 +63,7 @@ class githubController {
     owner: string,
     url: string,
     name: string,
-    description,
+    description
   ) {
     try {
       const projectData = await this.octokit.rest.repos.update({
@@ -69,7 +75,11 @@ class githubController {
       if (!projectData) throw new Error("project couldn't be initialized");
       return "OK";
     } catch (error) {
-      console.log(error);
+      logger.logData({
+        message: "Error: " + error.message,
+        loggingLevel: "error",
+        error: error,
+      });
       return null;
     }
   }
@@ -82,31 +92,29 @@ class githubController {
       });
 
       if (!dbProject) {
-        console.log("project is not listed!");
         return null;
       }
 
       let projectURL = dbProject.githubUrl;
-      console.log(projectURL);
       projectURL = projectURL.replace("https://api.github.com/repos/", "");
       projectURL = projectURL.replace(".git", "");
       const repoData = projectURL.split("/");
-      console.log(repoData);
       const userName = repoData[0];
       const repoName = repoData[1];
-      console.log(repoName);
       const createdCommit = await this.createCommit(userName, repoName, folder);
 
       if (!createdCommit) throw new Error("commit couln't be updated");
       return "OK";
     } catch (error: any) {
-      console.log(error);
+      logger.logData({
+        message: "Error: " + error.message,
+        loggingLevel: "error",
+        error: error,
+      });
     }
   }
 
   async createBlobs(owner: string, repo: string, folder: any[]): Promise<any> {
-    console.log(folder);
-    console.log("repository is ", repo);
     const blobPromises = Object.keys(folder).map(async (file) => {
       const createdBlob = await this.octokit.rest.git.createBlob({
         owner,
@@ -114,7 +122,11 @@ class githubController {
         content: folder[file],
         encoding: "utf-8",
       });
-      console.log("Blob created for:", file, "with SHA:", createdBlob.data.sha);
+      logger.logData({
+        message:
+          "Blob created for:" + file + "with SHA:" + createdBlob.data.sha,
+      });
+
       return {
         path: file,
         mode: "100644",
@@ -129,7 +141,7 @@ class githubController {
   async createTree(
     owner: string,
     repo: string,
-    treeEntries: any[],
+    treeEntries: any[]
   ): Promise<any> {
     const response = await this.octokit.rest.git.createTree({
       owner: owner,
@@ -140,10 +152,8 @@ class githubController {
   }
   async createCommit(owner: string, repo: string, folder: any[]) {
     const blobEntries = await this.createBlobs(owner, repo, folder);
-    console.log("All blobs created successfully");
 
     const treeSha = await this.createTree(owner, repo, blobEntries);
-    console.log("Tree created successfully with sha:", treeSha);
 
     const { data: refData } = await this.octokit.rest.git.getRef({
       owner: owner,
@@ -151,7 +161,9 @@ class githubController {
       ref: "heads/main",
     });
     const latestCommitSha = refData.object.sha;
-    console.log("✅ Latest commit on main:", latestCommitSha);
+    logger.logData({
+      message: "✅ Latest commit on main:" + latestCommitSha,
+    });
 
     const { data: newCommit } = await this.octokit.rest.git.createCommit({
       owner: owner,

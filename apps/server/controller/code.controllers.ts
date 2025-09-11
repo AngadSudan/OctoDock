@@ -36,7 +36,7 @@ class codeAIController {
         const file = await ollama.generateFileBasedOnFeatures(
           srs,
           feature,
-          gitSummary,
+          gitSummary
         );
         generatedFiles.push({ feature, file });
       }
@@ -55,7 +55,7 @@ class codeAIController {
     codefile: string,
     gitSummary: string,
     currentCodeFiles: string,
-    sdd: string,
+    sdd: string
   ) {
     try {
       if (!srs || !codefile) throw new Error("Missing SRS or file content");
@@ -65,9 +65,8 @@ class codeAIController {
         codefile,
         gitSummary,
         currentCodeFiles,
-        sdd,
+        sdd
       );
-      console.log();
 
       return JSON.parse(response).code;
     } catch (error: any) {
@@ -83,7 +82,7 @@ class codeAIController {
       const response = await ollama.generateCorrectnessInFileOnBuggyFeature(
         srs,
         buggyCode,
-        gitSummary,
+        gitSummary
       );
 
       return response;
