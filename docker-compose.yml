@@ -1,16 +1,17 @@
 version: "3.8"
 
 services:
-  ollama:
-    image: ollama/ollama
-    container_name: ollama
+  octodock-backend:
+    image: angadsudan/octodock-backend
+    container_name: backend
     ports:
-      - "11434:11434"
-    volumes:
-      - ./ollama.sh:/app/startup.sh
-      - ollama_data:/root/.ollama
-    working_dir: /app
-    entrypoint: sh /app/startup.sh
-
-volumes:
-  ollama_data:
+      - 8000:8000
+    env_file:
+      - ./apps/server/.env
+  octodock-frontend:
+    image: angadsudan/octodock-frontend
+    container_name: frontend
+    ports:
+      - 5173:5173
+    env_file:
+      - ./apps/client/.env

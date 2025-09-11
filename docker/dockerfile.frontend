@@ -1,11 +1,16 @@
-FROM node-18:alpine 
+# Use Bun image
+FROM oven/bun:1
 
 WORKDIR /app
 
-COPY /apps/client/package*.json ./
-RUN npm install 
+COPY bun.lock package.json ./
 
-COPY /apps/client/ . 
+
+COPY . .
+RUN bun install 
 
 EXPOSE 5173
-CMD ["npm","run","dev:docker"]
+
+WORKDIR /app/apps/client
+
+CMD ["bun", "run", "dev:docker"]
