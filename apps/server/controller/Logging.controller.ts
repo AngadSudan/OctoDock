@@ -117,7 +117,7 @@ class LoggingController {
     /**
      * SSE Endpoint for serving real time data from the application logs
      */
-    const pageNumber: number = Number.parseInt(req.params.page) || 0;
+    const pageNumber: number = Number.parseInt(req.query.page);
     res.writeHead(200, {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",

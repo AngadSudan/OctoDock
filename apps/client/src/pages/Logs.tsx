@@ -26,7 +26,7 @@ function Logs() {
   const [showFilters, setShowFilters] = useState(false);
   const [maximumPageNumer, setMaxPageNumer] = useState(0);
   const [itemsPerPage] = useState(20);
-
+  const [currentLogs, setCurrentLogs] = useState([]);
   useEffect(() => {
     const eventSource = new EventSource(
       API_ENDPOINT + "?page=" + encodeURIComponent(currentPage)
@@ -37,8 +37,10 @@ function Logs() {
       if (data.next) {
         setMaxPageNumer(Number.parseInt(data.next) || 0);
       }
+      console.log(data);
       const logFiles = data.logs;
       setLogs([...logFiles]);
+      console.log("all logs completely set");
     };
 
     eventSource.onerror = (error) => {
@@ -47,13 +49,10 @@ function Logs() {
     };
 
     return () => eventSource.close();
-  }, []);
-
-  // Filter and sort logs
+  }, [currentPage]);
   useEffect(() => {
     let filtered = [...logs];
 
-    // Apply search filter
     if (searchTerm) {
       filtered = filtered.filter(
         (log) =>
@@ -64,12 +63,10 @@ function Logs() {
       );
     }
 
-    // Apply level filter
     if (selectedLevel !== "all") {
       filtered = filtered.filter((log) => log.level === selectedLevel);
     }
 
-    // Apply sorting
     filtered.sort((a, b) => {
       let aValue, bValue;
 
@@ -92,24 +89,25 @@ function Logs() {
     });
 
     setFilteredLogs(filtered);
-    setCurrentPage(0); // Reset to first page when filters change
   }, [logs, searchTerm, selectedLevel, sortBy, sortOrder]);
 
-  // Get unique log levels for filter dropdown
   const logLevels = [...new Set(logs.map((log) => log.level))];
 
-  // Pagination
-  const totalPages = Math.ceil(filteredLogs.length / itemsPerPage);
+  const totalPages = Math.ceil(logs.length / itemsPerPage);
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentLogs = filteredLogs.slice(startIndex, endIndex);
+  useEffect(() => {
+    const logMap = filteredLogs.slice(startIndex, endIndex);
+    setCurrentLogs(logMap);
+  }, [filteredLogs]);
 
   const goToPrevPage = () => {
     setCurrentPage((prev) => Math.max(0, prev - 1));
   };
 
   const goToNextPage = () => {
-    setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1));
+    console.log("prev content page is ", currentPage);
+    setCurrentPage((prev) => Math.min(maximumPageNumer, prev + 1));
   };
 
   const getLevelIcon = (level) => {
@@ -154,12 +152,10 @@ function Logs() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-950 relative">
-      {/* Main Content */}
       <div
         className={`transition-all duration-300 ${selectedLog ? "mr-96" : ""} p-6`}
       >
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-3 h-3 rounded-full bg-red-400 animate-pulse"></div>
@@ -170,7 +166,6 @@ function Logs() {
             <div className="h-[2px] w-32 bg-gradient-to-r from-red-400 via-red-400/60 to-transparent"></div>
           </div>
 
-          {/* Controls Panel */}
           <div
             className="mb-6 p-6 rounded-2xl backdrop-blur-xl border border-red-400/20"
             style={{
@@ -181,7 +176,6 @@ function Logs() {
             }}
           >
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-end">
-              {/* Search */}
               <div className="lg:col-span-2">
                 <label className="block text-red-400/80 font-mono text-sm mb-2 tracking-wider">
                   [SEARCH.QUERY]
@@ -197,8 +191,6 @@ function Logs() {
                   />
                 </div>
               </div>
-
-              {/* Level Filter */}
               <div>
                 <label className="block text-red-400/80 font-mono text-sm mb-2 tracking-wider">
                   [LOG.LEVEL]
@@ -217,7 +209,6 @@ function Logs() {
                 </select>
               </div>
 
-              {/* Sort Controls */}
               <div>
                 <label className="block text-red-400/80 font-mono text-sm mb-2 tracking-wider">
                   [SORT.BY]
@@ -244,7 +235,6 @@ function Logs() {
               </div>
             </div>
 
-            {/* Stats */}
             <div className="flex justify-between">
               <div className="mt-4 pt-4 border-t w-fit  border-red-400/10 flex flex-wrap gap-6 text-sm font-mono">
                 <div className="text-red-400/70">
@@ -257,7 +247,7 @@ function Logs() {
                 <div className="text-red-400/70">
                   PAGE:{" "}
                   <span className="text-white">
-                    {currentPage + 1}/{maximumPageNumer}
+                    {currentPage + 1}/{maximumPageNumer + 1}
                   </span>
                 </div>
               </div>
@@ -272,7 +262,7 @@ function Logs() {
                   PREV
                 </button>
                 <button
-                  onClick={() => setCurrentPage(currentPage + 1)}
+                  onClick={goToNextPage}
                   disabled={currentPage === maximumPageNumer}
                   className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-400/20 border border-red-400/30 text-red-400 hover:bg-red-400/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-mono text-xs"
                 >
@@ -283,17 +273,16 @@ function Logs() {
             </div>
           </div>
 
-          {/* Logs Display */}
           <div
             className="space-y-3 p-4 overflow-y-auto max-h-[45svh] overflow-x-hidden"
             style={{
-              scrollbarWidth: "none", // Hide the scrollbar for firefox
+              scrollbarWidth: "none",
               // @ts-ignore
               "&::-webkit-scrollbar": {
-                display: "none", // Hide the scrollbar for WebKit browsers (Chrome, Safari, Edge, etc.)
+                display: "none",
               },
               "&-ms-overflow-style:": {
-                display: "none", // Hide the scrollbar for IE
+                display: "none",
               },
             }}
           >
@@ -307,26 +296,34 @@ function Logs() {
               >
                 <AlertCircle className="w-12 h-12 text-red-400/60 mx-auto mb-4" />
                 <p className="text-red-400/80 font-mono">NO LOGS FOUND</p>
+                <pre className="text-white">{JSON.stringify(currentLogs)}</pre>
                 <p className="text-gray-500 font-mono text-sm mt-2">
                   Try adjusting your filters
                 </p>
               </div>
             ) : (
-              currentLogs.map((log, index) => (
-                <ParseMessageContent
-                  key={log.id || startIndex + index}
-                  message={log}
-                  index={currentPage * itemsPerPage + index}
-                  isSelected={selectedLog?.index === startIndex + index}
-                  onSelect={() => handleLogSelect(log, startIndex + index)}
-                  getLevelIcon={getLevelIcon}
-                  getLevelColor={getLevelColor}
-                />
-              ))
+              currentLogs.map((log, index) => {
+                console.log(
+                  "current page number",
+                  currentPage,
+                  " log level is ",
+                  log
+                );
+                return (
+                  <ParseMessageContent
+                    key={log.id || startIndex + index}
+                    message={log}
+                    index={currentPage * itemsPerPage + index}
+                    isSelected={selectedLog?.index === startIndex + index}
+                    onSelect={() => handleLogSelect(log, startIndex + index)}
+                    getLevelIcon={getLevelIcon}
+                    getLevelColor={getLevelColor}
+                  />
+                );
+              })
             )}
           </div>
 
-          {/* Pagination */}
           {totalPages > 1 && (
             <div
               className="mt-6 p-4 rounded-2xl backdrop-blur-xl border border-red-400/20 flex items-center justify-between"
@@ -370,11 +367,9 @@ function Logs() {
         </div>
       </div>
 
-      {/* Sidebar for Selected Log */}
       {selectedLog && (
         <div className="fixed top-0 right-0 h-full w-1/2 bg-gradient-to-b from-gray-950 via-black to-gray-950 border-l border-red-400/20 transform transition-transform duration-300 ease-in-out z-50">
           <div className="h-full flex flex-col">
-            {/* Sidebar Header */}
             <div className="p-6 border-b border-red-400/20">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-mono font-bold text-red-400 tracking-wider">
@@ -387,8 +382,6 @@ function Logs() {
                   <X className="w-4 h-4" />
                 </button>
               </div>
-
-              {/* Log Level Badge */}
               <div
                 className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg border font-mono text-xs font-bold tracking-wider ${getLevelColor(selectedLog.level)}`}
               >
@@ -397,32 +390,30 @@ function Logs() {
               </div>
             </div>
 
-            {/* Sidebar Content */}
             <div
               className="flex-1 p-6 overflow-y-auto"
               style={{
-                scrollbarWidth: "none", // Hide the scrollbar for firefox
+                scrollbarWidth: "none",
                 // @ts-ignore
                 "&::-webkit-scrollbar": {
-                  display: "none", // Hide the scrollbar for WebKit browsers (Chrome, Safari, Edge, etc.)
+                  display: "none",
                 },
                 "&-ms-overflow-style:": {
-                  display: "none", // Hide the scrollbar for IE
+                  display: "none",
                 },
               }}
             >
-              {/* Timestamp */}
               <div className="mb-6">
                 <label className="block text-red-400/80 font-mono text-sm mb-2 tracking-wider">
                   [TIMESTAMP]
                 </label>
+                l̥
                 <div className="flex items-center gap-2 text-gray-300 font-mono text-sm bg-black/50 p-3 rounded-xl border border-red-400/20">
                   <Clock className="w-4 h-4 text-red-400/60" />
                   {new Date(selectedLog.timestamp).toLocaleString()}
                 </div>
               </div>
 
-              {/* Log Index */}
               <div className="mb-6">
                 <label className="block text-red-400/80 font-mono text-sm mb-2 tracking-wider">
                   [INDEX]
@@ -432,7 +423,6 @@ function Logs() {
                 </div>
               </div>
 
-              {/* Message Content */}
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
                   <label className="block text-red-400/80 font-mono text-sm tracking-wider">
@@ -453,13 +443,13 @@ function Logs() {
                 <div
                   className="bg-black/50 p-4 rounded-xl border border-red-400/20 max-h-96 overflow-y-auto"
                   style={{
-                    scrollbarWidth: "none", // Hide the scrollbar for firefox
+                    scrollbarWidth: "none",
                     // @ts-ignore
                     "&::-webkit-scrollbar": {
-                      display: "none", // Hide the scrollbar for WebKit browsers (Chrome, Safari, Edge, etc.)
+                      display: "none",
                     },
                     "&-ms-overflow-style:": {
-                      display: "none", // Hide the scrollbar for IE
+                      display: "none",
                     },
                   }}
                 >
@@ -474,8 +464,6 @@ function Logs() {
           </div>
         </div>
       )}
-
-      {/* Overlay for mobile */}
       {selectedLog && (
         <div
           className="fixed inset-0 bg-black/20 z-40 md:hidden"
@@ -531,15 +519,12 @@ function ParseMessageContent({
       onClick={onSelect}
     >
       <div className="flex items-center gap-4">
-        {/* Log Level Badge */}
         <div
           className={`flex items-center gap-2 px-3 py-1 rounded-lg border font-mono text-xs font-bold tracking-wider ${getLevelColor(message.level)}`}
         >
           {getLevelIcon(message.level)}
           {message.level.toUpperCase()}
         </div>
-
-        {/* Brief Log Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 text-red-400/60 font-mono text-xs mb-2">
             <Clock className="w-3 h-3" />
@@ -559,7 +544,6 @@ function ParseMessageContent({
           </div>
         </div>
 
-        {/* Click indicator */}
         <div
           className={`transition-colors duration-300 ${
             isSelected
