@@ -1,0 +1,17 @@
+{
+  "name": "@octodock/queue",
+  "version": "1.0.0",
+  "author": "",
+  "main": "index.js",
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  },
+  "description": "",
+  "license": "ISC",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "kafkajs": "^2.2.4"
+  }
+}

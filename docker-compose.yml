@@ -1,17 +1,17 @@
 version: "3.8"
-
 services:
-  octodock-backend:
-    image: angadsudan/octodock-backend
-    container_name: backend
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
     ports:
-      - 8000:8000
-    env_file:
-      - ./apps/server/.env
-  octodock-frontend:
-    image: angadsudan/octodock-frontend
-    container_name: frontend
-    ports:
-      - 5173:5173
-    env_file:
-      - ./apps/client/.env
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
