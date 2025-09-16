@@ -1,14 +1,12 @@
 import { createClient } from "@clickhouse/client";
 
-void (async () => {
+const getClickHouseClient = async () => {
   const client = createClient({
-    url: "https://j4bg0gi4tv.asia-southeast1.gcp.clickhouse.cloud:8443",
-    username: "default",
-    password: "gc5b~xfykPS2C",
+    url: process.env.CLICKHOUSE_URL,
+    username: process.env.CLICKHOUSE_USERNAME,
+    password: process.env.CLICKHOUSE_PASSWORD,
   });
-  const rows = await client.query({
-    query: "SELECT 1",
-    format: "JSONEachRow",
-  });
-  console.log("Result: ", await rows.json());
-})();
+  return client;
+};
+
+export default getClickHouseClient;

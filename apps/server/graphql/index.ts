@@ -45,6 +45,8 @@ const createApolloServer = async () => {
     typeDefs,
     resolvers: graphqlResolver,
   });
+
+  // @ts-ignore
   const { url } = await startStandaloneServer(server, {
     context: async ({ req }) => ({ token: req.headers.token }),
     listen: { port: 4000 },

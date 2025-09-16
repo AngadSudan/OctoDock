@@ -73,15 +73,26 @@ app.use(
 );
 const apiProxy = proxy("http://localhost:4000", {
   proxyReqPathResolver: (req) => url.parse(req.url).path,
-  proxyReqOptDecorator: (opts, srcReq) => {
-    opts.headers["x-forwarded-host"] = "localhost:8000";
-    return opts;
-  },
-  userResDecorator: (proxyRes, proxyResData) => {
-    console.log("→ Response from 4000:", proxyRes.statusCode);
-    return proxyResData;
+  selfHandleResponse: true,
+  onProxyRes: async (proxyRes, req, res) => {
+    let body = Buffer.from([]);
+    proxyRes.on("data", (chunk) => {
+      body = Buffer.concat([body, chunk]);
+    });
+    proxyRes.on("end", () => {
+      // Override CORS headers
+      res.setHeader(
+        "Access-Control-Allow-Origin",
+        req.headers.origin || "http://localhost:5173"
+      );
+      res.setHeader("Access-Control-Allow-Credentials", "true");
+
+      // Send response body
+      res.status(proxyRes.statusCode).send(body.toString("utf8"));
+    });
   },
 });
+
 app.use("/graphql", apiProxy);
 
 //error handling

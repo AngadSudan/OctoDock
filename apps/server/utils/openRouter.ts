@@ -49,7 +49,7 @@ class OpenRouterManager {
   getAvailableKey() {
     const now = Date.now();
 
-    // Reset keys that expired
+    // Reset keys whose cooldown has expired
     this.keyStatuses.forEach((status, key) => {
       if (status.isRateLimited && status.rateLimitExpiry! <= now) {
         this.resetKeyStatus(key);
@@ -69,6 +69,7 @@ class OpenRouterManager {
 
     return null;
   }
+
   async fetchWithKey(url: string, options: RequestInit = {}) {
     for (let attempt = 0; attempt < this.apiKeys.length; attempt++) {
       const key = this.getAvailableKey();
@@ -91,17 +92,19 @@ class OpenRouterManager {
             60000;
 
           this.markKeyAsRateLimited(key, retryAfter);
-          continue; // Try next key
+          continue; // try next key
         }
 
-        return response;
-      } catch (err) {
-        console.log({
-          message: `Request failed with key ${key}: ` + err.message,
-          error: err,
-          loggingLevel: "error",
-        });
         this.rotateToNextKey();
+
+        return response;
+      } catch (err: any) {
+        logger.logData({
+          message: `api key limit reached`,
+          loggingLevel: "error",
+          error: err,
+        });
+        this.rotateToNextKey(); // also rotate on failure
       }
     }
 

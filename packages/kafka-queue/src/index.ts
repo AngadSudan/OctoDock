@@ -89,33 +89,32 @@ class kafkaClient {
     const consumer = this.kafkaUser[consumerName]?.kafkaConsumer;
     if (!consumer) throw new Error(`Consumer ${consumerName} not found`);
 
-    if (this.kafkaUser[consumerName].isRunning) {
-      return;
-    }
-    this.kafkaUser[consumerName].isRunning = true;
+    if (!this.kafkaUser[consumerName].isRunning) {
+      this.kafkaUser[consumerName].isRunning = true;
 
-    await consumer.connect();
-    await consumer.subscribe({ topic, fromBeginning: true });
+      await consumer.connect();
+      await consumer.subscribe({ topic, fromBeginning: true });
 
-    consumer.run({
-      eachMessage: async ({ topic, partition, message }) => {
-        const value = message.value?.toString();
-        if (!value) return;
+      await consumer.run({
+        eachMessage: async ({ topic, partition, message }) => {
+          const value = message.value?.toString();
+          if (!value) return;
 
-        let data;
-        try {
-          data = JSON.parse(value); // first parse
-          if (typeof data === "string") {
-            data = JSON.parse(data); // second parse if needed
+          let data;
+          try {
+            data = JSON.parse(value);
+            if (typeof data === "string") {
+              data = JSON.parse(data);
+            }
+          } catch (err) {
+            console.error("❌ Failed to parse message", err, value);
+            return;
           }
-        } catch (err) {
-          console.error("❌ Failed to parse message", err, value);
-          return;
-        }
 
-        await fn(data);
-      },
-    });
+          await fn(data);
+        },
+      });
+    }
   }
 
   /**

@@ -3,6 +3,7 @@ import { spawn, exec } from "child_process";
 import process from "process";
 import cors from "cors";
 import registerKafkaClient from "@octodock/queue";
+import getClickHouseClient from "./client";
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -10,6 +11,7 @@ app.use(express.json());
 const client = registerKafkaClient("push-to-deployment-queue", [
   "localhost:9092",
 ]);
+const clickhouseClient = getClickHouseClient();
 client.createTopic([
   {
     topic: "pending-docker-build",
