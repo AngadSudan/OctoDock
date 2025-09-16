@@ -108,7 +108,8 @@ class ProjectController {
       });
 
       if (!userProjects) return { message: "no projects found", data: [] };
-
+      console.log("User projects are ");
+      console.log(userProjects);
       return userProjects;
     } catch (error: any) {
       console.log(error);

@@ -1,5 +1,5 @@
 {
-  "name": "octolog",
+  "name": "@octodock/octolog",
   "version": "1.0.0",
   "description": "A logger designed to push the logs of Octodock to Grafana Loki",
   "main": "./dist/index.js",

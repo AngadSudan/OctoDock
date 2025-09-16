@@ -1,20 +1,19 @@
 {
-  "name": "@octodock/queue",
+  "name": "@octodock/build-server",
   "version": "1.0.0",
   "author": "",
   "main": "index.js",
   "devDependencies": {
     "typescript": "^5.9.2"
   },
-  "exports": {
-    ".": "./dist/index.js"
-  },
   "description": "",
   "license": "ISC",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "bun index.ts"
   },
   "dependencies": {
-    "kafkajs": "^2.2.4"
+    "kafkajs": "^2.2.4",
+    "@octodock/queue": "*"
   }
 }

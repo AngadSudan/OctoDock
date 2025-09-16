@@ -81,7 +81,11 @@ class kafkaClient {
   /**
    * Consume messages via a registered consumer
    */
-  async consumeMessageViaConsumer(consumerName: string, topic: string) {
+  async consumeMessageViaConsumer(
+    consumerName: string,
+    topic: string,
+    fn: any
+  ) {
     const consumer = this.kafkaUser[consumerName]?.kafkaConsumer;
     if (!consumer) throw new Error(`Consumer ${consumerName} not found`);
 
@@ -93,11 +97,23 @@ class kafkaClient {
     await consumer.connect();
     await consumer.subscribe({ topic, fromBeginning: true });
 
-    await consumer.run({
+    consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
-        console.log("New Message Received and Logged");
-        const value = message.value ? message.value.toString() : null;
-        console.log(value);
+        const value = message.value?.toString();
+        if (!value) return;
+
+        let data;
+        try {
+          data = JSON.parse(value); // first parse
+          if (typeof data === "string") {
+            data = JSON.parse(data); // second parse if needed
+          }
+        } catch (err) {
+          console.error("❌ Failed to parse message", err, value);
+          return;
+        }
+
+        await fn(data);
       },
     });
   }

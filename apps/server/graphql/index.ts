@@ -4,8 +4,6 @@ import gql from "graphql-tag";
 import User from "./user";
 import { Project } from "./project";
 import { Prompt } from "./prompt";
-import { runWithContext } from "octolog";
-import crypto from "crypto";
 
 const createApolloServer = async () => {
   // add prompt things later
@@ -40,8 +38,7 @@ const createApolloServer = async () => {
     },
   };
   interface MyContext {
-    user?: { username: string };
-    requestId: string;
+    token?: String;
   }
 
   const server = new ApolloServer<MyContext>({
@@ -49,14 +46,7 @@ const createApolloServer = async () => {
     resolvers: graphqlResolver,
   });
   const { url } = await startStandaloneServer(server, {
-    context: async ({ req }: { req: any }) => {
-      console.log(req.user);
-      const username = req.headers["x-user-id"];
-      const requestId = crypto.randomUUID();
-      return runWithContext({ user: username, requestId }, async () => {
-        return { user: username, requestId };
-      });
-    },
+    context: async ({ req }) => ({ token: req.headers.token }),
     listen: { port: 4000 },
   });
   console.log(`🚀  Server ready at ${url}`);

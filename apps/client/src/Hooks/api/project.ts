@@ -97,7 +97,7 @@ export const useGetAllProjectData = (userId) => {
     nextFetchPolicy: "cache-first",
     skip: !userId,
   });
-
+  console.log(data);
   return { data, loading, error };
 };
 

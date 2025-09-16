@@ -60,41 +60,36 @@ app.use(
       "http://localhost:4000",
     ],
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: [
       "Content-Type",
       "Authorization",
       "X-Requested-With",
       "device-remeber-token",
-      "Access-Control-Allow-Origin",
       "Origin",
       "Accept",
     ],
   })
 );
 const apiProxy = proxy("http://localhost:4000", {
-  proxyReqPathResolver: (req) => url.parse(req.baseUrl).path,
-});
-app.use(
-  "/graphql",
-  (req, res, next) => {
-    const isAuthenticated = req.isAuthenticated();
-    if (isAuthenticated) {
-      console.log("from /graphql", req.user);
-      // @ts-ignore
-      req.headers["x-user-id"] = (req.user.username || "guest") as any;
-    }
-    next();
+  proxyReqPathResolver: (req) => url.parse(req.url).path,
+  proxyReqOptDecorator: (opts, srcReq) => {
+    opts.headers["x-forwarded-host"] = "localhost:8000";
+    return opts;
   },
-  apiProxy
-);
+  userResDecorator: (proxyRes, proxyResData) => {
+    console.log("→ Response from 4000:", proxyRes.statusCode);
+    return proxyResData;
+  },
+});
+app.use("/graphql", apiProxy);
 
 //error handling
 
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
-    message: "Welcome to the Backend of the dr. web application API ",
+    message: "Welcome to the Backend of the Octodock application API ",
     version: "1.0.0",
     timestamp: new Date(),
     environment: process.env.NODE_ENV,

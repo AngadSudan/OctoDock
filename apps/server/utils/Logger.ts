@@ -1,4 +1,4 @@
-import createLogger from "octolog";
+import createLogger from "@octodock/octolog";
 
 const host = process.env.LOKI_HOST!;
 const username = process.env.LOKI_USER!;

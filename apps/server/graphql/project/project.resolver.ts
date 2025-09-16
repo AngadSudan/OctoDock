@@ -1,6 +1,7 @@
 import projectController from "../../controller/project.controllers";
 const queries = {
   getAllUserProject: async (_, { id }: { id: string }) => {
+    console.log("user id is ", id);
     return await projectController.getAllUserProject(id);
   },
   getProjectById: async (_, { id }: { id: string }) => {
