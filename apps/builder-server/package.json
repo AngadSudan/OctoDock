@@ -13,7 +13,8 @@
     "dev": "bun index.ts"
   },
   "dependencies": {
+    "@octodock/queue": "*",
     "kafkajs": "^2.2.4",
-    "@octodock/queue": "*"
+    "uuid": "^13.0.0"
   }
 }

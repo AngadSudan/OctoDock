@@ -3,7 +3,8 @@ import { spawn, exec } from "child_process";
 import process from "process";
 import cors from "cors";
 import registerKafkaClient from "@octodock/queue";
-import getClickHouseClient from "./client";
+import clickhouseClient from "./client";
+import { v4 as uuid } from "uuid";
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -11,7 +12,6 @@ app.use(express.json());
 const client = registerKafkaClient("push-to-deployment-queue", [
   "localhost:9092",
 ]);
-const clickhouseClient = getClickHouseClient();
 client.createTopic([
   {
     topic: "pending-docker-build",
@@ -37,12 +37,16 @@ app.post("/deploy", async (req, res) => {
   });
 });
 
-async function runDockerBuild(data: { GIT_URL: string; PROJECT_NAME: string }) {
+async function runDockerBuild(data: {
+  GIT_URL: string;
+  PROJECT_NAME: string;
+  projectId: string;
+}) {
   return new Promise((resolve, reject) => {
     if (!process.env.DOCKER_PASSWORD) {
       return reject(new Error("❌ DOCKER_PASSWORD env not found"));
     }
-
+    const projectId = data.projectId;
     const args = [
       "run",
       "--rm",
@@ -57,16 +61,36 @@ async function runDockerBuild(data: { GIT_URL: string; PROJECT_NAME: string }) {
       "angadsudan/build-project",
     ];
 
-    console.log("🚀 Running Docker with args:", args.join(" "));
-
+    clickhouseClient.insertIntoClickHouse([
+      {
+        id: uuid(),
+        log: "🚀 Running Docker with args:" + args.join(" "),
+        projetId: projectId,
+        createdAt: new Date().toISOString(),
+      },
+    ]);
     const generatedProcess = spawn("docker", args, { stdio: "pipe" });
 
     generatedProcess.stdout.on("data", (data) => {
-      process.stdout.write(`[docker-stdout] ${data}`);
+      clickhouseClient.insertIntoClickHouse([
+        {
+          id: uuid(),
+          log: `[docker-stdout] ${data}`,
+          projetId: projectId,
+          createdAt: new Date().toISOString(),
+        },
+      ]);
     });
 
     generatedProcess.stderr.on("data", (data) => {
-      process.stderr.write(`[docker-stderr] ${data}`);
+      clickhouseClient.insertIntoClickHouse([
+        {
+          id: uuid(),
+          log: `[docker-stderr] ${data}`,
+          projetId: projectId,
+          createdAt: new Date().toISOString(),
+        },
+      ]);
     });
 
     generatedProcess.on("error", (err) => {
@@ -75,7 +99,14 @@ async function runDockerBuild(data: { GIT_URL: string; PROJECT_NAME: string }) {
 
     generatedProcess.on("close", (code) => {
       if (code === 0) {
-        console.log("✅ Build container completed successfully");
+        clickhouseClient.insertIntoClickHouse([
+          {
+            id: uuid(),
+            log: "✅ Build container completed successfully",
+            projetId: projectId,
+            createdAt: new Date().toISOString(),
+          },
+        ]);
         /**
          * Put the entry into another queue which will be saving it to database
          */
