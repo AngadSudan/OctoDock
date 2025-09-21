@@ -85,8 +85,8 @@ model prompt {
 
 model deployment {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  dockerImage String
-  urlSlug     String
+  dockerImage String   @unique
+  urlSlug     String   @unique
   projectId   String
   userId      String
   project     project  @relation(fields: [projectId], references: [id])
