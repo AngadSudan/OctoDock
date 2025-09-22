@@ -5,8 +5,29 @@ import cors from "cors";
 import registerKafkaClient from "@octodock/queue";
 import clickhouseClient from "./client";
 import { v4 as uuid } from "uuid";
+import prisma from "@octodock/prisma";
+import generateSlug from "./slug";
 const app = express();
-app.use(cors());
+app.use(express.json());
+app.use(
+  cors({
+    origin: [
+      process.env.FRONTEND_URL || "http://localhost:5173",
+      "http://localhost:8000",
+      "http://localhost:3000",
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "device-remeber-token",
+      "Origin",
+      "Accept",
+    ],
+  })
+);
 app.use(express.json());
 
 const client = registerKafkaClient("push-to-deployment-queue", [
@@ -21,14 +42,20 @@ client.createNewProducer("deployment-producer");
 client.createNewConsumer("deployment-consumer", "initial");
 
 app.post("/deploy", async (req, res) => {
-  const { GIT_URL, PROJECT_NAME } = req.body;
+  const { projectId } = req.body;
+  const dbProject = await prisma.project.findUnique({
+    where: {
+      id: projectId,
+    },
+  });
   await client.pushMessageViaProducer(
     "deployment-producer",
     "pending-docker-build",
     [
       JSON.stringify({
-        GIT_URL,
-        PROJECT_NAME,
+        GIT_URL: dbProject?.githubUrl,
+        PROJECT_NAME: dbProject?.name.replaceAll(" ", "-").replaceAll(",", "-"),
+        projectId,
       }),
     ]
   );
@@ -42,11 +69,16 @@ async function runDockerBuild(data: {
   PROJECT_NAME: string;
   projectId: string;
 }) {
-  return new Promise((resolve, reject) => {
+  new Promise(async (resolve, reject) => {
     if (!process.env.DOCKER_PASSWORD) {
       return reject(new Error("❌ DOCKER_PASSWORD env not found"));
     }
     const projectId = data.projectId;
+    const dbProject = await prisma.project.findUnique({
+      where: {
+        id: projectId,
+      },
+    });
     const args = [
       "run",
       "--rm",
@@ -55,7 +87,7 @@ async function runDockerBuild(data: {
       "-e",
       `GIT_URL=${data.GIT_URL!}`,
       "-e",
-      `IMAGE_NAME=${data.PROJECT_NAME.toLowerCase()!}`,
+      `IMAGE_NAME=octodock/${data.PROJECT_NAME.toLowerCase()!}`,
       "-e",
       `DOCKER_PASSWORD=${process.env.DOCKER_PASSWORD}`,
       "angadsudan/build-project",
@@ -115,7 +147,26 @@ async function runDockerBuild(data: {
         reject(new Error(`❌ Build container exited with code ${code}`));
       }
     });
+
+    if (!dbProject?.id || !dbProject?.createdBy) {
+      reject(new Error("❌ Missing project or user information"));
+      return;
+    }
+
+    const deployment = await prisma.deployment.create({
+      data: {
+        dockerImage: "octodock/" + data.PROJECT_NAME.toLowerCase(),
+        urlSlug: generateSlug(),
+        projectId: dbProject.id,
+        userId: dbProject.createdBy,
+      },
+    });
   });
+
+  /**
+   * add an API call to consumer group to create a K8 pod
+   * and return the api url from here to the frontend
+   */
 }
 client.consumeMessageViaConsumer(
   "deployment-consumer",
@@ -123,6 +174,6 @@ client.consumeMessageViaConsumer(
   runDockerBuild
 );
 
-app.listen(3000, () => {
+app.listen(9000, () => {
   console.log("deployment server listening on port 9000");
 });

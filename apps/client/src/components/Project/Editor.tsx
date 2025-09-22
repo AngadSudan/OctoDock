@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import sdk, { type VM } from "@stackblitz/sdk";
 import axios from "axios";
 import configuration from "@/conf/configuration";
-import { useParams } from "react-router";
+import { redirect, useParams } from "react-router";
 import type { RootState } from "@/redux";
 import { useSelector } from "react-redux";
 
@@ -150,7 +150,18 @@ export default function Editor({ files, loading = true, openfile, code }) {
       }
     );
   };
+  const handleDeployemnt = async () => {
+    const response = await axios.post(
+      configuration.builder_server + "/deploy",
+      {
+        projectId: param.id,
+      }
+    );
 
+    if (response.data) {
+      redirect("/deployment/" + param.id);
+    }
+  };
   return (
     <div className="w-full max-w-full mx-auto bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 min-h-screen relative">
       {/* Subtle gradient mesh background */}
@@ -188,6 +199,25 @@ export default function Editor({ files, loading = true, openfile, code }) {
                   />
                 </svg>
                 <span>Push to GitHub</span>
+              </button>
+              <button
+                className="flex items-center space-x-2 px-3 py-1.5 bg-gradient-to-r from-cyan-500/20 to-cyan-500/20 border border-cyan-500/30 rounded-lg text-slate-200 text-xs font-medium hover:from-cyan-500/30 hover:to-cyan-500/30 transition-all duration-200 backdrop-blur-sm"
+                onClick={handleDeployemnt}
+              >
+                <svg
+                  className="w-3 h-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                  />
+                </svg>
+                <span>Create Deployment</span>
               </button>
             </div>
           </div>
