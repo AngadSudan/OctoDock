@@ -4,7 +4,7 @@ import type { ClickHouseClient } from "@clickhouse/client";
 interface deployment {
   id: string;
   log: string;
-  projetId: string;
+  projectId: string;
   createdAt: string;
 }
 
@@ -54,6 +54,7 @@ class ClickHouse {
     await this.client?.insert({
       table: "log_events",
       values: deployments,
+      format: "JSONEachRow",
     });
   }
 }

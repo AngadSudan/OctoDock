@@ -6,7 +6,13 @@ import { redirect, useParams } from "react-router";
 import type { RootState } from "@/redux";
 import { useSelector } from "react-redux";
 
-export default function Editor({ files, loading = true, openfile, code }) {
+export default function Editor({
+  files,
+  loading = true,
+  openfile,
+  code,
+  githubUrl,
+}) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const vmRef = useRef<VM | null>(null);
   const [isLoaded, setIsLoaded] = useState(loading);
@@ -16,41 +22,20 @@ export default function Editor({ files, loading = true, openfile, code }) {
     let cancelled = false;
 
     if (Object.keys(files).length > 0) {
-      // const createFileSystem = {};
-
-      // for (const file in files) {
-      //   // @ts-ignore
-      //   if (files[file].path && files[file].content) {
-      //     createFileSystem[files[file].path] = files[file].content;
-      //   } else if (files[file].path && !files[file].content) {
-      //     createFileSystem[files[file].path] = `// basic init`;
-      //   } else {
-      //     console.log(files[file]);
-      //     createFileSystem[files[file]] = `// basic init`;
-      //   }
-      //   console.log(
-      //     "mapping values in files, current value is ",
-      //     createFileSystem
-      //   );
-      // }
-      // console.log("created fileTree is ");
-      // console.log(files);
       const timeout = setTimeout(() => {
+        console.log(githubUrl);
+        console.log(githubUrl.replace("https://api.github.com/repos/", ""));
+        console.log(
+          githubUrl
+            .replace("https://api.github.com/repos/", "")
+            .replace(".git", "")
+        );
         sdk
-          .embedProject(
+          .embedGithubProject(
             containerRef.current!,
-            {
-              title: "Simple HTML/CSS/JS App",
-              description: "A basic example",
-              template: "node",
-              files: files,
-            },
-            {
-              forceEmbedLayout: true,
-              height: "100%",
-              width: "100%",
-              hideExplorer: false,
-            }
+            githubUrl
+              .replace("https://api.github.com/repos/", "")
+              .replace(".git", "")
           )
           .then((vm) => {
             if (!cancelled) {
@@ -59,12 +44,40 @@ export default function Editor({ files, loading = true, openfile, code }) {
             }
           })
           .catch((err) => {
-            console.log({
-              message: "StackBlitz embed error:" + err.message,
-              loggingLevel: "error",
-              error: err,
-            });
+            console.error("StackBlitz embed error:", err);
+
+            // Set error state
             setError(err?.message || "Failed to load StackBlitz");
+
+            // Optional fallback: embed a custom project if GitHub embed fails
+            // Uncomment if you want fallback
+            /*
+      sdk.embedProject(
+        containerRef.current!,
+        {
+          title: "Simple HTML/CSS/JS App",
+          description: "A basic example",
+          template: "node",
+          files: files,
+        },
+        {
+          forceEmbedLayout: true,
+          height: "100%",
+          width: "100%",
+          hideExplorer: false,
+        }
+      )
+      .then((vm) => {
+        if (!cancelled) {
+          setIsLoaded(true);
+          vmRef.current = vm;
+        }
+      })
+      .catch((fallbackErr) => {
+        console.error("Fallback embed error:", fallbackErr);
+        setError(fallbackErr?.message || "Failed to load StackBlitz fallback");
+      });
+      */
           });
       }, 300);
 

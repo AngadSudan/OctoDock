@@ -104,6 +104,15 @@ class githubController {
       const createdCommit = await this.createCommit(userName, repoName, folder);
 
       if (!createdCommit) throw new Error("commit couln't be updated");
+
+      await prisma.project.update({
+        where: {
+          id: projectId,
+        },
+        data: {
+          folderStructure: JSON.stringify(folder),
+        },
+      });
       return "OK";
     } catch (error: any) {
       console.log({

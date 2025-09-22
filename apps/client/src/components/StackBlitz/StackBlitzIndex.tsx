@@ -13,6 +13,7 @@ function StackBlitzIndex() {
   const [updatedCode, setupdatedCode] = useState("src/index.js");
   const { data, loading, error } = usegetProjectInfo(params.id);
   const [initializing, setIsInitialized] = useState("pending");
+  const [gitUrl, setGitUrl] = useState("");
   useEffect(() => {
     Object.keys(fileSystem).map((file, index) => {
       updatingfileSystem[file] = "loading";
@@ -21,6 +22,7 @@ function StackBlitzIndex() {
       setFileSystem({
         ...JSON.parse(data.getProjectById.folderStructure),
       });
+      setGitUrl(data.getProjectById.githubUrl);
     }
 
     const startUpdatingFiles = async () => {
@@ -78,6 +80,7 @@ function StackBlitzIndex() {
             loading={loading}
             openfile={openFile}
             code={updatedCode}
+            githubUrl={gitUrl}
           />
         )}
       </div>

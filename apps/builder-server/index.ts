@@ -69,38 +69,45 @@ async function runDockerBuild(data: {
   PROJECT_NAME: string;
   projectId: string;
 }) {
-  new Promise(async (resolve, reject) => {
-    if (!process.env.DOCKER_PASSWORD) {
-      return reject(new Error("❌ DOCKER_PASSWORD env not found"));
-    }
-    const projectId = data.projectId;
-    const dbProject = await prisma.project.findUnique({
-      where: {
-        id: projectId,
-      },
-    });
-    const args = [
-      "run",
-      "--rm",
-      "--privileged",
-      "--network=host",
-      "-e",
-      `GIT_URL=${data.GIT_URL!}`,
-      "-e",
-      `IMAGE_NAME=octodock/${data.PROJECT_NAME.toLowerCase()!}`,
-      "-e",
-      `DOCKER_PASSWORD=${process.env.DOCKER_PASSWORD}`,
-      "angadsudan/build-project",
-    ];
+  if (!process.env.DOCKER_PASSWORD) {
+    throw new Error("❌ DOCKER_PASSWORD env not found");
+  }
 
-    clickhouseClient.insertIntoClickHouse([
-      {
-        id: uuid(),
-        log: "🚀 Running Docker with args:" + args.join(" "),
-        projetId: projectId,
-        createdAt: new Date().toISOString(),
-      },
-    ]);
+  const projectId = data.projectId;
+  const dbProject = await prisma.project.findUnique({
+    where: { id: projectId },
+  });
+
+  if (!dbProject?.id || !dbProject?.createdBy) {
+    throw new Error("❌ Missing project or user information");
+  }
+  let giturl = dbProject.githubUrl || "";
+  giturl = giturl.replace("api.", "").replace("/repos", "");
+  console.log("GITHUB URL IS: ", giturl);
+  const args = [
+    "run",
+    "--rm",
+    "--privileged",
+    "--network=host",
+    "-e",
+    `GIT_URL=${giturl}`,
+    "-e",
+    `IMAGE_NAME=octodock/${data.PROJECT_NAME.toLowerCase()}`,
+    "-e",
+    `DOCKER_PASSWORD=${process.env.DOCKER_PASSWORD}`,
+    "angadsudan/build-project",
+  ];
+
+  await clickhouseClient.insertIntoClickHouse([
+    {
+      id: uuid(),
+      log: "🚀 Running Docker with args: " + args.join(" "),
+      projectId,
+      createdAt: new Date().toISOString(),
+    },
+  ]);
+  // Wrap spawn into a promise
+  await new Promise<void>((resolve, reject) => {
     const generatedProcess = spawn("docker", args, { stdio: "pipe" });
 
     generatedProcess.stdout.on("data", (data) => {
@@ -108,10 +115,12 @@ async function runDockerBuild(data: {
         {
           id: uuid(),
           log: `[docker-stdout] ${data}`,
-          projetId: projectId,
+          projectId,
           createdAt: new Date().toISOString(),
         },
       ]);
+
+      console.log(`[docker-stdout] ${data}`);
     });
 
     generatedProcess.stderr.on("data", (data) => {
@@ -119,10 +128,11 @@ async function runDockerBuild(data: {
         {
           id: uuid(),
           log: `[docker-stderr] ${data}`,
-          projetId: projectId,
+          projectId,
           createdAt: new Date().toISOString(),
         },
       ]);
+      console.log(`[docker-stderr] ${data}`);
     });
 
     generatedProcess.on("error", (err) => {
@@ -135,38 +145,32 @@ async function runDockerBuild(data: {
           {
             id: uuid(),
             log: "✅ Build container completed successfully",
-            projetId: projectId,
+            projectId: data.projectId,
             createdAt: new Date().toISOString(),
           },
         ]);
-        /**
-         * Put the entry into another queue which will be saving it to database
-         */
-        resolve("");
+        resolve();
       } else {
         reject(new Error(`❌ Build container exited with code ${code}`));
       }
     });
+  });
 
-    if (!dbProject?.id || !dbProject?.createdBy) {
-      reject(new Error("❌ Missing project or user information"));
-      return;
-    }
-
-    const deployment = await prisma.deployment.create({
-      data: {
-        dockerImage: "octodock/" + data.PROJECT_NAME.toLowerCase(),
-        urlSlug: generateSlug(),
-        projectId: dbProject.id,
-        userId: dbProject.createdBy,
-      },
-    });
+  // Create deployment only if docker build succeeded
+  const deployment = await prisma.deployment.create({
+    data: {
+      dockerImage: "octodock/" + data.PROJECT_NAME.toLowerCase(),
+      urlSlug: generateSlug(),
+      projectId: dbProject.id,
+      userId: dbProject.createdBy,
+    },
   });
 
   /**
-   * add an API call to consumer group to create a K8 pod
-   * and return the api url from here to the frontend
+   * TODO: Add API call to consumer group to create a K8 pod
+   * and return the API URL from here to the frontend
    */
+  return deployment;
 }
 client.consumeMessageViaConsumer(
   "deployment-consumer",
