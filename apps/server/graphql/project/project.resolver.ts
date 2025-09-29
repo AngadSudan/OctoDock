@@ -41,6 +41,22 @@ const mutations = {
       description
     );
   },
+  adoptToProject: async (
+    _,
+    {
+      userId,
+      name,
+      description,
+      gitUrl,
+    }: { userId: string; name: string; description: string; gitUrl: string }
+  ) => {
+    return await projectController.adoptToProject(
+      userId,
+      name,
+      description,
+      gitUrl
+    );
+  },
 };
 
 export const projectResolver = {

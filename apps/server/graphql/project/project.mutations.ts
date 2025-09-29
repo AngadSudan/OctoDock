@@ -7,4 +7,5 @@ export const projectMutation = `#graphql
             userId: String!,
             description: String!
         ): Project
+        adoptToProject(userId: String!, name: String!, description: String!,gitUrl:String!): Project
 `;

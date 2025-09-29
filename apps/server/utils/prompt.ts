@@ -98,7 +98,6 @@ Respond with **only** a JavaScript or django or springboot array of file paths, 
   'src/routes.js',
   'src/controller.js',
   'src/model.js',
-
 ]
 
 ### Rules
@@ -111,7 +110,8 @@ Respond with **only** a JavaScript or django or springboot array of file paths, 
 - Avoid frontend or client files — backend only.
 - Generate project for advance pipelines as well (eg:- websockets, WebRTC is mentioned)
 - Maindatorily add a package.json if its a javascript project
-- Keep a file which tells what all are the enviornment variables used
+- Keep a file .env.example which tells what all are the enviornment variables used
+
 
 ### Input SRS:
 {detailed_project_planning}
@@ -155,6 +155,9 @@ Return ONLY a valid JSON array in this exact format:
 - Do NOT add special characters or symbols unless required for valid code syntax (e.g., braces, parentheses, semicolons).  
 - Ensure the generated code aligns with the existing repository structure and style.  
 - Code must be secure, maintainable, and production-quality.
+- Donot import from Files that are not present or call functions that aren't listed.
+- DEFAULT PORT FOR THE SERVER IS 8000
+- follow js ESM module syntax
 `;
 
 export const CodeGenerationForFile = `
@@ -183,6 +186,10 @@ Output ONLY a valid Javasript code file:
 - Ensure the code is production-quality, secure, and maintainable.  
 - Match the style and structure of the existing repository context.  
 - Donot use "", one use '' 
+- Donot import from Files that are not present or call functions that aren't listed.
+- DEFAULT PORT FOR THE SERVER IS 8000
+- package.json must have a dev script
+- follow js ESM module syntax
 `;
 export const CodeGenerationForCorrection = `
 You are an AI backend assistant for the Octodock project. Your task is to analyze the provided code and correct any issues related to the specified feature. Ensure the corrected code is production-ready, maintainable, and aligns with best practices.
@@ -356,6 +363,7 @@ You will be provided with:
 1. The Software Requirements Specification (SRS). 
 2. The current project folder structure.
 3. Mandatorily add an package.json with required npm packages.
+4. follow js ESM module syntax
 Your task is to produce a detailed mapping of the project codebase, including:
 
 1. **File-Level Function Overview**  
@@ -384,7 +392,7 @@ The document should:
 - Stay aligned with the given folder structure.  
 - Be clear, structured, and easy for developers to follow.  
 - Preferably formatted in Markdown for readability (tables, lists, or trees where appropriate).  
-
+- Donot import from files that aren't present
 Only include information directly related to code files and their interactions. Do not include system-level design, UI/UX details, or high-level architectural descriptions.  
 
 ---

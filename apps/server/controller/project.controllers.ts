@@ -30,13 +30,13 @@ class ProjectController {
       }
 
       const generatedPrompt =
-        await aiGenerations.enhanceUserGivenDescription(description);
+        await gptFeaturesControllers.enhanceUserGivenDescription(description);
       if (!generatedPrompt) {
         throw new Error("Couln't generate SRS");
       }
 
       const generatedFileStructure =
-        await AiFeaturesControllers.generateProjectFileStructure(
+        await gptFeaturesControllers.generateProjectFolderStructure(
           generatedPrompt
         );
       if (!generatedFileStructure) {
@@ -89,7 +89,41 @@ class ProjectController {
       return null;
     }
   }
+  async adoptToProject(
+    userId: string,
+    name: string,
+    description: string,
+    gitUrl: string
+  ) {
+    try {
+      console.log(userId);
+      const dbUser = await prisma.user.findFirst({
+        where: { username: userId },
+      });
+      console.log(dbUser);
 
+      if (!dbUser) {
+        throw new Error("no user token found. Kindly login/Signup");
+      }
+
+      /**
+       * add a step to parse the folder structure
+       */
+      const createdProject = await prisma.project.create({
+        data: {
+          name,
+          description,
+          githubUrl: gitUrl,
+          createdBy: dbUser.id,
+        },
+      });
+
+      return createdProject;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
   async getAllUserProject(userId: string) {
     try {
       const dbUser = await prisma.user.findFirst({

@@ -1,5 +1,8 @@
 import OpenAI from "openai";
-import { generateFileStructurePrompt } from "../utils/prompt";
+import {
+  enhanceUserGivenProjectDescription,
+  generateFileStructurePrompt,
+} from "../utils/prompt";
 import logger from "../utils/Logger";
 
 class GptFeatures {
@@ -48,6 +51,30 @@ class GptFeatures {
       });
       return rawText.replace("```json", "").replace("```", "");
     }
+  }
+  async enhanceUserGivenDescription(userDescription) {
+    if (!userDescription) return null;
+    const prompt = enhanceUserGivenProjectDescription.replace(
+      "{user_description}",
+      userDescription
+    );
+    const response = await this.client.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are a helpful AI that enhances the user descriptions inorder to generates realistic production-ready backend project folder structures in JSON for StackBlitz/WebContainers integration. Follow the given format precisely.",
+        },
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.2,
+    });
+
+    return response.choices[0].message.content;
   }
 }
 

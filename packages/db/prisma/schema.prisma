@@ -54,10 +54,10 @@ model project {
   id                   String                 @id @default(auto()) @map("_id") @db.ObjectId
   name                 String
   description          String
-  generatedPrompt      String
-  folderStructure      String
-  sdd                  String
-  githubUrl            String?                @unique
+  generatedPrompt      String?
+  folderStructure      String?
+  sdd                  String?
+  githubUrl            String                 @unique
   status               STATUS                 @default(NOT_PUBLISHED)
   isActive             ACTIVE                 @default(ACTIVE)
   createdBy            String                 @db.ObjectId
@@ -85,7 +85,7 @@ model prompt {
 
 model deployment {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  dockerImage String   @unique
+  dockerImage String
   urlSlug     String   @unique
   projectId   String
   userId      String
