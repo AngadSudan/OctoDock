@@ -1,5 +1,4 @@
 import keyManager from "../utils/keymanager";
-import { GenerativeModel, GoogleGenerativeAI } from "@google/generative-ai";
 import { GoogleGenAI, Type } from "@google/genai";
 import {
   compareChangesAndReturnText,
@@ -10,14 +9,14 @@ import {
 
 class GeminiAiFeatures {
   availableKey: string;
-  genAi: GoogleGenerativeAI;
-  model: GenerativeModel;
+  model: GoogleGenAI;
   jsonModel: GoogleGenAI;
+  modelVersion: string;
   constructor() {
     this.availableKey = keyManager.getAvailableKey();
-    this.genAi = new GoogleGenerativeAI(this.availableKey);
-    this.model = this.genAi.getGenerativeModel({ model: "gemini-1.5-flash" });
+    this.model = new GoogleGenAI({ apiKey: this.availableKey });
     this.jsonModel = new GoogleGenAI({ apiKey: this.availableKey });
+    this.modelVersion = "gemini-2.0-flash";
   }
 
   async enhanceUserGivenDescription(userDescription: string) {
@@ -26,8 +25,11 @@ class GeminiAiFeatures {
       "{user_description}",
       userDescription
     );
-    const response = await this.model.generateContent(prompt);
-    return response.response.candidates[0].content.parts[0].text;
+    const response = await this.model.models.generateContent({
+      model: this.modelVersion,
+      contents: prompt,
+    })
+    return response.text;
   }
 
   async generateProjectFileStructure(enhancedPrompt: string) {
@@ -67,8 +69,11 @@ class GeminiAiFeatures {
       .replace("{original_folder_structure}", originalFolderStructure)
       .replace("corrected_folder_structure", generatedFolderStructure)
       .replace("user_prompt", userPrompt);
-    const response = await this.model.generateContent(prompt);
-    return response.response.candidates[0].content.parts[0].text;
+    const response =await this.model.models.generateContent({
+      model: this.modelVersion,
+      contents: prompt,
+    });
+    return response.text;
   }
   async enhanceFeedbackPrompt(
     enahcedProjectDescription: string,
@@ -81,8 +86,11 @@ class GeminiAiFeatures {
     const prompt = generateSDDDocument
       .replace("{srs_document}", srsDocument)
       .replace("{folder}", folderStructure);
-    const response = await this.model.generateContent(prompt);
-    return response.response.candidates[0].content.parts[0].text;
+    const response = await this.model.models.generateContent({
+      model: this.modelVersion,
+      contents: prompt,
+    });
+    return response.text;
   }
 }
 

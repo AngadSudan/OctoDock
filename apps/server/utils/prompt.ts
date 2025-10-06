@@ -38,7 +38,7 @@ When you enhance the idea, add all relevant details that a developer or architec
 **Functional Features**
 - User registration and login
 - CRUD operations for to-do items
-- Add advance logic like RTC/sockets if needed
+- Add advance logic like RTC/sockets only and only if needed
 - Assign due dates and reminders
 - Support for tags and categories
 - Mark tasks as complete/incomplete
