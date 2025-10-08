@@ -21,32 +21,30 @@ class ProjectController {
 
       const githubToken =
         dbUser.githubToken || "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";
-      const createRepository = await new githubController(
-        githubToken
-      ).createRepository(name, description);
-
-      if (!createRepository) {
-        throw new Error("Error in creating repository");
-      }
-
+      
       const generatedPrompt =
         await gptFeaturesControllers.enhanceUserGivenDescription(description);
+
+      console.log("generated prompt is : ",generatedPrompt);
+      
       if (!generatedPrompt) {
         throw new Error("Couln't generate SRS");
       }
 
       const generatedFileStructure =
-        await gptFeaturesControllers.generateProjectFolderStructure(
+        await AiFeaturesControllers.generateProjectFileStructure(
           generatedPrompt
         );
+
+      console.log("generated prompt is : ",generatedPrompt);
       if (!generatedFileStructure) {
         throw new Error("error in creating folder structure for your project");
       }
 
-      let createdFileStructure = JSON.parse(generatedFileStructure);
+      let createdFileStructure = generatedFileStructure;
       const createFileSystem: Record<string, string> = {};
 
-      if (Object.keys(createdFileStructure).length > 0) {
+      if (createdFileStructure.length > 0) {
         for (const file in createdFileStructure) {
           if (
             createdFileStructure[file].path &&
@@ -65,11 +63,20 @@ class ProjectController {
           }
         }
       }
-
+      console.log(createdFileStructure);
+      
       const getSDD = await AiFeaturesControllers.generateSDD(
         generatedPrompt,
         JSON.stringify(createFileSystem)
       );
+
+      const createRepository = await new githubController(
+        githubToken
+      ).createRepository(name, description);
+
+      if (!createRepository) {
+        throw new Error("Error in creating repository");
+      }
 
       const createdProject = await prisma.project.create({
         data: {

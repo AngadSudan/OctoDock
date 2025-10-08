@@ -88,21 +88,20 @@ You are given a Software Requirements Specification (SRS) document.
 
 Your task is to return a realistic and production-grade backend project file structure that implements the described system, using best practices for a Node.js or python or springboot backend project.
 
-### Output Format
+### Output Format YAML
 
 Respond with **only** a JavaScript or django or springboot array of file paths, like this:
 
-[
-  'src/index.js',
-  'src/database.js',
-  'src/routes.js',
-  'src/controller.js',
-  'src/model.js',
-]
+project_dir
+  - 'src/index.js',
+  - 'src/database.js',
+  - 'src/routes.js',
+  - 'src/controller.js',
+  - 'src/model.js',
 
 ### Rules
-
-- The array should contain full relative paths to each file.
+- The yaml should contain full relative paths to each file.
+- follow the strict yaml format and nothing more
 - Include meaningful folders and subfolders (e.g. src, routes, controllers, models, middleware, utils).
 - Follow best practices for organizing a scalable Node.js or django backend.
 - Do **not** include folder names as objects — just file paths as strings.

@@ -23,35 +23,28 @@ export default function Editor({
 
     if (Object.keys(files).length > 0) {
       const timeout = setTimeout(() => {
-        console.log(githubUrl);
-        console.log(githubUrl.replace("https://api.github.com/repos/", ""));
-        console.log(
-          githubUrl
-            .replace("https://api.github.com/repos/", "")
-            .replace(".git", "")
-        );
-        sdk
-          .embedGithubProject(
-            containerRef.current!,
-            githubUrl
-              .replace("https://api.github.com/repos/", "")
-              .replace(".git", "")
-          )
-          .then((vm) => {
-            if (!cancelled) {
-              setIsLoaded(true);
-              vmRef.current = vm;
-            }
-          })
-          .catch((err) => {
-            console.error("StackBlitz embed error:", err);
+        // sdk
+        //   .embedGithubProject(
+        //     containerRef.current!,
+        //     githubUrl
+        //       .replace("https://api.github.com/repos/", "")
+        //       .replace(".git", "")
+        //   )
+        //   .then((vm) => {
+        //     if (!cancelled) {
+        //       setIsLoaded(true);
+        //       vmRef.current = vm;
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     console.error("StackBlitz embed error:", err);
 
-            // Set error state
-            setError(err?.message || "Failed to load StackBlitz");
-
+        //     // Set error state
+        //     setError(err?.message || "Failed to load StackBlitz");
+        //   })
             // Optional fallback: embed a custom project if GitHub embed fails
             // Uncomment if you want fallback
-            /*
+            
       sdk.embedProject(
         containerRef.current!,
         {
@@ -77,9 +70,9 @@ export default function Editor({
         console.error("Fallback embed error:", fallbackErr);
         setError(fallbackErr?.message || "Failed to load StackBlitz fallback");
       });
-      */
-          });
-      }, 300);
+      
+          // });
+      }, 1000);
 
       return () => {
         cancelled = true;

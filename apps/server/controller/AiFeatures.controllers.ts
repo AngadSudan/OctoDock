@@ -6,6 +6,7 @@ import {
   generateFileStructurePrompt,
   generateSDDDocument,
 } from "../utils/prompt";
+import {parse} from 'yaml';
 
 class GeminiAiFeatures {
   availableKey: string;
@@ -41,23 +42,20 @@ class GeminiAiFeatures {
     const response = await this.jsonModel.models.generateContent({
       model: "gemini-2.0-flash",
       contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.ARRAY,
-          items: {
-            type: Type.OBJECT,
-            properties: {
-              path: { type: Type.STRING },
-              content: { type: Type.STRING },
-            },
-            required: ["path", "content"],
-          },
-        },
-      },
     });
 
-    return response.text;
+    console.log(response.text);
+    console.log("_______________________");
+    const parsedText = response.text.replace('```yaml',"").replace("```","")
+    // TODO: use a json to yaml converter inorder to get the repsonse is json and return the project_dir object value
+    // inside of an array
+    const parsedObject = parse(parsedText);
+    console.log(parsedObject);
+    console.log("_______________________");
+    
+    console.log(parsedObject.project_dir);
+    
+    return parsedObject.project_dir;
   }
 
   async getResponseText(
