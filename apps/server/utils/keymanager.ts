@@ -17,7 +17,7 @@ class GeminiKeyManager {
           isRateLimited: false,
           rateLimitExpiry: null,
         },
-      ])
+      ]),
     );
   }
 

@@ -26,7 +26,7 @@ app.use(
       "Origin",
       "Accept",
     ],
-  })
+  }),
 );
 app.use(express.json());
 
@@ -57,7 +57,7 @@ app.post("/deploy", async (req, res) => {
         PROJECT_NAME: dbProject?.name.replaceAll(" ", "-").replaceAll(",", "-"),
         projectId,
       }),
-    ]
+    ],
   );
   res.json({
     message: "Getting the deployment ready for you",
@@ -175,7 +175,7 @@ async function runDockerBuild(data: {
 client.consumeMessageViaConsumer(
   "deployment-consumer",
   "pending-docker-build",
-  runDockerBuild
+  runDockerBuild,
 );
 
 app.listen(9000, () => {

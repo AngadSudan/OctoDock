@@ -29,7 +29,7 @@ function Logs() {
   const [currentLogs, setCurrentLogs] = useState([]);
   useEffect(() => {
     const eventSource = new EventSource(
-      API_ENDPOINT + "?page=" + encodeURIComponent(currentPage)
+      API_ENDPOINT + "?page=" + encodeURIComponent(currentPage),
     );
 
     eventSource.onmessage = (event) => {
@@ -59,7 +59,7 @@ function Logs() {
           JSON.stringify(log.message)
             .toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
-          log.level.toLowerCase().includes(searchTerm.toLowerCase())
+          log.level.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
@@ -307,7 +307,7 @@ function Logs() {
                   "current page number",
                   currentPage,
                   " log level is ",
-                  log
+                  log,
                 );
                 return (
                   <ParseMessageContent
@@ -431,7 +431,7 @@ function Logs() {
                   <button
                     onClick={() =>
                       copyToClipboard(
-                        JSON.stringify(selectedLog.message, null, 2)
+                        JSON.stringify(selectedLog.message, null, 2),
                       )
                     }
                     className="p-1 rounded bg-red-400/20 border border-red-400/30 text-red-400 hover:bg-red-400/30 transition-all duration-300"

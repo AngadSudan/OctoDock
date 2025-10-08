@@ -15,13 +15,13 @@ const mutations = {
       userId,
       name,
       description,
-    }: { userId: string; name: string; description: string }
+    }: { userId: string; name: string; description: string },
   ) => {
     return await projectController.createNewProject(userId, name, description);
   },
   deleteProject: async (
     _,
-    { projectId, userId }: { projectId: string; userId: string }
+    { projectId, userId }: { projectId: string; userId: string },
   ) => {
     return await projectController.deleteProject(projectId, userId);
   },
@@ -32,13 +32,13 @@ const mutations = {
       projectId,
       userId,
       description,
-    }: { name: string; projectId: string; userId: string; description: string }
+    }: { name: string; projectId: string; userId: string; description: string },
   ) => {
     return await projectController.updateProject(
       name,
       projectId,
       userId,
-      description
+      description,
     );
   },
   adoptToProject: async (
@@ -48,13 +48,13 @@ const mutations = {
       name,
       description,
       gitUrl,
-    }: { userId: string; name: string; description: string; gitUrl: string }
+    }: { userId: string; name: string; description: string; gitUrl: string },
   ) => {
     return await projectController.adoptToProject(
       userId,
       name,
       description,
-      gitUrl
+      gitUrl,
     );
   },
 };

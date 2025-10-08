@@ -54,7 +54,7 @@ class LoggingController {
             username: this.lokiUsername,
             password: this.lokiApiKey,
           },
-        }
+        },
       );
 
       const streams = response.data.data.result;
@@ -69,7 +69,7 @@ class LoggingController {
         s.values.map(([ts, line]: [string, string]) => ({
           timestamp: new Date(Number(ts) / 1e6),
           log: line,
-        }))
+        })),
       );
 
       for (let i = 0; i < logs.length; i++) {
@@ -94,7 +94,7 @@ class LoggingController {
             username: this.lokiUsername, // your Grafana Cloud stack ID
             password: this.lokiApiKey, // token with logs:read
           },
-        }
+        },
       );
 
       let result = response.data.data.result;

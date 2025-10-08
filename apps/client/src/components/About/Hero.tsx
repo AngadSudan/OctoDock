@@ -48,8 +48,6 @@ function Hero() {
     <>
       {/* Hero Section */}
       <div className="min-h-screen w-full bg-gradient-to-br from-gray-950 via-black to-gray-950 relative overflow-hidden">
-
-
         {/* Dynamic red ambient effects */}
         <div
           className="absolute w-[600px] h-[600px] rounded-full opacity-[0.08] blur-[150px] transition-all duration-[3000ms] ease-out"
@@ -249,7 +247,6 @@ function Hero() {
                             <div className="w-2 h-4 bg-red-400 ml-1 animate-pulse"></div>
                           </div>
                         </div>
-
                       </div>
                     </div>
                   </div>

@@ -20,8 +20,8 @@ const SponsorCard = ({ image, x, y }) => {
           position: "absolute",
           left: `${x}%`,
           top: `${y}%`,
-          width:"100px",
-          height:"100px",
+          width: "100px",
+          height: "100px",
         }}
       >
         <img

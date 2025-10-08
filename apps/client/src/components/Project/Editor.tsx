@@ -42,36 +42,39 @@ export default function Editor({
         //     // Set error state
         //     setError(err?.message || "Failed to load StackBlitz");
         //   })
-            // Optional fallback: embed a custom project if GitHub embed fails
-            // Uncomment if you want fallback
-            
-      sdk.embedProject(
-        containerRef.current!,
-        {
-          title: "Simple HTML/CSS/JS App",
-          description: "A basic example",
-          template: "node",
-          files: files,
-        },
-        {
-          forceEmbedLayout: true,
-          height: "100%",
-          width: "100%",
-          hideExplorer: false,
-        }
-      )
-      .then((vm) => {
-        if (!cancelled) {
-          setIsLoaded(true);
-          vmRef.current = vm;
-        }
-      })
-      .catch((fallbackErr) => {
-        console.error("Fallback embed error:", fallbackErr);
-        setError(fallbackErr?.message || "Failed to load StackBlitz fallback");
-      });
-      
-          // });
+        // Optional fallback: embed a custom project if GitHub embed fails
+        // Uncomment if you want fallback
+
+        sdk
+          .embedProject(
+            containerRef.current!,
+            {
+              title: "Simple HTML/CSS/JS App",
+              description: "A basic example",
+              template: "node",
+              files: files,
+            },
+            {
+              forceEmbedLayout: true,
+              height: "100%",
+              width: "100%",
+              hideExplorer: false,
+            },
+          )
+          .then((vm) => {
+            if (!cancelled) {
+              setIsLoaded(true);
+              vmRef.current = vm;
+            }
+          })
+          .catch((fallbackErr) => {
+            console.error("Fallback embed error:", fallbackErr);
+            setError(
+              fallbackErr?.message || "Failed to load StackBlitz fallback",
+            );
+          });
+
+        // });
       }, 1000);
 
       return () => {
@@ -153,7 +156,7 @@ export default function Editor({
       {
         username,
         foldername: fileStructure,
-      }
+      },
     );
   };
   const handleDeployemnt = async () => {
@@ -161,7 +164,7 @@ export default function Editor({
       configuration.builder_server + "/deploy",
       {
         projectId: param.id,
-      }
+      },
     );
 
     if (response.data) {

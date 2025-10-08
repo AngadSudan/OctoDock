@@ -174,7 +174,7 @@ const InteractiveTerminal = () => {
         setCommandIndex(0);
         return next;
       });
-    }, 8000); 
+    }, 8000);
 
     return () => clearInterval(sessionInterval);
   }, []);
@@ -367,13 +367,8 @@ const SecurityLock = () => {
         <div className="relative bg-black/60 backdrop-blur-md border-2 border-red-400/50 rounded-full p-8 w-32 h-32 flex items-center justify-center">
           <Lock size={40} className="text-red-400" />
 
-            <div
-            className="absolute inset-0 border-2 border-red-400/30 rounded-full animate-spin"
-          />
-          <div
-            className="absolute inset-2 border border-red-400/20 rounded-full animate-spin"
-          />
-
+          <div className="absolute inset-0 border-2 border-red-400/30 rounded-full animate-spin" />
+          <div className="absolute inset-2 border border-red-400/20 rounded-full animate-spin" />
         </div>
 
         <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
@@ -422,7 +417,6 @@ function Future() {
       <div className="relative z-10 min-h-screen">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 h-full">
           <div className="grid lg:grid-cols-2 gap-16 items-center min-h-screen py-20">
-
             <div className="space-y-10 lg:pr-8">
               {/* Powerup tag */}
               <div className="flex items-center space-x-3">

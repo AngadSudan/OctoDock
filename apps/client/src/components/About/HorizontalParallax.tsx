@@ -107,7 +107,8 @@ export default function HorizontalParallax() {
 
   return (
     <div className="w-full h-screen scrollbar-hide overflow-hidden bg-black relative">
-      <style>{`
+      <style>
+        {`
         .parallax-scroll::-webkit-scrollbar {
           display: none; /* Chrome, Safari and Opera */
           height: 0;
@@ -125,7 +126,12 @@ export default function HorizontalParallax() {
         </div>
       </div>
 
-      <Parallax ref={parallax} pages={3} horizontal className="w-full  h-full parallax-scroll">
+      <Parallax
+        ref={parallax}
+        pages={3}
+        horizontal
+        className="w-full  h-full parallax-scroll"
+      >
         <ParallaxLayer
           offset={0}
           speed={0.2}
@@ -319,14 +325,15 @@ export default function HorizontalParallax() {
                   <span className="animate-pulse text-red-400">_</span>
                 </p>
 
-                <button className="relative cursor-pointer group/btn bg-black/80 border-2 border-red-400/50 text-red-400 px-8 py-4 rounded-xl font-mono font-bold 
+                <button
+                  className="relative cursor-pointer group/btn bg-black/80 border-2 border-red-400/50 text-red-400 px-8 py-4 rounded-xl font-mono font-bold 
                   hover:border-red-400 hover:text-red-300 
                   hover:shadow-[0_0_25px_rgba(255,80,80,0.8)] 
                   hover:scale-105 
-                  transition-all duration-500 overflow-hidden">
-                  
+                  transition-all duration-500 overflow-hidden"
+                >
                   <div className="absolute inset-0 bg-gradient-to-r from-red-400/10 to-red-600/10 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500" />
-                      
+
                   <span className="relative z-10 flex items-center space-x-2">
                     <span>INITIALIZE SYSTEM</span>
                     <ArrowRight
@@ -335,7 +342,6 @@ export default function HorizontalParallax() {
                     />
                   </span>
                 </button>
-
               </div>
 
               <div className="flex items-center justify-center space-x-2 mt-6">
@@ -359,7 +365,7 @@ export default function HorizontalParallax() {
         </ParallaxLayer>
       </Parallax>
 
-{/* @ts-expect-error styled-jsx attributes */}
+      {/* @ts-expect-error styled-jsx attributes */}
       <style jsx global>{`
         @keyframes grid-move {
           0% {

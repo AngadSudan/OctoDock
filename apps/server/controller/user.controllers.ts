@@ -9,7 +9,7 @@ class userController {
     username: string,
     githubUsername: string,
     email: string,
-    password: string
+    password: string,
   ) {
     try {
       const dbUser = await prisma.user.findFirst({
@@ -133,7 +133,7 @@ class userController {
     username: string,
     email: string,
     accessToken: string,
-    name: string
+    name: string,
   ) {
     try {
       const createdUser = await prisma.user.create({

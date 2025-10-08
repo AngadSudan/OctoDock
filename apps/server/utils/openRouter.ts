@@ -19,7 +19,7 @@ class OpenRouterManager {
           isRateLimited: false,
           rateLimitExpiry: null,
         },
-      ])
+      ]),
     );
   }
 
@@ -113,7 +113,7 @@ class OpenRouterManager {
 }
 
 const openRouterKeys = new OpenRouterManager(
-  process.env.OPENROUTER_KEYS!.split(",")
+  process.env.OPENROUTER_KEYS!.split(","),
 );
 
 export default openRouterKeys;

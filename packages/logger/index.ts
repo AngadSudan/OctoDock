@@ -37,7 +37,7 @@ class Logger {
     apiKey: string,
     labels: string,
     isJson: boolean,
-    interval: number
+    interval: number,
   ) {
     if (logger) {
       this.loggerInstance = logger; // reuse existing one
@@ -74,7 +74,7 @@ class Logger {
     if (this.loggerInstance) {
       this.loggerInstance.log(
         (data.loggingLevel || "info") as any,
-        JSON.stringify(data)
+        JSON.stringify(data),
       );
     }
   }
@@ -86,7 +86,7 @@ function createLogger(
   apiKey: string,
   labels: string,
   isJson: boolean,
-  interval: number
+  interval: number,
 ) {
   return new Logger(host, user, apiKey, labels, isJson, interval);
 }

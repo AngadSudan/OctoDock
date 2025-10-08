@@ -8,13 +8,13 @@ const envQueries = {
 const envMutations = {
   registerNewEnv: async (
     _,
-    { name, value, id }: { name: string; value: string; id: string }
+    { name, value, id }: { name: string; value: string; id: string },
   ) => {
     return await envController.registerNewEnv(name, value, id);
   },
   updateEnvVariables: async (
     _,
-    { name, value, id }: { name: string; value: string; id: string }
+    { name, value, id }: { name: string; value: string; id: string },
   ) => {
     return await envController.updateEnvVariables(id, name, value);
   },

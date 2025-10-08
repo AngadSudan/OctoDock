@@ -80,7 +80,6 @@ function Header() {
       <div className="absolute inset-0 bg-gradient-to-b from-gray-900/95 via-slate-900/90 to-gray-900/95"></div>
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/5 via-orange-500/5 to-transparent"></div>
 
-     
       {/* main bar*/}
       <div className="relative backdrop-blur-xl bg-black/60 border-b border-red-500/20 shadow-2xl">
         {/* top */}

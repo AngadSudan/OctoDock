@@ -6,7 +6,7 @@ import {
   generateFileStructurePrompt,
   generateSDDDocument,
 } from "../utils/prompt";
-import {parse} from 'yaml';
+import { parse } from "yaml";
 
 class GeminiAiFeatures {
   availableKey: string;
@@ -24,19 +24,19 @@ class GeminiAiFeatures {
     if (!userDescription) return null;
     const prompt = enhanceUserGivenProjectDescription.replace(
       "{user_description}",
-      userDescription
+      userDescription,
     );
     const response = await this.model.models.generateContent({
       model: this.modelVersion,
       contents: prompt,
-    })
+    });
     return response.text;
   }
 
   async generateProjectFileStructure(enhancedPrompt: string) {
     const prompt = generateFileStructurePrompt.replace(
       "{detailed_project_planning}",
-      enhancedPrompt
+      enhancedPrompt,
     );
 
     const response = await this.jsonModel.models.generateContent({
@@ -46,28 +46,28 @@ class GeminiAiFeatures {
 
     console.log(response.text);
     console.log("_______________________");
-    const parsedText = response.text.replace('```yaml',"").replace("```","")
+    const parsedText = response.text.replace("```yaml", "").replace("```", "");
     // TODO: use a json to yaml converter inorder to get the repsonse is json and return the project_dir object value
     // inside of an array
     const parsedObject = parse(parsedText);
     console.log(parsedObject);
     console.log("_______________________");
-    
+
     console.log(parsedObject.project_dir);
-    
+
     return parsedObject.project_dir;
   }
 
   async getResponseText(
     originalFolderStructure: string,
     generatedFolderStructure: string,
-    userPrompt: string
+    userPrompt: string,
   ) {
     const prompt = compareChangesAndReturnText
       .replace("{original_folder_structure}", originalFolderStructure)
       .replace("corrected_folder_structure", generatedFolderStructure)
       .replace("user_prompt", userPrompt);
-    const response =await this.model.models.generateContent({
+    const response = await this.model.models.generateContent({
       model: this.modelVersion,
       contents: prompt,
     });
@@ -75,7 +75,7 @@ class GeminiAiFeatures {
   }
   async enhanceFeedbackPrompt(
     enahcedProjectDescription: string,
-    userDescription: string
+    userDescription: string,
   ) {
     return "a";
   }

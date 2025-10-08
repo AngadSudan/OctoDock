@@ -32,7 +32,7 @@ class KubernetesAPI {
       // Create Pod
       const podRes = await this.kubeApi.createNamespacedPod(
         "default" as any,
-        podManifest
+        podManifest,
       );
       logger.logData({
         message: `✅ Pod created: ${podRes.metadata?.name}`,
@@ -41,7 +41,7 @@ class KubernetesAPI {
       // --- Load Service manifest ---
       const serviceContents = fs.readFileSync(
         "./manifests/service.yaml",
-        "utf8"
+        "utf8",
       );
       let serviceManifest: any = yaml.load(serviceContents);
       serviceManifest.metadata.name = uniqueId + "-service";
@@ -52,7 +52,7 @@ class KubernetesAPI {
 
       const serviceRes = await this.kubeApi.createNamespacedService(
         "default" as any,
-        serviceManifest
+        serviceManifest,
       );
       logger.logData({
         message: `✅ Service created: ${serviceRes.metadata?.name}`,
@@ -61,7 +61,7 @@ class KubernetesAPI {
       // --- Load IngressRoute manifest (Traefik CRD) ---
       const ingressContents = fs.readFileSync(
         "./manifests/ingressRoute.yaml",
-        "utf8"
+        "utf8",
       );
       let ingressManifest: any = yaml.load(ingressContents);
       ingressManifest.metadata.name = uniqueId + "-ingress";
@@ -110,7 +110,7 @@ class KubernetesAPI {
 
       await ingressApi.createNamespacedIngress(
         "default" as any,
-        ingressConfig as any
+        ingressConfig as any,
       );
 
       logger.logData({

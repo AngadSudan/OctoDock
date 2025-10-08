@@ -44,7 +44,7 @@ app.use(
       secure: false, // true if using HTTPS
       sameSite: "lax", // "none" if cross-origin over HTTPS
     },
-  })
+  }),
 );
 app.use(passport.initialize() as any);
 app.use(passport.session());
@@ -69,7 +69,7 @@ app.use(
       "Origin",
       "Accept",
     ],
-  })
+  }),
 );
 const apiProxy = proxy("http://localhost:4000", {
   proxyReqPathResolver: (req) => url.parse(req.url).path,
@@ -83,7 +83,7 @@ const apiProxy = proxy("http://localhost:4000", {
       // Override CORS headers
       res.setHeader(
         "Access-Control-Allow-Origin",
-        req.headers.origin || "http://localhost:5173"
+        req.headers.origin || "http://localhost:5173",
       );
       res.setHeader("Access-Control-Allow-Credentials", "true");
 
@@ -124,7 +124,7 @@ app.get("/health", async (req, res) => {
 // OAuth Routes
 app.get(
   "/auth/github",
-  passport.authenticate("github", { scope: ["user", "repo"] })
+  passport.authenticate("github", { scope: ["user", "repo"] }),
 );
 app.get("/is-authenticated", (req, res) => {
   const isAuthenticated = req.isAuthenticated();
@@ -135,7 +135,7 @@ app.get("/is-authenticated", (req, res) => {
   }
 });
 app.get("/error/logs", (req, res) =>
-  LoggingController.servePaginatedLogic(req, res)
+  LoggingController.servePaginatedLogic(req, res),
 );
 app.get(
   "/oauth/redirect/github",
@@ -147,7 +147,7 @@ app.get(
   }),
   function (req, res) {
     res.redirect("/");
-  }
+  },
 );
 
 // SSE ROUTING
@@ -165,7 +165,7 @@ app.post("/push/:id", async (req, res) => {
 
   if (!dbUser) throw new Error("not a registered user");
   const response = await new githubController(
-    dbUser.githubToken
+    dbUser.githubToken,
   ).commitCodeToGithub(projectId, foldername);
 
   return res.status(200).json({ message: "ok" });
@@ -174,7 +174,7 @@ const errorHandler = (
   error: any,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   console.log({
     error: error,

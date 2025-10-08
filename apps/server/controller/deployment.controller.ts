@@ -13,7 +13,7 @@ class deploymentController {
   async updateDeployment(
     dockerimage: string,
     urlSlug: string,
-    projectId: string
+    projectId: string,
   ) {}
   /**
    * When a project has been already deployed,
@@ -21,7 +21,7 @@ class deploymentController {
   async redeployProject(
     dockerimage: string,
     urlSlug: string,
-    projectId: string
+    projectId: string,
   ) {}
   async getAllUserDeployment(projectId: string) {}
   async getDeploymentByProject(projectId: string) {
