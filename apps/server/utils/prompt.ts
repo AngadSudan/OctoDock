@@ -107,7 +107,7 @@ project_dir
 - Do **not** include folder names as objects — just file paths as strings.
 - Do **not** include file content, metadata, or explanations — just the file paths.
 - Avoid frontend or client files — backend only.
-- Generate project for advance pipelines as well (eg:- websockets, WebRTC is mentioned)
+- Generate project for advance pipelines as well only if user explicitly specifies (eg:- websockets, WebRTC is mentioned)
 - Maindatorily add a package.json if its a javascript project
 - Keep a file .env.example which tells what all are the enviornment variables used
 
@@ -156,7 +156,7 @@ Return ONLY a valid JSON array in this exact format:
 - Code must be secure, maintainable, and production-quality.
 - Donot import from Files that are not present or call functions that aren't listed.
 - DEFAULT PORT FOR THE SERVER IS 8000
-- follow js ESM module syntax
+- follow js ESM module syntax except for package.json
 `;
 
 export const CodeGenerationForFile = `
