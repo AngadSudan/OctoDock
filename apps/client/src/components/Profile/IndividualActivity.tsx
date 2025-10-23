@@ -1,7 +1,12 @@
 import React from "react";
+import OctodockActivity from "./OctodockActivity";
 
 function IndividualActivity() {
-  return <div>IndividualActivity</div>;
+  return (
+    <div className="p-4">
+      <OctodockActivity />
+    </div>
+  );
 }
 
 export default IndividualActivity;

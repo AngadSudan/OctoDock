@@ -26,13 +26,14 @@ app.use(
       "Origin",
       "Accept",
     ],
-  }),
+  })
 );
 app.use(express.json());
 
 const client = registerKafkaClient("push-to-deployment-queue", [
   "localhost:9092",
 ]);
+
 client.createTopic([
   {
     topic: "pending-docker-build",
@@ -57,7 +58,7 @@ app.post("/deploy", async (req, res) => {
         PROJECT_NAME: dbProject?.name.replaceAll(" ", "-").replaceAll(",", "-"),
         projectId,
       }),
-    ],
+    ]
   );
   res.json({
     message: "Getting the deployment ready for you",
@@ -98,14 +99,14 @@ async function runDockerBuild(data: {
     "angadsudan/build-project",
   ];
 
-  await clickhouseClient.insertIntoClickHouse([
-    {
-      id: uuid(),
-      log: "🚀 Running Docker with args: " + args.join(" "),
-      projectId,
-      createdAt: new Date().toISOString(),
-    },
-  ]);
+  // await clickhouseClient.insertIntoClickHouse([
+  //   {
+  //     id: uuid(),
+  //     log: "🚀 Running Docker with args: " + args.join(" "),
+  //     projectId,
+  //     createdAt: new Date().toISOString(),
+  //   },
+  // ]);
   // Wrap spawn into a promise
   await new Promise<void>((resolve, reject) => {
     const generatedProcess = spawn("docker", args, { stdio: "pipe" });
@@ -124,14 +125,14 @@ async function runDockerBuild(data: {
     });
 
     generatedProcess.stderr.on("data", (data) => {
-      clickhouseClient.insertIntoClickHouse([
-        {
-          id: uuid(),
-          log: `[docker-stderr] ${data}`,
-          projectId,
-          createdAt: new Date().toISOString(),
-        },
-      ]);
+      // clickhouseClient.insertIntoClickHouse([
+      //   {
+      //     id: uuid(),
+      //     log: `[docker-stderr] ${data}`,
+      //     projectId,
+      //     createdAt: new Date().toISOString(),
+      //   },
+      // ]);
       console.log(`[docker-stderr] ${data}`);
     });
 
@@ -141,14 +142,14 @@ async function runDockerBuild(data: {
 
     generatedProcess.on("close", (code) => {
       if (code === 0) {
-        clickhouseClient.insertIntoClickHouse([
-          {
-            id: uuid(),
-            log: "✅ Build container completed successfully",
-            projectId: data.projectId,
-            createdAt: new Date().toISOString(),
-          },
-        ]);
+        // clickhouseClient.insertIntoClickHouse([
+        //   {
+        //     id: uuid(),
+        //     log: "✅ Build container completed successfully",
+        //     projectId: data.projectId,
+        //     createdAt: new Date().toISOString(),
+        //   },
+        // ]);
         resolve();
       } else {
         reject(new Error(`❌ Build container exited with code ${code}`));
@@ -172,12 +173,30 @@ async function runDockerBuild(data: {
    */
   return deployment;
 }
+
 client.consumeMessageViaConsumer(
   "deployment-consumer",
   "pending-docker-build",
-  runDockerBuild,
+  runDockerBuild
 );
 
-app.listen(9000, () => {
-  console.log("deployment server listening on port 9000");
-});
+app.use(
+  (
+    err: any,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    console.log("this is from global error handlers");
+    console.error(err.stack || err.message || err);
+    next();
+  }
+);
+
+app
+  .listen(9000, () => {
+    console.log("deployment server listening on port 9000");
+  })
+  .addListener("error", (error) => {
+    console.log(error);
+  });

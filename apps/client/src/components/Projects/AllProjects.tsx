@@ -22,7 +22,7 @@ import { useSelector } from "react-redux";
 import { useCreateProject, useGetAllProjectData } from "@/Hooks/api/project";
 import { Link, useNavigate } from "react-router";
 
-interface project {
+export interface project {
   id: string;
   name: string;
   description: string;
@@ -50,7 +50,7 @@ function AllProjects() {
     return authors.sort();
   }, []);
   const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated,
+    (state: RootState) => state.auth.isAuthenticated
   );
   let userId;
   if (!isAuthenticated) {
@@ -69,6 +69,7 @@ function AllProjects() {
       setSampleProject(projectsdata.getAllUserProject || []);
     }
   }, [projectsdata, projectLoading, projectError]);
+
   const filteredAndSortedProjects = useMemo(() => {
     let filtered = sampleProjects.filter((project) => {
       const matchesSearch =

@@ -15,6 +15,7 @@ function ProfileCard() {
   return (
     <div className="bg-black min-h-screen">
       <GithubCard />
+
       <Component
         //   @ts-ignore
         defaultValue="account"

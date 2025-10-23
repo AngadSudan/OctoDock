@@ -60,7 +60,7 @@ const OverlayFormModal: React.FC<OverlayFormModalProps> = ({
   }, [isOpen, isLoading, onClose]);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -196,7 +196,7 @@ const OverlayFormModal: React.FC<OverlayFormModalProps> = ({
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating...
+                  Creating. This Might take some time...
                 </>
               ) : (
                 "Proceed"
