@@ -175,7 +175,7 @@ function AllProjects() {
               to="/"
               className="text-5xl font-bold text-white tracking-tight"
             >
-              Octadock
+              Octodock
             </Link>
             <p className="text-white/60 text-xl font-medium">
               Build, deploy, and scale with confidence

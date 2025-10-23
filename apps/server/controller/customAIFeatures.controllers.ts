@@ -19,11 +19,11 @@ class customModel {
   async generateFileBasedOnFeatures(
     srs: string,
     description: string,
-    gitSummary: string,
+    gitSummary: string
   ) {
     const prompt = CodeGenerationForFeature.replace(
       "{srs_documentdetails}",
-      srs,
+      srs
     )
       .replace("{current_feature}", description)
       .replace("{git_summary}", gitSummary);
@@ -41,7 +41,7 @@ class customModel {
     codefile,
     gitSummary,
     currentStatus,
-    sdd,
+    sdd
   ) {
     let response = "";
     const prompt = CodeGenerationForFile.replace("{srs_documentdetails}", srs)
@@ -56,7 +56,6 @@ class customModel {
     });
 
     let success = false;
-
     while (!success) {
       try {
         console.log({
@@ -87,6 +86,7 @@ class customModel {
           error: error,
         });
         openRouterKeys.rotateToNextKey();
+        setTimeout(() => {}, 1000);
       }
     }
 
@@ -95,11 +95,11 @@ class customModel {
   async generateCorrectnessInFileOnBuggyFeature(
     srs: string,
     codefile: string,
-    gitSummary: string,
+    gitSummary: string
   ) {
     const prompt = CodeGenerationForCorrection.replace(
       "{srs_documentdetails}",
-      srs,
+      srs
     )
       .replace("{current_code}", codefile)
       .replace("{git_summary}", gitSummary);

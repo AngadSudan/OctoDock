@@ -4,7 +4,7 @@ function createKafkaClient(
   clientId: string,
   broker: string[],
   ssl: boolean,
-  saml: kafkaCloudClient
+  saml: kafkaCloudClient,
 ): Kafka | null {
   try {
     const client: Kafka = new Kafka({

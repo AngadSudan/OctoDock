@@ -126,7 +126,7 @@ function OctodockActivity() {
                               <div className="text-gray-400 text-xs mt-1">
                                 {getDateForCell(
                                   hoveredCell.rowIndex,
-                                  hoveredCell.colIndex
+                                  hoveredCell.colIndex,
                                 )}
                               </div>
                             </div>

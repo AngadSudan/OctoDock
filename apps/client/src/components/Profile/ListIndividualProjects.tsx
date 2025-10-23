@@ -10,7 +10,7 @@ import type { project } from "../Projects/AllProjects";
 function ListIndividualProjects() {
   const router = useNavigate();
   const [sampleProjects, setSampleProject] = useState<project[]>([]);
-  const [viewMode, setViewMode] = useState("card");
+  const [viewMode, setViewMode] = useState("list");
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );

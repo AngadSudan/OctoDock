@@ -60,7 +60,7 @@ const OverlayFormModal: React.FC<OverlayFormModalProps> = ({
   }, [isOpen, isLoading, onClose]);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));

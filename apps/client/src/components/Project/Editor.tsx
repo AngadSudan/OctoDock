@@ -175,6 +175,7 @@ export default function Editor({
     );
   };
   const handleDeployemnt = async () => {
+    setDeployment(true);
     const response = await axios.post(
       configuration.builder_server + "/deploy",
       {
@@ -185,6 +186,7 @@ export default function Editor({
     if (response.data) {
       redirect("/deployment/" + param.id);
     }
+    setDeployment(false);
   };
 
   const getStatusIcon = () => {

@@ -26,7 +26,7 @@ app.use(
       "Origin",
       "Accept",
     ],
-  })
+  }),
 );
 app.use(express.json());
 
@@ -58,7 +58,7 @@ app.post("/deploy", async (req, res) => {
         PROJECT_NAME: dbProject?.name.replaceAll(" ", "-").replaceAll(",", "-"),
         projectId,
       }),
-    ]
+    ],
   );
   res.json({
     message: "Getting the deployment ready for you",
@@ -177,7 +177,7 @@ async function runDockerBuild(data: {
 client.consumeMessageViaConsumer(
   "deployment-consumer",
   "pending-docker-build",
-  runDockerBuild
+  runDockerBuild,
 );
 
 app.use(
@@ -185,12 +185,12 @@ app.use(
     err: any,
     req: express.Request,
     res: express.Response,
-    next: express.NextFunction
+    next: express.NextFunction,
   ) => {
     console.log("this is from global error handlers");
     console.error(err.stack || err.message || err);
     next();
-  }
+  },
 );
 
 app

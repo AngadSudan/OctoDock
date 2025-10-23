@@ -25,7 +25,7 @@ class kafkaClient {
     clientId: string,
     broker: string[],
     ssl: boolean = false,
-    sasl: kafkaCloudClient
+    sasl: kafkaCloudClient,
   ) {
     this.broker = broker;
     this.clientId = clientId;
@@ -85,7 +85,7 @@ class kafkaClient {
   async pushMessageViaProducer(
     producerName: string,
     topic: string,
-    messages: string[]
+    messages: string[],
   ) {
     const currentProducer = this.kafkaUser[producerName]?.kafkaProducer;
     if (!currentProducer) throw new Error(`Producer ${producerName} not found`);
@@ -108,7 +108,7 @@ class kafkaClient {
   async consumeMessageViaConsumer(
     consumerName: string,
     topic: string,
-    fn: any
+    fn: any,
   ) {
     const consumer = this.kafkaUser[consumerName]?.kafkaConsumer;
     if (!consumer) throw new Error(`Consumer ${consumerName} not found`);
@@ -161,7 +161,7 @@ class kafkaClient {
 function registerKafkaClient(
   clientId: string,
   broker: string[],
-  ssl: boolean = false
+  ssl: boolean = false,
 ) {
   return new kafkaClient(clientId, broker, ssl, {} as any);
 }

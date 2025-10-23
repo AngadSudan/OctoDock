@@ -24,7 +24,7 @@ class GeminiAiFeatures {
     if (!userDescription) return null;
     const prompt = enhanceUserGivenProjectDescription.replace(
       "{user_description}",
-      userDescription
+      userDescription,
     );
     const response = await this.model.models.generateContent({
       model: this.modelVersion,
@@ -36,7 +36,7 @@ class GeminiAiFeatures {
   async generateProjectFileStructure(enhancedPrompt: string) {
     const prompt = generateFileStructurePrompt.replace(
       "{detailed_project_planning}",
-      enhancedPrompt
+      enhancedPrompt,
     );
 
     const response = await this.jsonModel.models.generateContent({
@@ -61,7 +61,7 @@ class GeminiAiFeatures {
   async getResponseText(
     originalFolderStructure: string,
     generatedFolderStructure: string,
-    userPrompt: string
+    userPrompt: string,
   ) {
     const prompt = compareChangesAndReturnText
       .replace("{original_folder_structure}", originalFolderStructure)
@@ -75,7 +75,7 @@ class GeminiAiFeatures {
   }
   async enhanceFeedbackPrompt(
     enahcedProjectDescription: string,
-    userDescription: string
+    userDescription: string,
   ) {
     return "a";
   }
