@@ -8,22 +8,40 @@ interface kafkaUser {
   kafkaConsumer?: Consumer;
 }
 
+export interface kafkaCloudClient {
+  mechanism: string;
+  username: string;
+  password: string;
+}
+
 class kafkaClient {
-  client: Kafka;
+  client: Kafka | null;
   clientId: string;
   broker: string[];
+  ssl: boolean;
+  sasl: kafkaCloudClient | object;
   kafkaUser: Record<string, kafkaUser>;
-  constructor(clientId: string, broker: string[]) {
+  constructor(
+    clientId: string,
+    broker: string[],
+    ssl: boolean = false,
+    sasl: kafkaCloudClient,
+  ) {
     this.broker = broker;
     this.clientId = clientId;
     this.kafkaUser = {};
-    this.client = createKafkaClient(clientId, broker);
+    this.ssl = ssl;
+    this.sasl = sasl;
+    this.client = createKafkaClient(clientId, broker, ssl, sasl);
   }
 
   /**
    * Create a producer and register it
    */
   async createNewProducer(producerName: string) {
+    if (!this.client) {
+      throw new Error("Kafka client is not initialized");
+    }
     this.kafkaUser[producerName] = {
       kafkaProducer: this.client.producer(),
       type: "PRODUCER",
@@ -34,6 +52,9 @@ class kafkaClient {
    * Create a consumer and register it
    */
   async createNewConsumer(consumerName: string, groupId: string) {
+    if (!this.client) {
+      throw new Error("Kafka client is not initialized");
+    }
     this.kafkaUser[consumerName] = {
       kafkaConsumer: this.client.consumer({ groupId }),
       type: "CONSUMER",
@@ -45,6 +66,9 @@ class kafkaClient {
    * Create topics via Admin API
    */
   async createTopic(topics: ITopicConfig[]) {
+    if (!this.client) {
+      throw new Error("Kafka client is not initialized");
+    }
     const admin = this.client.admin();
     await admin.connect();
 
@@ -134,8 +158,12 @@ class kafkaClient {
   }
 }
 
-function registerKafkaClient(clientId: string, broker: string[]) {
-  return new kafkaClient(clientId, broker);
+function registerKafkaClient(
+  clientId: string,
+  broker: string[],
+  ssl: boolean = false,
+) {
+  return new kafkaClient(clientId, broker, ssl, {} as any);
 }
 
 export default registerKafkaClient;

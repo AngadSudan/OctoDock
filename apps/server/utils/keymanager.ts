@@ -71,10 +71,8 @@ class GeminiKeyManager {
 
 // Initialize the GeminiKeyManager with API keys
 const keyManager = new GeminiKeyManager([
-  "AIzaSyBninrss6yavN9W4amrNB9Fj4mfPZZZ-3Y",
-  "AIzaSyA7c-oXClHSPlb26klR7H66KxjV7J_dobw",
-  "AIzaSyC5N_RPX7j3TnTZpOpqeWt12zyxjGnPjIU",
-  "AIzaSyCWiWcnKPRQo0m-O7RXa1HRQpjMOx3RXC4",
+  "AIzaSyDV7ZEdqPcoPZArkS4WMW7CEogvYQgkvtI",
+  "AIzaSyCFSsx1wLrt_Ygvkgjy7JkZgr6jxV5Outo",
 ]);
 
 export default keyManager;

@@ -17,7 +17,7 @@ class GeminiAiFeatures {
     this.availableKey = keyManager.getAvailableKey();
     this.model = new GoogleGenAI({ apiKey: this.availableKey });
     this.jsonModel = new GoogleGenAI({ apiKey: this.availableKey });
-    this.modelVersion = "gemini-2.0-flash";
+    this.modelVersion = "gemini-2.5-flash";
   }
 
   async enhanceUserGivenDescription(userDescription: string) {

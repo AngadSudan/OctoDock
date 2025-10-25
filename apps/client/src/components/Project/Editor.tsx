@@ -5,6 +5,8 @@ import configuration from "@/conf/configuration";
 import { redirect, useParams } from "react-router";
 import type { RootState } from "@/redux";
 import { useSelector } from "react-redux";
+import { GitBranch, CheckCircle, XCircle, Loader2 } from "lucide-react";
+import Deployment from "./Deployment";
 
 export default function Editor({
   files,
@@ -17,6 +19,10 @@ export default function Editor({
   const vmRef = useRef<VM | null>(null);
   const [isLoaded, setIsLoaded] = useState(loading);
   const [error, setError] = useState<string | null>(null);
+  const [gitPush, setGitPush] = useState(false);
+  const [deployment, setDeployment] = useState(false);
+  const [gitMessage, setGitMessage] = useState("staging your code");
+
   useEffect(() => {
     if (!containerRef.current) return;
     let cancelled = false;
@@ -59,7 +65,7 @@ export default function Editor({
               height: "100%",
               width: "100%",
               hideExplorer: false,
-            },
+            }
           )
           .then((vm) => {
             if (!cancelled) {
@@ -70,7 +76,7 @@ export default function Editor({
           .catch((fallbackErr) => {
             console.error("Fallback embed error:", fallbackErr);
             setError(
-              fallbackErr?.message || "Failed to load StackBlitz fallback",
+              fallbackErr?.message || "Failed to load StackBlitz fallback"
             );
           });
 
@@ -149,28 +155,73 @@ export default function Editor({
   const username = useSelector((state: RootState) => state.auth.user.login);
 
   const handleGitPush = async () => {
+    setGitPush(true);
     const fileStructure = await getFolderStructure();
-
+    setTimeout(() => {
+      setGitMessage("commiting your code");
+    }, 5000);
+    setTimeout(() => {
+      setGitMessage("pushing your code");
+    }, 17000);
+    setTimeout(() => {
+      setGitPush(false);
+    }, 20000);
     const response = await axios.post(
       `${configuration.backend_url}/push/${param.id}`,
       {
         username,
         foldername: fileStructure,
-      },
+      }
     );
   };
   const handleDeployemnt = async () => {
+    setDeployment(true);
     const response = await axios.post(
       configuration.builder_server + "/deploy",
       {
         projectId: param.id,
-      },
+      }
     );
 
     if (response.data) {
       redirect("/deployment/" + param.id);
     }
+    setDeployment(false);
   };
+
+  const getStatusIcon = () => {
+    switch (status) {
+      case "success":
+        return <CheckCircle className="w-6 h-6 text-green-400" />;
+      case "error":
+        return <XCircle className="w-6 h-6 text-red-400" />;
+      default:
+        return <Loader2 className="w-6 h-6 text-purple-400 animate-spin" />;
+    }
+  };
+
+  const getStatusColor = () => {
+    switch (status) {
+      case "success":
+        return "from-green-500/20 to-emerald-500/20 border-green-500/30";
+      case "error":
+        return "from-red-500/20 to-rose-500/20 border-red-500/30";
+      default:
+        return "from-purple-500/20 to-cyan-500/20 border-purple-500/30";
+    }
+  };
+
+  const getStatusMessage = () => {
+    switch (status) {
+      case "success":
+        return "Successfully pushed to your repository";
+      case "error":
+        return "Failed to push to your repository. Please try again.";
+      default:
+        return "Syncing your changes to GitHub...";
+    }
+  };
+
   return (
     <div className="w-full max-w-full mx-auto bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 min-h-screen relative">
       {/* Subtle gradient mesh background */}
@@ -259,6 +310,45 @@ export default function Editor({
           </div>
         )}
 
+        {/* push to github overlay  */}
+        {gitPush && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+            <div
+              className={`bg-gradient-to-br ${getStatusColor()} backdrop-blur-md border rounded-2xl p-8 max-w-md mx-6 shadow-2xl transform transition-all duration-300 scale-100`}
+            >
+              {/* Icon and Title Section */}
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="flex-shrink-0">{getStatusIcon()}</div>
+                <div className="flex-1">
+                  <h3 className="text-white text-xl font-semibold flex items-center gap-2">
+                    <GitBranch className="w-5 h-5" />
+                    {gitMessage} to GitHub
+                  </h3>
+                </div>
+              </div>
+
+              {/* Status Message */}
+              <p className="text-gray-300 text-sm mb-6 leading-relaxed">
+                {getStatusMessage()}
+              </p>
+
+              {/* Progress Bar (only for loading) */}
+              {status === "loading" && (
+                <div className="mb-6">
+                  <div className="h-2 bg-gray-700/50 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full animate-pulse w-3/4"></div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {deployment && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+            <Deployment />
+          </div>
+        )}
         {/* Error state */}
         {error && (
           <div className="absolute inset-0 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">

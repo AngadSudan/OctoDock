@@ -196,7 +196,7 @@ const OverlayFormModal: React.FC<OverlayFormModalProps> = ({
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating...
+                  Creating. This Might take some time...
                 </>
               ) : (
                 "Proceed"

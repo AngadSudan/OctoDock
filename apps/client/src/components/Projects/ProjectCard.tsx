@@ -132,7 +132,7 @@ const ProjectCard = ({
           className="group relative rounded-2xl bg-gradient-to-r from-gray-900/40 via-slate-900/40 to-gray-900/40 border border-white/[0.08] hover:border-white/[0.12] transition-all duration-700 backdrop-blur-2xl hover:shadow-2xl hover:shadow-black/20 cursor-pointer"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          onClick={handleCardClick}
+          // onClick={handleCardClick}
         >
           {/* Sleek gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-r from-red-500/[0.02] via-purple-500/[0.03] to-blue-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
@@ -175,7 +175,7 @@ const ProjectCard = ({
                             {
                               month: "short",
                               day: "numeric",
-                            },
+                            }
                           )
                         : "Recently"}
                     </div>
