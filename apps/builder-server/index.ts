@@ -65,6 +65,59 @@ app.post("/deploy", async (req, res) => {
   });
 });
 
+app.get("/deployment-logs", async (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
+  const projectId = req.query.projectId;
+
+  try {
+    const result = await clickhouseClient.client?.query({
+      query: `
+        SELECT log
+        FROM log_events
+        WHERE projectId = {projectId:String}
+      `,
+      query_params: { projectId },
+      format: "JSONEachRow", // ✅ only here
+    });
+
+    const stream = result?.stream();
+
+    if (!stream) {
+      res.write(`event: error\ndata: {"message": "Stream not available"}\n\n`);
+      return;
+    }
+
+    stream.on("data", (chunk) => {
+      const text = chunk.toString().trim();
+      if (!text) return;
+
+      text.split("\n").forEach((line) => {
+        try {
+          const row = JSON.parse(line);
+          res.write(`data: ${JSON.stringify(row)}\n\n`);
+        } catch {}
+      });
+    });
+
+    stream.on("end", () => {
+      res.write("event: end\ndata: Stream ended\n\n");
+      res.end();
+    });
+
+    req.on("close", () => res.end());
+  } catch (err: any) {
+    console.error(err);
+    res.write(
+      `event: error\ndata: ${JSON.stringify({ message: err.message })}\n\n`
+    );
+    res.end();
+  }
+});
+
 async function runDockerBuild(data: {
   GIT_URL: string;
   PROJECT_NAME: string;

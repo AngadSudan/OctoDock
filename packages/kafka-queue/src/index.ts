@@ -25,7 +25,7 @@ class kafkaClient {
     clientId: string,
     broker: string[],
     ssl: boolean = false,
-    sasl: kafkaCloudClient,
+    sasl: kafkaCloudClient
   ) {
     this.broker = broker;
     this.clientId = clientId;
@@ -56,7 +56,11 @@ class kafkaClient {
       throw new Error("Kafka client is not initialized");
     }
     this.kafkaUser[consumerName] = {
-      kafkaConsumer: this.client.consumer({ groupId }),
+      kafkaConsumer: this.client.consumer({
+        groupId,
+        heartbeatInterval: 3000, // send heartbeat every 3s
+        sessionTimeout: 1200000, // allow up to 2 min before Kafka kicks you out
+      }),
       type: "CONSUMER",
       isRunning: false,
     };
@@ -85,7 +89,7 @@ class kafkaClient {
   async pushMessageViaProducer(
     producerName: string,
     topic: string,
-    messages: string[],
+    messages: string[]
   ) {
     const currentProducer = this.kafkaUser[producerName]?.kafkaProducer;
     if (!currentProducer) throw new Error(`Producer ${producerName} not found`);
@@ -108,7 +112,7 @@ class kafkaClient {
   async consumeMessageViaConsumer(
     consumerName: string,
     topic: string,
-    fn: any,
+    fn: any
   ) {
     const consumer = this.kafkaUser[consumerName]?.kafkaConsumer;
     if (!consumer) throw new Error(`Consumer ${consumerName} not found`);
@@ -117,7 +121,7 @@ class kafkaClient {
       this.kafkaUser[consumerName].isRunning = true;
 
       await consumer.connect();
-      await consumer.subscribe({ topic, fromBeginning: true });
+      await consumer.subscribe({ topic, fromBeginning: false });
 
       await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
@@ -161,7 +165,7 @@ class kafkaClient {
 function registerKafkaClient(
   clientId: string,
   broker: string[],
-  ssl: boolean = false,
+  ssl: boolean = false
 ) {
   return new kafkaClient(clientId, broker, ssl, {} as any);
 }

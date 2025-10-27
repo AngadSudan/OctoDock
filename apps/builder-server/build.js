@@ -23,7 +23,6 @@ async function main() {
     if (code === 0) {
       console.log("✅ Build complete");
       console.log("continuing the build stage .... ");
-      console.log(`octodock92:${process.env.DOCKER_PASSWORD}`);
       const dockerLogin = exec(`
           echo ${process.env.DOCKER_PASSWORD} | docker login -u octodock92 --password-stdin
         `);

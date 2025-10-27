@@ -21,23 +21,21 @@ import { Provider } from "react-redux";
 import store from "./redux";
 import Home from "./pages/Home.tsx";
 import PromptBar from "./pages/PromptBar.tsx";
+import Deployment from "./pages/Deployment.tsx";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
       <Route path="" element={<Home />} />
       <Route path="login" element={<Login />} />
       <Route path="about" element={<About />} />
-      <Route path="profile" element={<Profile />} loader={() => {}} />
-      <Route
-        path="project/dashboard"
-        element={<Projects />}
-        loader={() => {}}
-      />
-      <Route path="project" element={<PromptBar />} loader={() => {}} />
-      <Route path="project/:id" element={<Project />} loader={() => {}} />
-      <Route path="error/logs" element={<Logs />} loader={() => {}} />
-    </Route>,
-  ),
+      <Route path="profile" element={<Profile />} />
+      <Route path="project/dashboard" element={<Projects />} />
+      <Route path="project" element={<PromptBar />} />
+      <Route path="project/:id" element={<Project />} />
+      <Route path="deployment/:id" element={<Deployment />} />
+      <Route path="error/logs" element={<Logs />} />
+    </Route>
+  )
 );
 
 createRoot(document.getElementById("root")!).render(
@@ -47,5 +45,5 @@ createRoot(document.getElementById("root")!).render(
         <RouterProvider router={router} />
       </Provider>
     </ApolloProvider>
-  </StrictMode>,
+  </StrictMode>
 );
