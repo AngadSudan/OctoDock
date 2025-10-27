@@ -175,7 +175,7 @@ const ProjectCard = ({
                             {
                               month: "short",
                               day: "numeric",
-                            }
+                            },
                           )
                         : "Recently"}
                     </div>

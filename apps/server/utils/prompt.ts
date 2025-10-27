@@ -102,14 +102,14 @@ project_dir
 ### Rules
 - The yaml should contain full relative paths to each file.
 - follow the strict yaml format and nothing more
-- Include meaningful folders and subfolders (e.g. src, routes, controllers, models, middleware, utils).
+- Include meaningful folders and only these subfolders - src, routes, controllers, models, middleware, utils.
 - Follow best practices for organizing a scalable Node.js or django backend.
 - Do **not** include folder names as objects — just file paths as strings.
 - Do **not** include file content, metadata, or explanations — just the file paths.
 - Avoid frontend or client files — backend only.
-- Generate project for advance pipelines as well (eg:- websockets, WebRTC is mentioned)
 - Maindatorily add a package.json if its a javascript project
 - Keep a file .env.example which tells what all are the enviornment variables used
+- generate file names in this way- index.js , models.js , controllers.js , routes.js , util.js 
 
 
 ### Input SRS:
@@ -369,7 +369,7 @@ Your task is to produce a detailed mapping of the project codebase, including:
    - List all functions defined in each file.  
    - For each function, specify:  
      - Function name  
-     - Purpose/description  
+     - one line description  
      - Input parameters  
      - Return type/value  
 
