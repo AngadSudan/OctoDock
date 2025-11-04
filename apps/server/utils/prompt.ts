@@ -166,7 +166,8 @@ Inputs:
 
 2️⃣ **Target File to Generate**  
 {code_file}
-
+** folder structure**
+{git_summary}
 ---
 
 ✅ **Output Format (STRICTLY JSON):**  
@@ -189,6 +190,7 @@ Output ONLY a valid Javasript code file:
 - DEFAULT PORT FOR THE SERVER IS 8000
 - package.json must have a dev script
 - follow js ESM module syntax
+- donot lie purely on abstraction also implement the functionality there it self in the controller
 `;
 export const CodeGenerationForCorrection = `
 You are an AI backend assistant for the Octodock project. Your task is to analyze the provided code and correct any issues related to the specified feature. Ensure the corrected code is production-ready, maintainable, and aligns with best practices.

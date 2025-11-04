@@ -15,6 +15,8 @@ app.use(
       process.env.FRONTEND_URL || "http://localhost:5173",
       process.env.BACKEND_URL || "http://localhost:8000",
       "http://localhost:3000",
+      "http://localhost:5173",
+      "http://localhost:8000",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
@@ -43,26 +45,32 @@ client.createNewProducer("deployment-producer");
 client.createNewConsumer("deployment-consumer", "initial");
 
 app.post("/deploy", async (req, res) => {
-  const { projectId } = req.body;
-  const dbProject = await prisma.project.findUnique({
-    where: {
-      id: projectId,
-    },
-  });
-  await client.pushMessageViaProducer(
-    "deployment-producer",
-    "pending-docker-build",
-    [
-      JSON.stringify({
-        GIT_URL: dbProject?.githubUrl,
-        PROJECT_NAME: dbProject?.name.replaceAll(" ", "-").replaceAll(",", "-"),
-        projectId,
-      }),
-    ]
-  );
-  res.json({
-    message: "Getting the deployment ready for you",
-  });
+  try {
+    const { projectId } = req.body;
+    const dbProject = await prisma.project.findUnique({
+      where: {
+        id: projectId,
+      },
+    });
+    await client.pushMessageViaProducer(
+      "deployment-producer",
+      "pending-docker-build",
+      [
+        JSON.stringify({
+          GIT_URL: dbProject?.githubUrl,
+          PROJECT_NAME: dbProject?.name
+            .replaceAll(" ", "-")
+            .replaceAll(",", "-"),
+          projectId,
+        }),
+      ]
+    );
+    res.json({
+      message: "Getting the deployment ready for you",
+    });
+  } catch (error: any) {
+    console.log(error);
+  }
 });
 
 app.get("/deployment-logs", async (req, res) => {
@@ -70,45 +78,41 @@ app.get("/deployment-logs", async (req, res) => {
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
   res.setHeader("Access-Control-Allow-Origin", "*");
+  res.flushHeaders();
 
-  const projectId = req.query.projectId;
+  const projectId = req.query.projectId as string;
+  if (!projectId) {
+    res.write(
+      `event: error\ndata: ${JSON.stringify({ message: "Missing projectId" })}\n\n`
+    );
+    return;
+  }
+
+  const heartbeat = setInterval(() => {
+    res.write(": keep-alive\n\n");
+  }, 15000);
 
   try {
-    const result = await clickhouseClient.client?.query({
-      query: `
-        SELECT log
-        FROM log_events
-        WHERE projectId = {projectId:String}
-      `,
-      query_params: { projectId },
-      format: "JSONEachRow", // ✅ only here
-    });
-
-    const stream = result?.stream();
-
-    if (!stream) {
-      res.write(`event: error\ndata: {"message": "Stream not available"}\n\n`);
-      return;
-    }
-
-    stream.on("data", (chunk) => {
-      const text = chunk.toString().trim();
-      if (!text) return;
-
-      text.split("\n").forEach((line) => {
-        try {
-          const row = JSON.parse(line);
-          res.write(`data: ${JSON.stringify(row)}\n\n`);
-        } catch {}
+    setInterval(async () => {
+      const result = await clickhouseClient.client?.query({
+        query: `
+          SELECT log
+          FROM log_events
+          WHERE projectId = {projectId:String}
+        `,
+        query_params: { projectId },
+        format: "JSONEachRow",
       });
-    });
 
-    stream.on("end", () => {
-      res.write("event: end\ndata: Stream ended\n\n");
+      const row = await result?.json();
+
+      res.write(`data: ${JSON.stringify(row)}\n\n`);
+    }, 2000);
+    req.on("close", () => {
+      console.log("Client disconnected");
+      clearInterval(heartbeat);
       res.end();
     });
-
-    req.on("close", () => res.end());
   } catch (err: any) {
     console.error(err);
     res.write(

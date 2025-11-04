@@ -59,7 +59,7 @@ class kafkaClient {
       kafkaConsumer: this.client.consumer({
         groupId,
         heartbeatInterval: 3000, // send heartbeat every 3s
-        sessionTimeout: 1200000, // allow up to 2 min before Kafka kicks you out
+        sessionTimeout: 1200000000, // allow up to 2 min before Kafka kicks you out
       }),
       type: "CONSUMER",
       isRunning: false,
