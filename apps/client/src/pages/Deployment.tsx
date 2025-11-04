@@ -7,10 +7,10 @@ function Deployment() {
   const param = useParams();
   useEffect(() => {
     console.log(
-      configuration.builder_server + "/deployment-logs?projectId=" + param.id
+      configuration.builder_server + "/deployment-logs?projectId=" + param.id,
     );
     const eventSource = new EventSource(
-      configuration.builder_server + "/deployment-logs?projectId=" + param.id
+      configuration.builder_server + "/deployment-logs?projectId=" + param.id,
     );
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);

@@ -28,7 +28,7 @@ app.use(
       "Origin",
       "Accept",
     ],
-  })
+  }),
 );
 app.use(express.json());
 
@@ -63,7 +63,7 @@ app.post("/deploy", async (req, res) => {
             .replaceAll(",", "-"),
           projectId,
         }),
-      ]
+      ],
     );
     res.json({
       message: "Getting the deployment ready for you",
@@ -83,7 +83,7 @@ app.get("/deployment-logs", async (req, res) => {
   const projectId = req.query.projectId as string;
   if (!projectId) {
     res.write(
-      `event: error\ndata: ${JSON.stringify({ message: "Missing projectId" })}\n\n`
+      `event: error\ndata: ${JSON.stringify({ message: "Missing projectId" })}\n\n`,
     );
     return;
   }
@@ -116,7 +116,7 @@ app.get("/deployment-logs", async (req, res) => {
   } catch (err: any) {
     console.error(err);
     res.write(
-      `event: error\ndata: ${JSON.stringify({ message: err.message })}\n\n`
+      `event: error\ndata: ${JSON.stringify({ message: err.message })}\n\n`,
     );
     res.end();
   }
@@ -234,7 +234,7 @@ async function runDockerBuild(data: {
 client.consumeMessageViaConsumer(
   "deployment-consumer",
   "pending-docker-build",
-  runDockerBuild
+  runDockerBuild,
 );
 
 app.use(
@@ -242,12 +242,12 @@ app.use(
     err: any,
     req: express.Request,
     res: express.Response,
-    next: express.NextFunction
+    next: express.NextFunction,
   ) => {
     console.log("this is from global error handlers");
     console.error(err.stack || err.message || err);
     next();
-  }
+  },
 );
 
 app
