@@ -39,14 +39,18 @@ class ClickHouse {
   async queryFromClickHouse(projectId: string) {
     const result = await this.client?.query({
       query: `
-      SELECT log
-      FROM log_events
-      WHERE projectId = {projectId:String}
-    `,
+    SELECT log
+    FROM log_events
+    WHERE projectId = {projectId:String}
+      AND parseDateTimeBestEffort(createdAt) > parseDateTimeBestEffort({afterTime:String})
+    ORDER BY parseDateTimeBestEffort(createdAt) DESC
+  `,
       query_params: {
         projectId,
+        afterTime: "2025-11-05 14:45:00", // example timestamp (2:45 PM)
       },
     });
+
     console.log(typeof result);
     console.log(result);
     return result;

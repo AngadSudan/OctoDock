@@ -14,12 +14,12 @@ const mutations = {
       dockerimage,
       urlSlug,
       projectId,
-    }: { dockerimage: string; urlSlug: string; projectId: string },
+    }: { dockerimage: string; urlSlug: string; projectId: string }
   ) => {
     return await deploymentController.createDeployment(
       dockerimage,
       urlSlug,
-      projectId,
+      projectId
     );
   },
   deleteProject: async (
@@ -28,12 +28,12 @@ const mutations = {
       dockerimage,
       urlSlug,
       projectId,
-    }: { dockerimage: string; urlSlug: string; projectId: string },
+    }: { dockerimage: string; urlSlug: string; projectId: string }
   ) => {
     return await deploymentController.redeployProject(
       dockerimage,
       urlSlug,
-      projectId,
+      projectId
     );
   },
 };

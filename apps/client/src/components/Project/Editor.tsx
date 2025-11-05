@@ -65,7 +65,7 @@ export default function Editor({
               height: "100%",
               width: "100%",
               hideExplorer: false,
-            },
+            }
           )
           .then((vm) => {
             if (!cancelled) {
@@ -76,7 +76,7 @@ export default function Editor({
           .catch((fallbackErr) => {
             console.error("Fallback embed error:", fallbackErr);
             setError(
-              fallbackErr?.message || "Failed to load StackBlitz fallback",
+              fallbackErr?.message || "Failed to load StackBlitz fallback"
             );
           });
 
@@ -171,20 +171,22 @@ export default function Editor({
       {
         username,
         foldername: fileStructure,
-      },
+      }
     );
   };
   const handleDeployemnt = async () => {
     setDeployment(true);
+    console.log(configuration.builder_server + "/deploy");
     const response = await axios.post(
       configuration.builder_server + "/deploy",
       {
         projectId: param.id,
-      },
+      }
     );
 
     if (response.data) {
-      redirect("/deployment/" + param.id);
+      setTimeout(() => {}, 3000);
+      window.location.href = window.location.origin + "/deployment/" + param.id;
     }
     setDeployment(false);
   };

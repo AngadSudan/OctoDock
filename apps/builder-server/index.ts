@@ -7,6 +7,7 @@ import clickhouseClient from "./client";
 import { v4 as uuid } from "uuid";
 import prisma from "@octodock/prisma";
 import generateSlug from "./slug";
+import morgan from "morgan";
 const app = express();
 app.use(express.json());
 app.use(
@@ -28,10 +29,10 @@ app.use(
       "Origin",
       "Accept",
     ],
-  }),
+  })
 );
 app.use(express.json());
-
+app.use(morgan("dev"));
 const client = registerKafkaClient("push-to-deployment-queue", [
   "localhost:9092",
 ]);
@@ -63,7 +64,7 @@ app.post("/deploy", async (req, res) => {
             .replaceAll(",", "-"),
           projectId,
         }),
-      ],
+      ]
     );
     res.json({
       message: "Getting the deployment ready for you",
@@ -83,7 +84,7 @@ app.get("/deployment-logs", async (req, res) => {
   const projectId = req.query.projectId as string;
   if (!projectId) {
     res.write(
-      `event: error\ndata: ${JSON.stringify({ message: "Missing projectId" })}\n\n`,
+      `event: error\ndata: ${JSON.stringify({ message: "Missing projectId" })}\n\n`
     );
     return;
   }
@@ -93,15 +94,22 @@ app.get("/deployment-logs", async (req, res) => {
   }, 15000);
 
   try {
+    const date = new Date();
+    const formatted = date.toISOString().slice(0, 19).replace("T", " ");
     setInterval(async () => {
       const result = await clickhouseClient.client?.query({
         query: `
-          SELECT log
-          FROM log_events
-          WHERE projectId = {projectId:String}
-        `,
-        query_params: { projectId },
-        format: "JSONEachRow",
+        SELECT log
+        FROM log_events
+        WHERE projectId = {projectId:String}
+          AND parseDateTimeBestEffort(createdAt) > parseDateTimeBestEffort({afterTime:String})
+        ORDER BY parseDateTimeBestEffort(createdAt) DESC
+        LIMIT 10;
+      `,
+        query_params: {
+          projectId,
+          afterTime: formatted, // example timestamp (2:45 PM)
+        },
       });
 
       const row = await result?.json();
@@ -116,7 +124,7 @@ app.get("/deployment-logs", async (req, res) => {
   } catch (err: any) {
     console.error(err);
     res.write(
-      `event: error\ndata: ${JSON.stringify({ message: err.message })}\n\n`,
+      `event: error\ndata: ${JSON.stringify({ message: err.message })}\n\n`
     );
     res.end();
   }
@@ -159,7 +167,7 @@ async function runDockerBuild(data: {
   await clickhouseClient.insertIntoClickHouse([
     {
       id: uuid(),
-      log: "🚀 Running Docker with args: " + args.join(" "),
+      log: "🚀 Running Docker for project: " + args[5],
       projectId,
       createdAt: new Date().toISOString(),
     },
@@ -234,7 +242,7 @@ async function runDockerBuild(data: {
 client.consumeMessageViaConsumer(
   "deployment-consumer",
   "pending-docker-build",
-  runDockerBuild,
+  runDockerBuild
 );
 
 app.use(
@@ -242,12 +250,12 @@ app.use(
     err: any,
     req: express.Request,
     res: express.Response,
-    next: express.NextFunction,
+    next: express.NextFunction
   ) => {
     console.log("this is from global error handlers");
     console.error(err.stack || err.message || err);
     next();
-  },
+  }
 );
 
 app
