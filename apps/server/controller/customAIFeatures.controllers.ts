@@ -19,11 +19,11 @@ class customModel {
   async generateFileBasedOnFeatures(
     srs: string,
     description: string,
-    gitSummary: string
+    gitSummary: string,
   ) {
     const prompt = CodeGenerationForFeature.replace(
       "{srs_documentdetails}",
-      srs
+      srs,
     )
       .replace("{current_feature}", description)
       .replace("{git_summary}", gitSummary);
@@ -41,7 +41,7 @@ class customModel {
     codefile,
     gitSummary,
     currentStatus,
-    sdd
+    sdd,
   ) {
     let response = "";
     const prompt = CodeGenerationForFile.replace("{srs_documentdetails}", srs)
@@ -58,26 +58,28 @@ class customModel {
     let success = false;
     while (!success) {
       try {
-        console.log({
-          message: `creating file ${codefile} ...`,
-        });
-        const completion = await openai.chat.completions.create({
-          model: "openai/gpt-oss-120b",
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are given a software design document. Based on the specification of the file given in it you will be creating the code for a backend application.",
-            },
-            {
-              role: "user",
-              content: prompt,
-            },
-          ],
-        });
+        setTimeout(async () => {
+          console.log({
+            message: `creating file ${codefile} ...`,
+          });
+          const completion = await openai.chat.completions.create({
+            model: "openai/gpt-oss-120b",
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You are given a software design document. Based on the specification of the file given in it you will be creating the code for a backend application.",
+              },
+              {
+                role: "user",
+                content: prompt,
+              },
+            ],
+          });
 
-        response = completion.choices[0].message.content;
-        success = true;
+          response = completion.choices[0].message.content;
+          success = true;
+        }, 1000);
       } catch (error) {
         console.log({
           message:
@@ -86,7 +88,6 @@ class customModel {
           error: error,
         });
         openRouterKeys.rotateToNextKey();
-        setTimeout(() => {}, 1000);
       }
     }
 
@@ -95,11 +96,11 @@ class customModel {
   async generateCorrectnessInFileOnBuggyFeature(
     srs: string,
     codefile: string,
-    gitSummary: string
+    gitSummary: string,
   ) {
     const prompt = CodeGenerationForCorrection.replace(
       "{srs_documentdetails}",
-      srs
+      srs,
     )
       .replace("{current_code}", codefile)
       .replace("{git_summary}", gitSummary);

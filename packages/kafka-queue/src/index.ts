@@ -56,7 +56,11 @@ class kafkaClient {
       throw new Error("Kafka client is not initialized");
     }
     this.kafkaUser[consumerName] = {
-      kafkaConsumer: this.client.consumer({ groupId }),
+      kafkaConsumer: this.client.consumer({
+        groupId,
+        heartbeatInterval: 3000, // send heartbeat every 3s
+        sessionTimeout: 1200000000, // allow up to 2 min before Kafka kicks you out
+      }),
       type: "CONSUMER",
       isRunning: false,
     };
@@ -117,7 +121,7 @@ class kafkaClient {
       this.kafkaUser[consumerName].isRunning = true;
 
       await consumer.connect();
-      await consumer.subscribe({ topic, fromBeginning: true });
+      await consumer.subscribe({ topic, fromBeginning: false });
 
       await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {

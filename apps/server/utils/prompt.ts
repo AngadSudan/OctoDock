@@ -102,14 +102,14 @@ project_dir
 ### Rules
 - The yaml should contain full relative paths to each file.
 - follow the strict yaml format and nothing more
-- Include meaningful folders and subfolders (e.g. src, routes, controllers, models, middleware, utils).
+- Include meaningful folders and only these subfolders - src, routes, controllers, models, middleware, utils.
 - Follow best practices for organizing a scalable Node.js or django backend.
 - Do **not** include folder names as objects — just file paths as strings.
 - Do **not** include file content, metadata, or explanations — just the file paths.
 - Avoid frontend or client files — backend only.
-- Generate project for advance pipelines as well only if user explicitly specifies (eg:- websockets, WebRTC is mentioned)
 - Maindatorily add a package.json if its a javascript project
 - Keep a file .env.example which tells what all are the enviornment variables used
+- generate file names in this way- index.js , models.js , controllers.js , routes.js , util.js 
 
 
 ### Input SRS:
@@ -166,7 +166,8 @@ Inputs:
 
 2️⃣ **Target File to Generate**  
 {code_file}
-
+** folder structure**
+{git_summary}
 ---
 
 ✅ **Output Format (STRICTLY JSON):**  
@@ -189,6 +190,7 @@ Output ONLY a valid Javasript code file:
 - DEFAULT PORT FOR THE SERVER IS 8000
 - package.json must have a dev script
 - follow js ESM module syntax
+- donot lie purely on abstraction also implement the functionality there it self in the controller
 `;
 export const CodeGenerationForCorrection = `
 You are an AI backend assistant for the Octodock project. Your task is to analyze the provided code and correct any issues related to the specified feature. Ensure the corrected code is production-ready, maintainable, and aligns with best practices.
@@ -369,7 +371,7 @@ Your task is to produce a detailed mapping of the project codebase, including:
    - List all functions defined in each file.  
    - For each function, specify:  
      - Function name  
-     - Purpose/description  
+     - one line description  
      - Input parameters  
      - Return type/value  
 

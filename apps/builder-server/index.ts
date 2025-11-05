@@ -13,8 +13,10 @@ app.use(
   cors({
     origin: [
       process.env.FRONTEND_URL || "http://localhost:5173",
-      "http://localhost:8000",
+      process.env.BACKEND_URL || "http://localhost:8000",
       "http://localhost:3000",
+      "http://localhost:5173",
+      "http://localhost:8000",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
@@ -43,26 +45,81 @@ client.createNewProducer("deployment-producer");
 client.createNewConsumer("deployment-consumer", "initial");
 
 app.post("/deploy", async (req, res) => {
-  const { projectId } = req.body;
-  const dbProject = await prisma.project.findUnique({
-    where: {
-      id: projectId,
-    },
-  });
-  await client.pushMessageViaProducer(
-    "deployment-producer",
-    "pending-docker-build",
-    [
-      JSON.stringify({
-        GIT_URL: dbProject?.githubUrl,
-        PROJECT_NAME: dbProject?.name.replaceAll(" ", "-").replaceAll(",", "-"),
-        projectId,
-      }),
-    ],
-  );
-  res.json({
-    message: "Getting the deployment ready for you",
-  });
+  try {
+    const { projectId } = req.body;
+    const dbProject = await prisma.project.findUnique({
+      where: {
+        id: projectId,
+      },
+    });
+    await client.pushMessageViaProducer(
+      "deployment-producer",
+      "pending-docker-build",
+      [
+        JSON.stringify({
+          GIT_URL: dbProject?.githubUrl,
+          PROJECT_NAME: dbProject?.name
+            .replaceAll(" ", "-")
+            .replaceAll(",", "-"),
+          projectId,
+        }),
+      ],
+    );
+    res.json({
+      message: "Getting the deployment ready for you",
+    });
+  } catch (error: any) {
+    console.log(error);
+  }
+});
+
+app.get("/deployment-logs", async (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.flushHeaders();
+
+  const projectId = req.query.projectId as string;
+  if (!projectId) {
+    res.write(
+      `event: error\ndata: ${JSON.stringify({ message: "Missing projectId" })}\n\n`,
+    );
+    return;
+  }
+
+  const heartbeat = setInterval(() => {
+    res.write(": keep-alive\n\n");
+  }, 15000);
+
+  try {
+    setInterval(async () => {
+      const result = await clickhouseClient.client?.query({
+        query: `
+          SELECT log
+          FROM log_events
+          WHERE projectId = {projectId:String}
+        `,
+        query_params: { projectId },
+        format: "JSONEachRow",
+      });
+
+      const row = await result?.json();
+
+      res.write(`data: ${JSON.stringify(row)}\n\n`);
+    }, 2000);
+    req.on("close", () => {
+      console.log("Client disconnected");
+      clearInterval(heartbeat);
+      res.end();
+    });
+  } catch (err: any) {
+    console.error(err);
+    res.write(
+      `event: error\ndata: ${JSON.stringify({ message: err.message })}\n\n`,
+    );
+    res.end();
+  }
 });
 
 async function runDockerBuild(data: {
@@ -99,14 +156,14 @@ async function runDockerBuild(data: {
     "angadsudan/build-project",
   ];
 
-  // await clickhouseClient.insertIntoClickHouse([
-  //   {
-  //     id: uuid(),
-  //     log: "🚀 Running Docker with args: " + args.join(" "),
-  //     projectId,
-  //     createdAt: new Date().toISOString(),
-  //   },
-  // ]);
+  await clickhouseClient.insertIntoClickHouse([
+    {
+      id: uuid(),
+      log: "🚀 Running Docker with args: " + args.join(" "),
+      projectId,
+      createdAt: new Date().toISOString(),
+    },
+  ]);
   // Wrap spawn into a promise
   await new Promise<void>((resolve, reject) => {
     const generatedProcess = spawn("docker", args, { stdio: "pipe" });
@@ -125,14 +182,14 @@ async function runDockerBuild(data: {
     });
 
     generatedProcess.stderr.on("data", (data) => {
-      // clickhouseClient.insertIntoClickHouse([
-      //   {
-      //     id: uuid(),
-      //     log: `[docker-stderr] ${data}`,
-      //     projectId,
-      //     createdAt: new Date().toISOString(),
-      //   },
-      // ]);
+      clickhouseClient.insertIntoClickHouse([
+        {
+          id: uuid(),
+          log: `[docker-stderr] ${data}`,
+          projectId,
+          createdAt: new Date().toISOString(),
+        },
+      ]);
       console.log(`[docker-stderr] ${data}`);
     });
 
@@ -142,14 +199,14 @@ async function runDockerBuild(data: {
 
     generatedProcess.on("close", (code) => {
       if (code === 0) {
-        // clickhouseClient.insertIntoClickHouse([
-        //   {
-        //     id: uuid(),
-        //     log: "✅ Build container completed successfully",
-        //     projectId: data.projectId,
-        //     createdAt: new Date().toISOString(),
-        //   },
-        // ]);
+        clickhouseClient.insertIntoClickHouse([
+          {
+            id: uuid(),
+            log: "✅ Build container completed successfully",
+            projectId: data.projectId,
+            createdAt: new Date().toISOString(),
+          },
+        ]);
         resolve();
       } else {
         reject(new Error(`❌ Build container exited with code ${code}`));

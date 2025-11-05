@@ -11,7 +11,7 @@ import aws from "../../../public/aws.webp";
 
 const sponsorImages = [stackBltz, ollama, gemini, chatgpt, terraform, aws];
 const videoSrc =
-  "https://storage.googleapis.com/octodock-bucket-1/octoloop.mp4";
+  "https://octodock-archive.s3.eu-north-1.amazonaws.com/octoloop.mp4";
 const SponsorCard = ({ image, x, y }) => {
   return (
     <ParallaxLayer offset={0} speed={0.5 + 2 * 0.1}>

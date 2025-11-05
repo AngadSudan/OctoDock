@@ -47,7 +47,8 @@ class ClickHouse {
         projectId,
       },
     });
-
+    console.log(typeof result);
+    console.log(result);
     return result;
   }
   async insertIntoClickHouse(deployments: deployment[]) {

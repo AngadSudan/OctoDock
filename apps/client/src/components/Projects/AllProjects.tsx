@@ -50,7 +50,7 @@ function AllProjects() {
     return authors.sort();
   }, []);
   const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated
+    (state: RootState) => state.auth.isAuthenticated,
   );
   let userId;
   if (!isAuthenticated) {
