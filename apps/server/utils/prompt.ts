@@ -156,7 +156,7 @@ Return ONLY a valid JSON array in this exact format:
 - Code must be secure, maintainable, and production-quality.
 - Donot import from Files that are not present or call functions that aren't listed.
 - DEFAULT PORT FOR THE SERVER IS 8000
-- follow js ESM module syntax
+- follow js ESM module syntax except for package.json
 `;
 
 export const CodeGenerationForFile = `
