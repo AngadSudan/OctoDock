@@ -46,7 +46,7 @@ function mapRange(
   fromLow: number,
   fromHigh: number,
   toLow: number,
-  toHigh: number
+  toHigh: number,
 ): number {
   if (fromLow === fromHigh) {
     return toLow;
@@ -97,7 +97,7 @@ function CyberpunkPricingCard({
           "relative bg-black/80 backdrop-blur-md border rounded-xl p-8 transition-all duration-500",
           highlighted
             ? "border-red-400/60 shadow-lg shadow-red-400/25"
-            : "border-red-400/30 hover:border-red-400/50"
+            : "border-red-400/30 hover:border-red-400/50",
         )}
       >
         {/* Status indicator */}
@@ -108,14 +108,14 @@ function CyberpunkPricingCard({
                 "p-2 rounded-lg border transition-colors duration-300",
                 highlighted
                   ? "bg-red-400/10 border-red-400/40"
-                  : "bg-red-400/5 border-red-400/20"
+                  : "bg-red-400/5 border-red-400/20",
               )}
             >
               <Icon
                 size={24}
                 className={cn(
                   "transition-colors duration-300",
-                  highlighted ? "text-red-400" : "text-red-400/70"
+                  highlighted ? "text-red-400" : "text-red-400/70",
                 )}
               />
             </div>
@@ -126,7 +126,7 @@ function CyberpunkPricingCard({
               <div
                 className={cn(
                   "font-mono text-lg font-bold tracking-wide transition-colors duration-300",
-                  highlighted ? "text-red-400" : "text-red-400/80"
+                  highlighted ? "text-red-400" : "text-red-400/80",
                 )}
               >
                 {tier}
@@ -137,7 +137,7 @@ function CyberpunkPricingCard({
           <div
             className={cn(
               "w-2 h-2 rounded-full transition-all duration-500",
-              highlighted ? "bg-red-400 animate-pulse" : "bg-red-400/50"
+              highlighted ? "bg-red-400 animate-pulse" : "bg-red-400/50",
             )}
           />
         </div>
@@ -162,7 +162,7 @@ function CyberpunkPricingCard({
             "w-full py-3 px-6 rounded-lg font-mono text-sm font-bold tracking-wide transition-all duration-300 mb-8",
             highlighted
               ? "bg-red-400 text-black hover:bg-red-500 shadow-lg shadow-red-400/25"
-              : "bg-red-400/10 text-red-400 border border-red-400/30 hover:bg-red-400/20 hover:border-red-400/50"
+              : "bg-red-400/10 text-red-400 border border-red-400/30 hover:bg-red-400/20 hover:border-red-400/50",
           )}
         >
           {highlighted ? "UPGRADE NOW" : "SELECT TIER"}
@@ -175,7 +175,7 @@ function CyberpunkPricingCard({
               <div
                 className={cn(
                   "mt-0.5 rounded-full p-0.5",
-                  feature.included ? "bg-red-400/20" : "bg-gray-700/20"
+                  feature.included ? "bg-red-400/20" : "bg-gray-700/20",
                 )}
               >
                 {feature.included ? (
@@ -187,7 +187,7 @@ function CyberpunkPricingCard({
               <span
                 className={cn(
                   "font-mono text-sm leading-relaxed",
-                  feature.included ? "text-gray-300" : "text-gray-600"
+                  feature.included ? "text-gray-300" : "text-gray-600",
                 )}
               >
                 {feature.text}
@@ -308,7 +308,7 @@ export default function Pricing({
     <div
       className={cn(
         "relative min-h-screen w-full overflow-hidden bg-black",
-        className
+        className,
       )}
       style={style}
     >
