@@ -7,6 +7,7 @@ import Future from "@/components/Home/Future";
 import TechStack from "@/components/Home/TechStack";
 import ParallaxComponent from "@/components/About/Prallax";
 import HorizontalParallax from "@/components/About/HorizontalParallax";
+import Pricing from "@/components/Home/Pricing";
 
 function Home() {
   return (
@@ -15,6 +16,7 @@ function Home() {
       <Hero />
       <TechDesign />
       <ParallaxComponent />
+      <Pricing />
       <HorizontalParallax />
     </div>
   );

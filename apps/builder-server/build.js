@@ -53,7 +53,7 @@ async function main() {
     "-f",
     "/home/app/Dockerfile", // make sure this points to your actual Dockerfile
     "-t",
-    `octodock92/${imageName}`,
+    `octodock92/${imageName.replace("octodock/", "")}`,
     "/home/app/project",
   ];
 
@@ -76,6 +76,9 @@ async function main() {
       const dockerLogin = exec(`
           echo ${process.env.DOCKER_PASSWORD} | docker login -u octodock92 --password-stdin
         `);
+      console.log(
+        `echo ${process.env.DOCKER_PASSWORD} | docker login -u octodock92 --password-stdin`
+      );
       dockerLogin.stdout.on("data", (data) => {
         // console.log(data.toString());
         client.insertIntoClickHouse([
@@ -91,6 +94,7 @@ async function main() {
 
       dockerLogin.on("close", (code) => {
         if (code === 0) {
+          console.log("=================PUSHING IMAGE===================");
           const process = exec(`docker push octodock92/${imageName}`);
           process.stdout.on("data", (data) => {
             console.log(data);
@@ -111,8 +115,8 @@ async function main() {
             ]);
           });
         } else {
+          console.log("=================PUSHING IMAGE===================");x``
           console.error(`❌ Docker login failed with exit code ${code}`);
-
           client.insertIntoClickHouse([
             {
               id: Date.now(),
@@ -126,7 +130,6 @@ async function main() {
       console.error(`❌ Build failed with exit code ${code}`);
       process.exit(code);
     }
-
     process.exit(0);
   });
 }

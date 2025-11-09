@@ -1,6 +1,3 @@
-"use client";
-
-import { Parallax, ParallaxLayer } from "@react-spring/parallax";
 import { useRef, useEffect, useState } from "react";
 import { Server, Code, Zap, Terminal, ArrowRight } from "lucide-react";
 
@@ -84,37 +81,126 @@ const CircuitPattern = () => {
 };
 
 export default function HorizontalParallax() {
-  const parallax = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [currentPage, setCurrentPage] = useState(0);
-
-  const scroll = (to: number) => {
-    if (parallax.current) {
-      parallax.current.scrollTo(to);
-      setCurrentPage(to);
-    }
-  };
-
-  const scrollToNext = () => {
-    const nextPage = (currentPage + 1) % 3;
-    scroll(nextPage);
-  };
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    let scrollTarget = 0;
+    let isAnimating = false;
+
+    const smoothScroll = () => {
+      if (!scrollContainerRef.current) return;
+      const container = scrollContainerRef.current;
+
+      const diff = scrollTarget - container.scrollLeft;
+
+      // Stop when close enough
+      if (Math.abs(diff) < 1) {
+        container.scrollLeft = scrollTarget;
+        isAnimating = false;
+        return;
+      }
+
+      // Ease into target
+      container.scrollLeft += diff * 0.15;
+
+      requestAnimationFrame(smoothScroll);
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      if (!scrollContainerRef.current) return;
+
+      const container = scrollContainerRef.current;
+
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      const atStart = container.scrollLeft <= 0;
+      const atEnd = container.scrollLeft >= maxScroll;
+
+      const isScrollingRight = e.deltaY > 0 && !atEnd;
+      const isScrollingLeft = e.deltaY < 0 && !atStart;
+
+      if (isScrollingRight || isScrollingLeft) {
+        e.preventDefault();
+
+        // Increase scroll distance so one wheel tick moves you meaningfully
+        const boost = e.deltaY * 10;
+
+        // Update target
+        scrollTarget = Math.min(maxScroll, Math.max(0, scrollTarget + boost));
+
+        if (!isAnimating) {
+          isAnimating = true;
+          smoothScroll();
+        }
+
+        const progress = scrollTarget / maxScroll;
+        setScrollProgress(progress);
+      }
+    };
+
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("wheel", handleWheel, { passive: false });
+      return () => container.removeEventListener("wheel", handleWheel);
+    }
+  }, []);
+
+  const sections = [
+    {
+      icon: Server,
+      title: "Initialize Server",
+      description:
+        "Boot centralized Octodock server with distributed processing power",
+      status: "SYSTEM READY",
+      number: "01",
+      gradient: "from-black via-gray-900 to-black",
+      overlayGradient: "from-red-900/20 via-transparent to-red-900/20",
+    },
+    {
+      icon: Code,
+      title: "Generate Code",
+      description: "AI Octobots analyze and generate production-ready code",
+      status: "PROCESSING",
+      number: "02",
+      gradient: "from-black via-gray-900 to-red-950/30",
+      overlayGradient: "from-red-900/20 via-transparent to-red-900/20",
+    },
+    {
+      icon: Zap,
+      title: "Deploy Instantly",
+      description: "One-click deployment to cloud platforms worldwide",
+      status: "DEPLOYMENT READY",
+      number: "03",
+      gradient: "from-red-950/30 via-gray-900 to-black",
+      overlayGradient: "from-red-900/20 via-transparent to-red-900/20",
+      hasButton: true,
+    },
+  ];
+
   return (
-    <div className="w-full h-screen scrollbar-hide overflow-hidden bg-black relative">
-      <style>
-        {`
-        .parallax-scroll::-webkit-scrollbar {
-          display: none; /* Chrome, Safari and Opera */
-          height: 0;
-          width: 0;
-        }`}
-      </style>
+    <div
+      ref={containerRef}
+      className="w-full h-screen overflow-hidden bg-black relative"
+    >
+      <style>{`
+        @keyframes grid-move {
+          0% {
+            transform: translate(0, 0);
+          }
+          100% {
+            transform: translate(60px, 60px);
+          }
+        }
+      `}</style>
+
+      {/* Header */}
       <div className="absolute top-8 left-8 right-8 flex justify-between items-center text-red-400 font-mono text-sm z-50">
         <div className="flex items-center space-x-4">
           <Terminal size={20} />
@@ -126,256 +212,122 @@ export default function HorizontalParallax() {
         </div>
       </div>
 
-      <Parallax
-        ref={parallax}
-        pages={3}
-        horizontal
-        className="w-full  h-full parallax-scroll"
+      {/* Progress indicator */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex items-center space-x-4">
+        {sections.map((_, index) => (
+          <div
+            key={index}
+            className={`w-12 h-1 rounded-full transition-all duration-300 ${
+              scrollProgress >= index / (sections.length - 1) - 0.1 &&
+              scrollProgress <= index / (sections.length - 1) + 0.1
+                ? "bg-red-400 shadow-[0_0_10px_rgba(239,68,68,0.8)]"
+                : "bg-red-400/30"
+            }`}
+          />
+        ))}
+      </div>
+
+      {/* Horizontal scroll container */}
+      <div
+        ref={scrollContainerRef}
+        className="flex h-full overflow-x-hidden overflow-y-hidden scroll-smooth"
+        style={{ scrollBehavior: "smooth" }}
       >
-        <ParallaxLayer
-          offset={0}
-          speed={0.2}
-          className="flex items-center justify-center"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
-          <div className="absolute inset-0 bg-gradient-to-t from-red-900/20 via-transparent to-red-900/20" />
-          <AnimatedGrid />
-          <CircuitPattern />
-          <FloatingParticles />
-        </ParallaxLayer>
-
-        <ParallaxLayer
-          offset={0}
-          speed={0.6}
-          className="flex items-center justify-center"
-        >
+        {sections.map((section, index) => (
           <div
-            className="text-center cursor-pointer group transition-transform duration-500 hover:scale-105 relative z-10"
-            onClick={scrollToNext}
+            key={index}
+            className="min-w-full h-full flex items-center justify-center relative"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-red-400/10 to-red-600/10 rounded-3xl blur-3xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100" />
+            {/* Background layers */}
+            <div
+              className={`absolute inset-0 bg-gradient-to-br ${section.gradient}`}
+            />
+            <div
+              className={`absolute inset-0 bg-gradient-to-t ${section.overlayGradient}`}
+            />
+            <AnimatedGrid />
+            <CircuitPattern />
+            <FloatingParticles />
 
-            <div className="relative bg-black/60 backdrop-blur-md border border-red-400/30 rounded-3xl p-12 group-hover:border-red-400/60 transition-all duration-500">
-              <div className="relative mb-8">
-                <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-black/80 border-2 border-red-400/50 flex items-center justify-center group-hover:border-red-400 transition-all duration-500 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-red-400/20 to-transparent rounded-full" />
-                  <Server className="w-16 h-16 text-red-400 group-hover:text-red-300 transition-colors duration-500 relative z-10" />
-                  <div className="absolute top-2 left-2 w-4 h-4 border-l-2 border-t-2 border-red-400/50 rounded-tl-lg" />
-                  <div className="absolute top-2 right-2 w-4 h-4 border-r-2 border-t-2 border-red-400/50 rounded-tr-lg" />
-                  <div className="absolute bottom-2 left-2 w-4 h-4 border-l-2 border-b-2 border-red-400/50 rounded-bl-lg" />
-                  <div className="absolute bottom-2 right-2 w-4 h-4 border-r-2 border-b-2 border-red-400/50 rounded-br-lg" />
-                </div>
-
-                <div className="relative">
-                  <div className="absolute inset-0 text-5xl md:text-7xl font-extrabold blur-sm opacity-30">
-                    <h1 className="bg-gradient-to-r from-red-400 via-red-300 to-red-400 bg-clip-text text-transparent">
-                      Initialize Server
-                    </h1>
-                  </div>
-                  <h1 className="relative text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-white via-red-200 to-white bg-clip-text text-transparent mb-6 drop-shadow-[0_0_20px_rgba(255,100,100,0.5)]">
-                    Initialize Server
-                  </h1>
-                </div>
-
-                <p className="text-gray-300 font-mono text-lg max-w-md mx-auto leading-relaxed">
-                  <span className="text-red-400">&gt;</span> Boot centralized
-                  Octodock server with distributed processing power
-                  <span className="animate-pulse text-red-400">_</span>
-                </p>
-              </div>
-
-              <div className="flex items-center justify-center space-x-2 mt-6">
-                <div className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
-                <span className="text-gray-400 text-xs font-mono">
-                  SYSTEM READY
-                </span>
-              </div>
+            {/* Large number in corner */}
+            <div className="absolute bottom-12 left-12 text-9xl font-bold text-red-400/20 select-none font-mono">
+              {section.number}
             </div>
-          </div>
-        </ParallaxLayer>
 
-        <ParallaxLayer
-          offset={0}
-          speed={0.3}
-          className="flex items-end justify-start p-12"
-        >
-          <div className="text-9xl font-bold text-red-400/20 select-none font-mono">
-            01
-          </div>
-        </ParallaxLayer>
+            {/* Content */}
+            <div className="text-center group transition-transform duration-500 hover:scale-105 relative z-10">
+              <div className="absolute inset-0 bg-gradient-to-br from-red-400/10 to-red-600/10 rounded-3xl blur-3xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100" />
 
-        <ParallaxLayer
-          offset={1}
-          speed={0.2}
-          className="flex items-center justify-center"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-red-950/30" />
-          <AnimatedGrid />
-          <CircuitPattern />
-          <FloatingParticles />
-        </ParallaxLayer>
+              <div className="relative bg-black/60 backdrop-blur-md border border-red-400/30 rounded-3xl p-12 group-hover:border-red-400/60 transition-all duration-500">
+                <div className="relative mb-8">
+                  {/* Icon */}
+                  <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-black/80 border-2 border-red-400/50 flex items-center justify-center group-hover:border-red-400 transition-all duration-500 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-red-400/20 to-transparent rounded-full" />
+                    <section.icon className="w-16 h-16 text-red-400 group-hover:text-red-300 transition-colors duration-500 relative z-10" />
+                    <div className="absolute top-2 left-2 w-4 h-4 border-l-2 border-t-2 border-red-400/50 rounded-tl-lg" />
+                    <div className="absolute top-2 right-2 w-4 h-4 border-r-2 border-t-2 border-red-400/50 rounded-tr-lg" />
+                    <div className="absolute bottom-2 left-2 w-4 h-4 border-l-2 border-b-2 border-red-400/50 rounded-bl-lg" />
+                    <div className="absolute bottom-2 right-2 w-4 h-4 border-r-2 border-b-2 border-red-400/50 rounded-br-lg" />
+                  </div>
 
-        <ParallaxLayer
-          offset={1}
-          speed={0.6}
-          className="flex items-center justify-center"
-        >
-          <div
-            className="text-center cursor-pointer group transition-transform duration-500 hover:scale-105 relative z-10"
-            onClick={scrollToNext}
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-red-400/10 to-red-600/10 rounded-3xl blur-3xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100" />
-
-            <div className="relative bg-black/60 backdrop-blur-md border border-red-400/30 rounded-3xl p-12 group-hover:border-red-400/60 transition-all duration-500">
-              <div className="relative mb-8">
-                <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-black/80 border-2 border-red-400/50 flex items-center justify-center group-hover:border-red-400 transition-all duration-500 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-red-400/20 to-transparent rounded-full" />
-                  <Code className="w-16 h-16 text-red-400 group-hover:text-red-300 transition-colors duration-500 relative z-10" />
-                  <div className="absolute top-2 left-2 w-4 h-4 border-l-2 border-t-2 border-red-400/50 rounded-tl-lg" />
-                  <div className="absolute top-2 right-2 w-4 h-4 border-r-2 border-t-2 border-red-400/50 rounded-tr-lg" />
-                  <div className="absolute bottom-2 left-2 w-4 h-4 border-l-2 border-b-2 border-red-400/50 rounded-bl-lg" />
-                  <div className="absolute bottom-2 right-2 w-4 h-4 border-r-2 border-b-2 border-red-400/50 rounded-br-lg" />
-                </div>
-
-                <div className="relative">
-                  <div className="absolute inset-0 text-5xl md:text-7xl font-extrabold blur-sm opacity-30">
-                    <h1 className="bg-gradient-to-r from-red-400 via-red-300 to-red-400 bg-clip-text text-transparent">
-                      Generate Code
+                  {/* Title with glow effect */}
+                  <div className="relative">
+                    <div className="absolute inset-0 text-5xl md:text-7xl font-extrabold blur-sm opacity-30">
+                      <h1 className="bg-gradient-to-r from-red-400 via-red-300 to-red-400 bg-clip-text text-transparent">
+                        {section.title}
+                      </h1>
+                    </div>
+                    <h1 className="relative text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-white via-red-200 to-white bg-clip-text text-transparent mb-6 drop-shadow-[0_0_20px_rgba(255,100,100,0.5)]">
+                      {section.title}
                     </h1>
                   </div>
-                  <h1 className="relative text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-white via-red-200 to-white bg-clip-text text-transparent mb-6 drop-shadow-[0_0_20px_rgba(255,100,100,0.5)]">
-                    Generate Code
-                  </h1>
+
+                  {/* Description */}
+                  <p className="text-gray-300 font-mono text-lg max-w-md mx-auto leading-relaxed mb-8">
+                    <span className="text-red-400">&gt;</span>{" "}
+                    {section.description}
+                    <span className="animate-pulse text-red-400">_</span>
+                  </p>
+
+                  {/* Button for last section */}
+                  {section.hasButton && (
+                    <button
+                      className="relative cursor-pointer group/btn bg-black/80 border-2 border-red-400/50 text-red-400 px-8 py-4 rounded-xl font-mono font-bold 
+                      hover:border-red-400 hover:text-red-300 
+                      hover:shadow-[0_0_25px_rgba(255,80,80,0.8)] 
+                      hover:scale-105 
+                      transition-all duration-500 overflow-hidden"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-red-400/10 to-red-600/10 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500" />
+
+                      <span className="relative z-10 flex items-center space-x-2">
+                        <span>INITIALIZE SYSTEM</span>
+                        <ArrowRight
+                          size={16}
+                          className="group-hover/btn:translate-x-1 transition-transform duration-300"
+                        />
+                      </span>
+                    </button>
+                  )}
                 </div>
 
-                <p className="text-gray-300 font-mono text-lg max-w-md mx-auto leading-relaxed">
-                  <span className="text-red-400">&gt;</span> AI Octobots analyze
-                  and generate production-ready code
-                  <span className="animate-pulse text-red-400">_</span>
-                </p>
-              </div>
-
-              <div className="flex items-center justify-center space-x-2 mt-6">
-                <div className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
-                <span className="text-gray-400 text-xs font-mono">
-                  PROCESSING
-                </span>
-              </div>
-            </div>
-          </div>
-        </ParallaxLayer>
-
-        <ParallaxLayer
-          offset={1}
-          speed={0.3}
-          className="flex items-end justify-start p-12"
-        >
-          <div className="text-9xl font-bold text-red-400/20 select-none font-mono">
-            02
-          </div>
-        </ParallaxLayer>
-
-        <ParallaxLayer
-          offset={2}
-          speed={0.2}
-          className="flex items-center justify-center"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-red-950/30 via-gray-900 to-black" />
-          <AnimatedGrid />
-          <CircuitPattern />
-          <FloatingParticles />
-        </ParallaxLayer>
-
-        <ParallaxLayer
-          offset={2}
-          speed={0.6}
-          className="flex items-center justify-center"
-        >
-          <div
-            className="text-center cursor-pointer group transition-transform duration-500 hover:scale-105 relative z-10"
-            onClick={scrollToNext}
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-red-400/10 to-red-600/10 rounded-3xl blur-3xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100" />
-
-            <div className="relative bg-black/60 backdrop-blur-md border border-red-400/30 rounded-3xl p-12 group-hover:border-red-400/60 transition-all duration-500">
-              <div className="relative mb-8">
-                <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-black/80 border-2 border-red-400/50 flex items-center justify-center group-hover:border-red-400 transition-all duration-500 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-red-400/20 to-transparent rounded-full" />
-                  <Zap className="w-16 h-16 text-red-400 group-hover:text-red-300 transition-colors duration-500 relative z-10" />
-                  <div className="absolute top-2 left-2 w-4 h-4 border-l-2 border-t-2 border-red-400/50 rounded-tl-lg" />
-                  <div className="absolute top-2 right-2 w-4 h-4 border-r-2 border-t-2 border-red-400/50 rounded-tr-lg" />
-                  <div className="absolute bottom-2 left-2 w-4 h-4 border-l-2 border-b-2 border-red-400/50 rounded-bl-lg" />
-                  <div className="absolute bottom-2 right-2 w-4 h-4 border-r-2 border-b-2 border-red-400/50 rounded-br-lg" />
-                </div>
-
-                <div className="relative">
-                  <div className="absolute inset-0 text-5xl md:text-7xl font-extrabold blur-sm opacity-30">
-                    <h1 className="bg-gradient-to-r from-red-400 via-red-300 to-red-400 bg-clip-text text-transparent">
-                      Deploy Instantly
-                    </h1>
-                  </div>
-                  <h1 className="relative text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-white via-red-200 to-white bg-clip-text text-transparent mb-6 drop-shadow-[0_0_20px_rgba(255,100,100,0.5)]">
-                    Deploy Instantly
-                  </h1>
-                </div>
-
-                <p className="text-gray-300 font-mono text-lg max-w-md mx-auto leading-relaxed mb-8">
-                  <span className="text-red-400">&gt;</span> One-click
-                  deployment to cloud platforms worldwide
-                  <span className="animate-pulse text-red-400">_</span>
-                </p>
-
-                <button
-                  className="relative cursor-pointer group/btn bg-black/80 border-2 border-red-400/50 text-red-400 px-8 py-4 rounded-xl font-mono font-bold 
-                  hover:border-red-400 hover:text-red-300 
-                  hover:shadow-[0_0_25px_rgba(255,80,80,0.8)] 
-                  hover:scale-105 
-                  transition-all duration-500 overflow-hidden"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-red-400/10 to-red-600/10 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500" />
-
-                  <span className="relative z-10 flex items-center space-x-2">
-                    <span>INITIALIZE SYSTEM</span>
-                    <ArrowRight
-                      size={16}
-                      className="group-hover/btn:translate-x-1 transition-transform duration-300"
-                    />
+                {/* Status indicator */}
+                <div className="flex items-center justify-center space-x-2 mt-6">
+                  <div className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
+                  <span className="text-gray-400 text-xs font-mono">
+                    {section.status}
                   </span>
-                </button>
-              </div>
-
-              <div className="flex items-center justify-center space-x-2 mt-6">
-                <div className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
-                <span className="text-gray-400 text-xs font-mono">
-                  DEPLOYMENT READY
-                </span>
+                </div>
               </div>
             </div>
           </div>
-        </ParallaxLayer>
+        ))}
+      </div>
 
-        <ParallaxLayer
-          offset={2}
-          speed={0.3}
-          className="flex items-end justify-start p-12"
-        >
-          <div className="text-9xl font-bold text-red-400/20 select-none font-mono">
-            03
-          </div>
-        </ParallaxLayer>
-      </Parallax>
-
-      {/* @ts-expect-error styled-jsx attributes */}
-      <style jsx global>{`
-        @keyframes grid-move {
-          0% {
-            transform: translate(0, 0);
-          }
-          100% {
-            transform: translate(60px, 60px);
-          }
-        }
-      `}</style>
+      {/* Scroll hint */}
+      <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 z-50 text-red-400/60 font-mono text-xs animate-pulse">
+        ▼ SCROLL TO NAVIGATE ▼
+      </div>
     </div>
   );
 }

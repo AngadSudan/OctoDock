@@ -28,9 +28,9 @@ WORKDIR /home/app
 COPY main.sh main.sh
 COPY Dockerfile.node dockerfile
 RUN npm install @clickhouse/client
-COPY build.js build.js
 COPY .env .env
 RUN chmod +x main.sh
+COPY build.js build.js
 
 # Remove ENV FILES because it's incorrect
 CMD ls -la /

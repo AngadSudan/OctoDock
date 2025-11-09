@@ -22,6 +22,8 @@ import store from "./redux";
 import Home from "./pages/Home.tsx";
 import PromptBar from "./pages/PromptBar.tsx";
 import Deployment from "./pages/Deployment.tsx";
+import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
+import CheckOut from "./pages/CheckOut.tsx";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
@@ -34,8 +36,10 @@ const router = createBrowserRouter(
       <Route path="project/:id" element={<Project />} />
       <Route path="deployment/:id" element={<Deployment />} />
       <Route path="error/logs" element={<Logs />} />
-    </Route>,
-  ),
+      <Route path="privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="payment-checkout" element={<CheckOut />} />
+    </Route>
+  )
 );
 
 createRoot(document.getElementById("root")!).render(
@@ -45,5 +49,5 @@ createRoot(document.getElementById("root")!).render(
         <RouterProvider router={router} />
       </Provider>
     </ApolloProvider>
-  </StrictMode>,
+  </StrictMode>
 );
