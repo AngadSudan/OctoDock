@@ -2,9 +2,11 @@
  * contains docker-node or exec using which we
  * will be executing our docker build commands
  */
+import { spawn, exec } from "child_process";
 import { createClient } from "@clickhouse/client";
+
 class ClickHouse {
-  client;
+  client = null;
   constructor() {
     if (this.client) {
       return;
@@ -23,7 +25,7 @@ class ClickHouse {
           id String,
           log String,
           projectId String,
-          createdAt DateTime DEFAULT now()
+          createdAt String
       )
       ENGINE = MergeTree
       ORDER BY (projectId, createdAt, id);;
@@ -31,6 +33,25 @@ class ClickHouse {
     });
   }
 
+  async queryFromClickHouse(projectId) {
+    const result = await this.client?.query({
+      query: `
+    SELECT log
+    FROM log_events
+    WHERE projectId = {projectId:String}
+      AND parseDateTimeBestEffort(createdAt) > parseDateTimeBestEffort({afterTime:String})
+    ORDER BY parseDateTimeBestEffort(createdAt) DESC
+  `,
+      query_params: {
+        projectId,
+        afterTime: "2025-11-05 14:45:00", // example timestamp (2:45 PM)
+      },
+    });
+
+    console.log(typeof result);
+    console.log(result);
+    return result;
+  }
   async insertIntoClickHouse(deployments) {
     await this.client?.insert({
       table: "log_events",
@@ -40,20 +61,16 @@ class ClickHouse {
   }
 }
 
-export default new ClickHouse();
-
-import { spawn, exec } from "child_process";
-
 async function main() {
   const client = new ClickHouse();
-
-  const imageName = process.env.IMAGE_NAME ?? "default-image";
+  const imageName =
+    process.env.IMAGE_NAME.replace("octodock/", "") ?? "default-image";
   const args = [
     "build",
     "-f",
     "/home/app/Dockerfile", // make sure this points to your actual Dockerfile
     "-t",
-    `octodock92/${imageName.replace("octodock/", "")}`,
+    `octodock92/${imageName}`,
     "/home/app/project",
   ];
 
@@ -61,62 +78,64 @@ async function main() {
 
   const child = spawn("docker", args, { stdio: "inherit" });
 
-  child.on("close", async (code) => {
+  child.on("close", (code) => {
     if (code === 0) {
       client.insertIntoClickHouse([
         { id: Date.now(), log: "✅ Build complete", projectId: imageName },
       ]);
+      console.log("✅ Build complete");
+      console.log("continuing the build stage .... ");
       client.insertIntoClickHouse([
         {
           id: Date.now(),
-          log: "continuing the build stage .... ",
+          log: "continuing to push phase",
           projectId: imageName,
         },
       ]);
+      console.log(`octodock92:${process.env.DOCKER_PASSWORD}`);
       const dockerLogin = exec(`
           echo ${process.env.DOCKER_PASSWORD} | docker login -u octodock92 --password-stdin
         `);
-      console.log(
-        `echo ${process.env.DOCKER_PASSWORD} | docker login -u octodock92 --password-stdin`
-      );
       dockerLogin.stdout.on("data", (data) => {
-        // console.log(data.toString());
         client.insertIntoClickHouse([
           { id: Date.now(), log: data.toString(), projectId: imageName },
         ]);
+        console.log(data.toString());
       });
 
       dockerLogin.stderr.on("data", (data) => {
         client.insertIntoClickHouse([
           { id: Date.now(), log: data.toString(), projectId: imageName },
         ]);
+        console.error(data.toString());
       });
 
       dockerLogin.on("close", (code) => {
         if (code === 0) {
-          console.log("=================PUSHING IMAGE===================");
           const process = exec(`docker push octodock92/${imageName}`);
           process.stdout.on("data", (data) => {
-            console.log(data);
             client.insertIntoClickHouse([
-              { id: Date.now(), log: data, projectId: imageName },
+              { id: Date.now(), log: data.toString(), projectId: imageName },
             ]);
+            console.log(data);
           });
           process.stdout.on("error", (error) => {
-            console.log("error occured", error);
             client.insertIntoClickHouse([
-              { id: Date.now(), log: data, projectId: imageName },
+              { id: Date.now(), log: data.toString(), projectId: imageName },
             ]);
+            console.log("error occured", error);
           });
           process.stdout.on("close", () => {
-            console.log("push successful");
             client.insertIntoClickHouse([
-              { id: Date.now(), log: "push successful", projectId: imageName },
+              {
+                id: Date.now(),
+                log: `push successful octodock92/${imageName} `,
+                projectId: imageName,
+              },
             ]);
+            console.log("push successful");
           });
         } else {
-          console.log("=================PUSHING IMAGE===================");x``
-          console.error(`❌ Docker login failed with exit code ${code}`);
           client.insertIntoClickHouse([
             {
               id: Date.now(),
@@ -124,13 +143,19 @@ async function main() {
               projectId: imageName,
             },
           ]);
+          console.error(`❌ Docker login failed with exit code ${code}`);
         }
       });
     } else {
-      console.error(`❌ Build failed with exit code ${code}`);
+      client.insertIntoClickHouse([
+        {
+          id: Date.now(),
+          log: `❌ Build failed with exit code ${code}`,
+          projectId: imageName,
+        },
+      ]);
       process.exit(code);
     }
-    process.exit(0);
   });
 }
 
