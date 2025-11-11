@@ -17,7 +17,7 @@ class GeminiKeyManager {
           isRateLimited: false,
           rateLimitExpiry: null,
         },
-      ]),
+      ])
     );
   }
 
@@ -71,8 +71,7 @@ class GeminiKeyManager {
 
 // Initialize the GeminiKeyManager with API keys
 const keyManager = new GeminiKeyManager([
-  "AIzaSyDV7ZEdqPcoPZArkS4WMW7CEogvYQgkvtI",
-  "AIzaSyCFSsx1wLrt_Ygvkgjy7JkZgr6jxV5Outo",
+ process.env.GEMINI_KEY,
 ]);
 
 export default keyManager;

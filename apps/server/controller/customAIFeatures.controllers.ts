@@ -19,11 +19,11 @@ class customModel {
   async generateFileBasedOnFeatures(
     srs: string,
     description: string,
-    gitSummary: string,
+    gitSummary: string
   ) {
     const prompt = CodeGenerationForFeature.replace(
       "{srs_documentdetails}",
-      srs,
+      srs
     )
       .replace("{current_feature}", description)
       .replace("{git_summary}", gitSummary);
@@ -41,7 +41,7 @@ class customModel {
     codefile,
     gitSummary,
     currentStatus,
-    sdd,
+    sdd
   ) {
     let response = "";
     const prompt = CodeGenerationForFile.replace("{srs_documentdetails}", srs)
@@ -49,6 +49,42 @@ class customModel {
       .replace("{git_summary}", gitSummary)
       .replace("{updated_file_system}", currentStatus)
       .replace("{software_design_document}", sdd);
+
+    const packageValue = {
+      name: "backend",
+      version: "1.0.0",
+      description: "",
+      main: "index.js",
+      scripts: {
+        start: "node src/index.js",
+        dev: "nodemon src/index.js",
+        test: 'echo "Error: no test specified" && exit 1',
+      },
+      keywords: [],
+      author: "",
+      license: "ISC",
+      type: "commonjs",
+      dependencies: {
+        axios: "^1.11.0",
+        bcrypt: "^6.0.0",
+        bcryptjs: "^3.0.2",
+        cors: "^2.8.5",
+        dotenv: "^17.2.1",
+        express: "^5.1.0",
+        "express-validator": "^7.2.1",
+        helmet: "^8.1.0",
+        jsonwebtoken: "^9.0.2",
+        mongoose: "^8.18.0",
+        morgan: "^1.10.1",
+      },
+      devDependencies: {
+        nodemon: "^3.1.10",
+      },
+    };
+
+    if (codefile === "package.json") {
+      return JSON.stringify({ code: packageValue }, null, 2);
+    }
 
     const openai = new OpenAI({
       baseURL: "https://api.groq.com/openai/v1",
@@ -87,7 +123,9 @@ class customModel {
           loggingLevel: "error",
           error: error,
         });
-        openRouterKeys.rotateToNextKey();
+        setTimeout(() => {
+          openRouterKeys.rotateToNextKey();
+        }, 1500);
       }
     }
 
@@ -96,11 +134,11 @@ class customModel {
   async generateCorrectnessInFileOnBuggyFeature(
     srs: string,
     codefile: string,
-    gitSummary: string,
+    gitSummary: string
   ) {
     const prompt = CodeGenerationForCorrection.replace(
       "{srs_documentdetails}",
-      srs,
+      srs
     )
       .replace("{current_code}", codefile)
       .replace("{git_summary}", gitSummary);
