@@ -83,7 +83,7 @@ async function main() {
       client.insertIntoClickHouse([
         { id: Date.now(), log: "✅ Build complete", projectId: imageName },
       ]);
-      console.log("✅ Build complete");
+      console.log("✅ Build complete octodock92/", imageName);
       console.log("continuing the build stage .... ");
       client.insertIntoClickHouse([
         {

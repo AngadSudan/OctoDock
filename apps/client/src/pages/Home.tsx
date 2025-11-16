@@ -8,13 +8,15 @@ import TechStack from "@/components/Home/TechStack";
 import ParallaxComponent from "@/components/About/Prallax";
 import HorizontalParallax from "@/components/About/HorizontalParallax";
 import Pricing from "@/components/Home/Pricing";
+import AboutHero from "@/components/About/Hero";
 
 function Home() {
   return (
     <div>
       <Header />
       <Hero />
-      <TechDesign />
+      {/* <TechDesign /> */}
+      <AboutHero />
       <ParallaxComponent />
       <Pricing />
       <HorizontalParallax />

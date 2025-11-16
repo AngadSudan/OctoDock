@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-function Hero() {
+function AboutHero() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [animatedCounts, setAnimatedCounts] = useState({
@@ -46,7 +46,7 @@ function Hero() {
 
   return (
     <>
-      {/* Hero Section */}
+      {/* AboutHero Section */}
       <div className="min-h-screen w-full bg-gradient-to-br from-gray-950 via-black to-gray-950 relative overflow-hidden">
         {/* Dynamic red ambient effects */}
         <div
@@ -447,4 +447,4 @@ export const Card = ({ count, line, icon, suffix = "+", status, metric }) => {
   );
 };
 
-export default Hero;
+export default AboutHero;
