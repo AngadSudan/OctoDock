@@ -33,7 +33,7 @@ class ProjectController {
 
       const generatedFileStructure =
         await AiFeaturesControllers.generateProjectFileStructure(
-          generatedPrompt,
+          generatedPrompt
         );
 
       console.log("generated prompt is : ", generatedPrompt);
@@ -67,11 +67,11 @@ class ProjectController {
 
       const getSDD = await AiFeaturesControllers.generateSDD(
         generatedPrompt,
-        JSON.stringify(createFileSystem),
+        JSON.stringify(createFileSystem)
       );
 
       const createRepository = await new githubController(
-        githubToken,
+        githubToken
       ).createRepository(name, description);
 
       if (!createRepository) {
@@ -100,7 +100,7 @@ class ProjectController {
     userId: string,
     name: string,
     description: string,
-    gitUrl: string,
+    gitUrl: string
   ) {
     try {
       console.log(userId);
@@ -199,7 +199,7 @@ class ProjectController {
       }
       // archive the repo link and set the visibility status to inactive
       const arhivedRepo = await new githubController(
-        githubToken,
+        githubToken
       ).archiveRepository(dbUser.githubUsername, dbProject.githubUrl);
 
       if (!arhivedRepo) throw new Error("error deleting repository");
@@ -222,7 +222,7 @@ class ProjectController {
     name: string,
     projectId: string,
     userId: string,
-    description: string,
+    description: string
   ) {
     try {
       const dbUser = await prisma.user.findUnique({
@@ -252,12 +252,12 @@ class ProjectController {
 
       // object that contains new repo name and other info which will be sent to db
       const updatedGithubInformation = await new githubController(
-        githubToken,
+        githubToken
       ).updateRepository(
         dbUser.githubUsername,
         dbProject.githubUrl,
         name,
-        description,
+        description
       );
       if (!updatedGithubInformation)
         throw new Error("error in updating information");
@@ -282,7 +282,7 @@ class ProjectController {
     try {
       const { projectID } = req.query as { projectID?: string };
       console.log(
-        `==============Project Initialization began for ${projectID}==================`,
+        `==============Project Initialization began for ${projectID}==================`
       );
       const headers = {
         "Content-Type": "text/event-stream",
@@ -310,14 +310,14 @@ class ProjectController {
           filename,
           dbProject.folderStructure,
           JSON.stringify(updatedFolderStrucutre),
-          dbProject.sdd,
+          dbProject.sdd
         );
         console.log("codefile is : ", codeFile);
         res.write(
           `data: ${JSON.stringify({
             filename: filename,
             code: codeFile || " ",
-          })}\n\n`,
+          })}\n\n`
         );
 
         console.log("===================File ended=================");
@@ -337,7 +337,7 @@ class ProjectController {
       });
       console.log("================Response sent ==================");
       res.write(
-        `event: done\ndata: ${JSON.stringify(updatedFolderStrucutre)}\n\n`,
+        `event: done\ndata: ${JSON.stringify(updatedFolderStrucutre)}\n\n`
       );
       res.end();
     } catch (error) {
