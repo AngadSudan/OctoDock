@@ -50,7 +50,7 @@ function AllProjects() {
     return authors.sort();
   }, []);
   const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated,
+    (state: RootState) => state.auth.isAuthenticated
   );
   let userId;
   if (!isAuthenticated) {
@@ -169,11 +169,11 @@ function AllProjects() {
 
       <div className="relative z-0 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col md:flex-row items-center justify-between mb-8">
           <div className="space-y-2">
             <Link
               to="/"
-              className="text-5xl font-bold text-white tracking-tight"
+              className="text-5xl font-bold text-center md:text-lef text-white tracking-tight"
             >
               Octodock
             </Link>
@@ -184,7 +184,7 @@ function AllProjects() {
 
           <button
             onClick={() => setNewProject(true)}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-500/20 via-purple-500/20 to-blue-500/20 text-white border border-white/[0.1] rounded-2xl hover:bg-gradient-to-r hover:from-red-500/30 hover:via-purple-500/30 hover:to-blue-500/30 backdrop-blur-xl transition-all duration-300 shadow-lg"
+            className="flex mx-auto items-center gap-2 px-6 py-4 my-2 bg-gradient-to-r from-red-500/20 via-purple-500/20 to-blue-500/20 text-white border border-white/[0.1] rounded-2xl hover:bg-gradient-to-r hover:from-red-500/30 hover:via-purple-500/30 hover:to-blue-500/30 backdrop-blur-xl transition-all duration-300 shadow-lg"
           >
             <Plus size={20} />
             <span className="font-semibold">New Project</span>
@@ -206,7 +206,7 @@ function AllProjects() {
                 placeholder="Search projects, descriptions, or authors..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 bg-white/[0.04] border border-white/[0.08] rounded-2xl text-white placeholder-white/40 focus:outline-none focus:border-white/[0.2] focus:bg-white/[0.06] backdrop-blur-xl transition-all duration-300"
+                className="w-full pl-4 text-md  md:pl-12 pr-4 py-4 bg-white/[0.04] border border-white/[0.08] rounded-2xl text-white placeholder-white/40 focus:outline-none focus:border-white/[0.2] focus:bg-white/[0.06] backdrop-blur-xl transition-all duration-300"
               />
             </div>
 
@@ -290,7 +290,7 @@ function AllProjects() {
 
           {/* Expandable Filters */}
           {showFilters && (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 p-6 bg-white/[0.02] border border-white/[0.05] rounded-2xl backdrop-blur-xl">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 p-2 md:p-6 bg-white/[0.02] border border-white/[0.05] rounded-2xl backdrop-blur-xl">
               <div>
                 <label className="block text-white/70 text-sm font-medium mb-2">
                   Status
@@ -388,7 +388,7 @@ function AllProjects() {
 
         {/* Projects Grid/List */}
         {filteredAndSortedProjects.length === 0 ? (
-          <div className="text-center py-16">
+          <div className="text-center py-8 md:py-16">
             <div className="w-24 h-24 mx-auto mb-6 bg-white/[0.03] border border-white/[0.08] rounded-3xl flex items-center justify-center backdrop-blur-xl">
               <Search className="text-white/40" size={32} />
             </div>

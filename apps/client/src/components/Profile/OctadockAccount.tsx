@@ -18,7 +18,7 @@ function OctadockAccount() {
   const [activeTab, setActiveTab] = useState("deployments");
 
   const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated,
+    (state: RootState) => state.auth.isAuthenticated
   );
   let userId;
   if (!isAuthenticated) {
@@ -52,7 +52,7 @@ function OctadockAccount() {
   return (
     <div className="min-h-screen text-white p-6">
       {/* Deployments Grid */}
-      <div className="max-w-7xl mx-auto space-y-4">
+      <div className="md:max-w-7xl mx-auto space-y-4">
         {loading ? (
           <div className="text-center py-12">
             <div className="inline-block w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
@@ -66,7 +66,7 @@ function OctadockAccount() {
             >
               <div className="flex items-start gap-4">
                 {/* Icon */}
-                <div className="flex-shrink-0">
+                <div className="hidden md:flex-shrink-0">
                   <div className="w-14 h-14 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/30">
                     <Code className="w-7 h-7 text-white" />
                   </div>

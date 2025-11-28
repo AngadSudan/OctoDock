@@ -28,13 +28,13 @@ function ProfileCard() {
         </TabsList>
 
         <TabsContents className="mx-1 mb-1 -mt-2 rounded-sm h-full bg-background">
-          <TabsContent value="account" className="space-y-6 p-6">
+          <TabsContent value="account" className="space-y-6 p-1 md:p-6">
             <OctadockAccount />
           </TabsContent>
           <TabsContent value="projects" className="space-y-6 p-6">
             <ListIndividualProjects />
           </TabsContent>
-          <TabsContent value="activity" className="space-y-6 p-6">
+          <TabsContent value="activity" className="space-y-6 p-0 md:p-6">
             <IndividualActivity />
           </TabsContent>
         </TabsContents>

@@ -39,7 +39,7 @@ export default function ParallaxComponent() {
 
   return (
     <div
-      className="scrollbar-hide"
+      className="hidden md:flex scrollbar-hide"
       style={{
         width: "100%",
         height: "100vh",

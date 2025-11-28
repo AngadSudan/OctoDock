@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 import PromptBar from "./PromptBar";
 import { useGetAllPrompt } from "@/Hooks/api/prompt";
@@ -32,7 +34,7 @@ function Chat({ fileSystem = {} }) {
   }, [loading, data]);
 
   return (
-    <div className="h-[110svh]  w-1/2 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 relative">
+    <div className="w-full md:w-1/3 h-1/2 md:h-full bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 relative">
       {/* Subtle gradient mesh background */}
       <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 via-transparent to-purple-500/5"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,75,75,0.1),transparent_70%)]"></div>

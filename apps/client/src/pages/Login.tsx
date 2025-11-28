@@ -27,7 +27,7 @@ const OctoDockLogin = () => {
   return (
     <div className="min-h-screen flex">
       {/* Left side - Animated Background */}
-      <div className="flex-1 relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+      <div className="hidden md:flex flex-1 relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
         <Component />
 
         {/* Showcase content overlay */}

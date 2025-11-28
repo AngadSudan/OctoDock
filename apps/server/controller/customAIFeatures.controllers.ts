@@ -7,6 +7,7 @@ import {
 import OpenAI from "openai";
 import openRouterKeys from "../utils/openRouter";
 import logger from "../utils/Logger";
+import { codeMap, PRE_EXISTING } from "../utils/sampleProject";
 
 class customModel {
   ollama: Ollama;
@@ -19,11 +20,11 @@ class customModel {
   async generateFileBasedOnFeatures(
     srs: string,
     description: string,
-    gitSummary: string,
+    gitSummary: string
   ) {
     const prompt = CodeGenerationForFeature.replace(
       "{srs_documentdetails}",
-      srs,
+      srs
     )
       .replace("{current_feature}", description)
       .replace("{git_summary}", gitSummary);
@@ -41,8 +42,10 @@ class customModel {
     codefile,
     gitSummary,
     currentStatus,
-    sdd,
+    sdd
   ) {
+    if (PRE_EXISTING.includes(codefile)) return codeMap[codefile];
+
     let response = "";
     const prompt = CodeGenerationForFile.replace("{srs_documentdetails}", srs)
       .replace("{code_file}", codefile)
@@ -83,9 +86,9 @@ class customModel {
     };
 
     if (codefile === "package.json") {
-      return JSON.stringify({ code: packageValue }, null, 2);
+      return codeMap["index.js"];
     }
-
+    let retryCount = 0;
     const openai = new OpenAI({
       baseURL: "https://api.groq.com/openai/v1",
       apiKey: openRouterKeys.getAvailableKey(),
@@ -93,6 +96,9 @@ class customModel {
 
     let success = false;
     while (!success) {
+      if (retryCount === 3) {
+        break;
+      }
       try {
         console.log({
           message: `creating file ${codefile} ...`,
@@ -115,6 +121,7 @@ class customModel {
         response = completion.choices[0].message.content;
         success = true;
       } catch (error) {
+        retryCount++;
         console.log({
           message:
             "Error occurred, rotating key and retrying: " + error.message,
@@ -125,16 +132,27 @@ class customModel {
       }
     }
 
+    if (response === "") {
+      // return something from the predefined project
+      if (codefile.contains("routes")) {
+        return codeMap["routes.js"];
+      } else if (codefile === "index.js") {
+        return codeMap["index.js"];
+      } else {
+        return codeMap[codefile] || "";
+      }
+    }
+
     return response;
   }
   async generateCorrectnessInFileOnBuggyFeature(
     srs: string,
     codefile: string,
-    gitSummary: string,
+    gitSummary: string
   ) {
     const prompt = CodeGenerationForCorrection.replace(
       "{srs_documentdetails}",
-      srs,
+      srs
     )
       .replace("{current_code}", codefile)
       .replace("{git_summary}", gitSummary);

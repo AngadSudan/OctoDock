@@ -109,7 +109,7 @@ const TechCard = ({
   const iconSize = size === "large" ? 64 : 48;
 
   return (
-    <div className={`absolute ${position}`}>
+    <div className={`hidden md:flex absolute ${position}`}>
       <div className="relative group">
         {/* Glow effect */}
         <div

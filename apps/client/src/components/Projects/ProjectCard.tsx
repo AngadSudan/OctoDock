@@ -140,7 +140,7 @@ const ProjectCard = ({
           {/* Modern glass morphism layer */}
           <div className="absolute inset-0 bg-white/[0.02] backdrop-blur-3xl" />
 
-          <div className="relative p-6 flex items-center gap-6">
+          <div className="relative p-6 hiddne md:flex items-center gap-6">
             {/* Ultra-modern project icon */}
             <div className="relative flex-shrink-0">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/[0.1] flex items-center justify-center group-hover:scale-105 transition-all duration-500 backdrop-blur-xl shadow-lg">
@@ -154,13 +154,13 @@ const ProjectCard = ({
 
             {/* Content with modern typography */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-6">
+              <div className="flex flex-col md:flex-row items-start justify-between gap-6">
                 <div className="flex-1 min-w-0 space-y-3">
                   <div>
                     <h3 className="font-bold text-white text-xl truncate group-hover:text-white/95 transition-colors tracking-tight leading-tight">
                       {project.name}
                     </h3>
-                    <p className="text-white/60 text-sm mt-2 line-clamp-2 group-hover:text-white/70 transition-colors leading-relaxed font-medium">
+                    <p className="text-white/60 text-sm mt-2 line-clamp-5 md:line-clamp-2 group-hover:text-white/70 transition-colors leading-relaxed font-medium text-wrap ">
                       {project.description}
                     </p>
                   </div>
@@ -175,7 +175,7 @@ const ProjectCard = ({
                             {
                               month: "short",
                               day: "numeric",
-                            },
+                            }
                           )
                         : "Recently"}
                     </div>
@@ -198,19 +198,6 @@ const ProjectCard = ({
                   >
                     <ExternalLink className="w-4 h-4 text-white/70 group-hover/btn:text-white" />
                   </button>
-
-                  {onView && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onView(project);
-                      }}
-                      className="p-3 rounded-2xl bg-gradient-to-br from-red-500/10 via-purple-500/10 to-blue-500/10 hover:from-red-500/20 hover:via-purple-500/20 hover:to-blue-500/20 border border-white/[0.08] hover:border-white/[0.15] transition-all duration-300 group/btn backdrop-blur-xl shadow-lg hover:shadow-xl"
-                    >
-                      <Zap className="w-4 h-4 text-white/70 group-hover/btn:text-white" />
-                    </button>
-                  )}
-
                   {project.githubUrl && (
                     <a
                       href={project.githubUrl}
@@ -224,7 +211,7 @@ const ProjectCard = ({
                   )}
 
                   {/* Minimal actions menu */}
-                  <div className="relative">
+                  <div className="relative hidden md:flex ">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -372,18 +359,6 @@ const ProjectCard = ({
                 <ExternalLink className="w-4 h-4 text-white/70 group-hover/btn:text-white" />
               </button>
 
-              {onView && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onView(project);
-                  }}
-                  className="p-3 rounded-2xl bg-gradient-to-br from-red-500/10 via-purple-500/10 to-blue-500/10 hover:from-red-500/20 hover:via-purple-500/20 hover:to-blue-500/20 border border-white/[0.08] hover:border-white/[0.15] transition-all duration-300 group/btn backdrop-blur-xl shadow-lg hover:shadow-xl"
-                >
-                  <Zap className="w-4 h-4 text-white/70 group-hover/btn:text-white" />
-                </button>
-              )}
-
               {project.githubUrl && (
                 <a
                   href={project.githubUrl}
@@ -397,7 +372,7 @@ const ProjectCard = ({
               )}
 
               {/* Actions Menu */}
-              <div className="relative">
+              <div className="relative hidden sm:flex">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -424,24 +399,6 @@ const ProjectCard = ({
                         <ExternalLink className="w-4 h-4" />
                         Open Project
                       </button>
-                      {onEdit && (
-                        <button
-                          onClick={() => handleAction(() => onEdit(project))}
-                          className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-white/70 hover:text-white hover:bg-white/[0.05] rounded-xl transition-all duration-200"
-                        >
-                          <FolderOpen className="w-4 h-4" />
-                          Edit Project
-                        </button>
-                      )}
-                      {onDelete && (
-                        <button
-                          onClick={() => handleAction(() => onDelete(project))}
-                          className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-red-400/80 hover:text-red-300 hover:bg-red-500/[0.08] rounded-xl transition-all duration-200"
-                        >
-                          <GitBranch className="w-4 h-4" />
-                          Delete Project
-                        </button>
-                      )}
                     </div>
                   </div>
                 )}

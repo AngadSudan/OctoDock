@@ -71,7 +71,7 @@ function StackBlitzIndex() {
     }
   }, [data, loading, error]);
   return (
-    <div className="overflow-y-hidden flex bg-black h-screen gap-2">
+    <div className="overflow-y-hidden flex flex-col-reverse md:flex-row bg-black h-screen gap-2">
       <Chat fileSystem={updatingfileSystem} />
       <div className="h-full p-0 my-auto bg-black w-2/3">
         {!loading && Object.keys(fileSystem).length > 0 && (
