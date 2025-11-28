@@ -54,7 +54,9 @@
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
     "prisma": "^6.11.0",
+    "razorpay": "^2.9.6",
     "tsup": "^8.5.0",
+    "uuid": "^13.0.0",
     "yaml": "^2.8.1",
     "zod": "^4.0.5"
   }

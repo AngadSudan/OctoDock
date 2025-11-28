@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   CreditCard,
   Lock,
@@ -9,12 +9,30 @@ import {
   Zap,
   Plane,
 } from "lucide-react";
-import { useSearchParams } from "react-router";
+import { Navigate, useNavigate, useSearchParams } from "react-router";
+import { useSelector } from "react-redux";
+import type { RootState } from "@react-three/fiber";
+import configuration from "@/conf/configuration";
+import axios from "axios";
 
 const pricingData = {
-  PRO: 29,
-  ENTERPRISE: 99,
+  PRO: 2320,
+  ENTERPRISE: 7920,
 };
+
+function loadScript(src) {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = () => {
+      resolve(true);
+    };
+    script.onerror = () => {
+      resolve(false);
+    };
+    document.body.appendChild(script);
+  });
+}
 
 function CheckOut() {
   const [formData, setFormData] = useState({
@@ -24,9 +42,16 @@ function CheckOut() {
     cvv: "",
     email: "",
   });
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const plan = searchParams.get("plan");
-
+  // @ts-ignore
+  const authUser = useSelector((state: RootState) => state.auth.user.login);
+  useEffect(() => {
+    if (authUser === "") {
+      navigate("/"); //TODO: CORRECT THIS NAVIGATION
+    }
+  }, []);
   const normalizedPlan = plan?.toUpperCase();
   const selectedPlan = pricingData[normalizedPlan] ? normalizedPlan : "PRO";
   const [price, setPrice] = useState(pricingData[plan.toUpperCase()]);
@@ -34,34 +59,62 @@ function CheckOut() {
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    let formattedValue = value;
+  async function displayRazorpay() {
+    const res = await loadScript(
+      "https://checkout.razorpay.com/v1/checkout.js"
+    );
 
-    if (name === "cardNumber") {
-      formattedValue = value
-        .replace(/\s/g, "")
-        .replace(/(.{4})/g, "$1 ")
-        .trim();
-    } else if (name === "expiry") {
-      formattedValue = value
-        .replace(/\D/g, "")
-        .replace(/(.{2})/, "$1/")
-        .substr(0, 5);
-    } else if (name === "cvv") {
-      formattedValue = value.replace(/\D/g, "").substr(0, 3);
+    if (!res) {
+      alert("Razorpay SDK failed to load. Are you online?");
+      return;
     }
 
-    setFormData({ ...formData, [name]: formattedValue });
-  };
+    const result = await axios.post(configuration.backend_url + "/api/order", {
+      paymentPlan: selectedPlan,
+    });
 
-  const handleSubmit = () => {
-    setProcessing(true);
-    setTimeout(() => {
-      setProcessing(false);
-      setSuccess(true);
-    }, 2500);
-  };
+    if (!result) {
+      alert("Server error. Are you online?");
+      return;
+    }
+
+    const { amount: payAmount, id: order_id, currency } = result.data;
+
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount: payAmount.toString(),
+      currency: currency,
+      name: "Angad Sudan",
+      description: "Support My Work",
+      order_id: order_id,
+      handler: async function (response) {
+        const data = {
+          orderCreationId: order_id,
+          razorpayPaymentId: response.razorpay_payment_id,
+          razorpayOrderId: response.razorpay_order_id,
+          razorpaySignature: response.razorpay_signature,
+          user_login: authUser,
+        };
+
+        const result = await axios.post(
+          "https://angadsudan.me/api/payment/success",
+          data
+        );
+
+        alert(result.data.msg);
+      },
+      notes: {
+        address: "Thank you for your support!",
+      },
+      theme: {
+        color: "red", // Green-500 to match your header
+      },
+    };
+
+    // @ts-ignore
+    const paymentObject = new window.Razorpay(options);
+    paymentObject.open();
+  }
 
   if (success) {
     return (
@@ -73,9 +126,9 @@ function CheckOut() {
               key={i}
               className="absolute w-1 h-1 bg-red-400/30 rounded-full animate-pulse"
               style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 2}s`,
+                top: `₹{Math.random() * 100}%`,
+                left: `₹{Math.random() * 100}%`,
+                animationDelay: `₹{Math.random() * 2}s`,
               }}
             />
           ))}
@@ -127,9 +180,9 @@ function CheckOut() {
             key={i}
             className="absolute w-1 h-1 bg-red-400/40 rounded-full animate-pulse"
             style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
+              top: `₹{Math.random() * 100}%`,
+              left: `₹{Math.random() * 100}%`,
+              animationDelay: `₹{Math.random() * 3}s`,
             }}
           />
         ))}
@@ -188,27 +241,27 @@ function CheckOut() {
                     Professional Plan
                   </span>
                   <span className="text-red-400 font-mono font-bold">
-                    ${price}
+                    ₹{price}
                   </span>
                 </div>
                 <div className="flex justify-between items-center py-3 border-b border-red-400/20">
                   <span className="text-gray-400 font-mono text-sm">
                     Processing Fee
                   </span>
-                  <span className="text-red-400 font-mono font-bold">$0.0</span>
+                  <span className="text-red-400 font-mono font-bold">₹0.0</span>
                 </div>
                 <div className="flex justify-between items-center py-3 border-b border-red-400/20">
                   <span className="text-gray-400 font-mono text-sm">
                     Tax (10%)
                   </span>
-                  <span className="text-red-400 font-mono font-bold">$0.0</span>
+                  <span className="text-red-400 font-mono font-bold">₹0.0</span>
                 </div>
                 <div className="flex justify-between items-center py-4 bg-red-400/10 rounded-lg px-4 mt-4">
                   <span className="text-red-400 font-mono text-lg font-bold">
                     TOTAL
                   </span>
                   <span className="text-red-400 font-mono text-2xl font-bold">
-                    ${price}
+                    ₹{price}
                   </span>
                 </div>
               </div>
@@ -239,7 +292,7 @@ function CheckOut() {
           </div>
 
           {/* Right side - Payment form */}
-          <div className="bg-black/70 backdrop-blur-md border border-red-400/30 rounded-xl p-8 hover:border-red-400/50 transition-all duration-300">
+          <div className="h-fit my-auto bg-black/70 backdrop-blur-md border border-red-400/30 rounded-xl p-8 hover:border-red-400/50 transition-all duration-300">
             <div className="flex items-center gap-2 mb-6">
               <CreditCard size={24} className="text-red-400" />
               <h2 className="text-xl font-bold text-red-400 font-mono">
@@ -251,84 +304,16 @@ function CheckOut() {
               {/* Email */}
               <div>
                 <label className="block text-red-400/70 font-mono text-xs mb-2 tracking-wide">
-                  EMAIL ADDRESS
+                  AUTHENTICATED USER
                 </label>
                 <input
                   type="email"
                   name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
                   className="w-full bg-black/50 border border-red-400/30 rounded-lg px-4 py-3 text-red-400 font-mono focus:outline-none focus:border-red-400 transition-all duration-300"
-                  placeholder="user@octodock.com"
-                  required
+                  placeholder={authUser}
+                  disabled
                 />
               </div>
-
-              {/* Card number */}
-              <div>
-                <label className="block text-red-400/70 font-mono text-xs mb-2 tracking-wide">
-                  CARD NUMBER
-                </label>
-                <input
-                  type="text"
-                  name="cardNumber"
-                  value={formData.cardNumber}
-                  onChange={handleInputChange}
-                  maxLength={19}
-                  className="w-full bg-black/50 border border-red-400/30 rounded-lg px-4 py-3 text-red-400 font-mono focus:outline-none focus:border-red-400 transition-all duration-300"
-                  placeholder="1234 5678 9012 3456"
-                  required
-                />
-              </div>
-
-              {/* Cardholder name */}
-              <div>
-                <label className="block text-red-400/70 font-mono text-xs mb-2 tracking-wide">
-                  CARDHOLDER NAME
-                </label>
-                <input
-                  type="text"
-                  name="cardName"
-                  value={formData.cardName}
-                  onChange={handleInputChange}
-                  className="w-full bg-black/50 border border-red-400/30 rounded-lg px-4 py-3 text-red-400 font-mono focus:outline-none focus:border-red-400 transition-all duration-300"
-                  placeholder="JOHN DOE"
-                  required
-                />
-              </div>
-
-              {/* Expiry and CVV */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-red-400/70 font-mono text-xs mb-2 tracking-wide">
-                    EXPIRY DATE
-                  </label>
-                  <input
-                    type="text"
-                    name="expiry"
-                    value={formData.expiry}
-                    onChange={handleInputChange}
-                    className="w-full bg-black/50 border border-red-400/30 rounded-lg px-4 py-3 text-red-400 font-mono focus:outline-none focus:border-red-400 transition-all duration-300"
-                    placeholder="MM/YY"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-red-400/70 font-mono text-xs mb-2 tracking-wide">
-                    CVV
-                  </label>
-                  <input
-                    type="text"
-                    name="cvv"
-                    value={formData.cvv}
-                    onChange={handleInputChange}
-                    className="w-full bg-black/50 border border-red-400/30 rounded-lg px-4 py-3 text-red-400 font-mono focus:outline-none focus:border-red-400 transition-all duration-300"
-                    placeholder="123"
-                    required
-                  />
-                </div>
-              </div>
-
               {/* Security notice */}
               <div className="bg-red-400/10 border border-red-400/30 rounded-lg p-4 flex items-start gap-3">
                 <AlertCircle
@@ -343,7 +328,7 @@ function CheckOut() {
 
               {/* Submit button */}
               <button
-                onClick={handleSubmit}
+                onClick={displayRazorpay}
                 disabled={processing}
                 className="w-full bg-gradient-to-r from-red-400 to-red-600 text-white font-mono font-bold py-4 rounded-lg hover:from-red-500 hover:to-red-700 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-red-400/25"
               >

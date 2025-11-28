@@ -20,9 +20,16 @@ import url from "url";
 import projectControllers from "./controller/project.controllers";
 import githubController from "./controller/github.controllers";
 import prisma from "./utils/prisma";
-import logger from "./utils/Logger";
+import Razorpay from "razorpay";
+import crypto from "crypto";
 import morgan from "morgan";
 import LoggingController from "./controller/Logging.controller";
+import { v4 as uuid } from "uuid";
+const PRICING_PLAN = {
+  PRO: 2320,
+  ENTERPRISE: 7920,
+};
+
 const app: Express = express();
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
@@ -44,7 +51,7 @@ app.use(
       secure: false, // true if using HTTPS
       sameSite: "lax", // "none" if cross-origin over HTTPS
     },
-  }),
+  })
 );
 app.use(passport.initialize() as any);
 app.use(passport.session());
@@ -69,7 +76,7 @@ app.use(
       "Origin",
       "Accept",
     ],
-  }),
+  })
 );
 const apiProxy = proxy("http://localhost:4000", {
   proxyReqPathResolver: (req) => url.parse(req.url).path,
@@ -83,7 +90,7 @@ const apiProxy = proxy("http://localhost:4000", {
       // Override CORS headers
       res.setHeader(
         "Access-Control-Allow-Origin",
-        req.headers.origin || "http://localhost:5173",
+        req.headers.origin || "http://localhost:5173"
       );
       res.setHeader("Access-Control-Allow-Credentials", "true");
 
@@ -124,7 +131,7 @@ app.get("/health", async (req, res) => {
 // OAuth Routes
 app.get(
   "/auth/github",
-  passport.authenticate("github", { scope: ["user", "repo"] }),
+  passport.authenticate("github", { scope: ["user", "repo"] })
 );
 app.get("/is-authenticated", (req, res) => {
   const isAuthenticated = req.isAuthenticated();
@@ -134,8 +141,77 @@ app.get("/is-authenticated", (req, res) => {
     res.json({ authenticated: false });
   }
 });
+
+// Payment Gateway Integrations
+app.post("/api/order", async (req, res) => {
+  try {
+    console.log("instance creation started");
+
+    const instance = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET,
+    });
+    console.log("instance creation ended");
+
+    //add actual recipt count later on
+    const paymentPlan = req.body.paymentPlan;
+    if (paymentPlan !== "PRO" && paymentPlan !== "ENTERPRISE") {
+      return res.json({ message: "payment plan invalid" });
+    }
+    const orderOption = {
+      amount: PRICING_PLAN[paymentPlan] * 100 || 100, // amount in smallest currency unit
+      currency: "INR",
+      receipt: uuid(),
+    };
+
+    const order = await instance.orders.create(orderOption);
+    console.log(order);
+
+    if (!order) return res.status(500).send("Some error occured");
+    res.status(200).json(order);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+app.post("/payment/success", async (req, res) => {
+  try {
+    // getting the details back from our font-end
+    const {
+      orderCreationId,
+      razorpayPaymentId,
+      razorpayOrderId,
+      razorpaySignature,
+    } = req.body;
+
+    // Creating our own digest
+    // The format should be like this:
+    // digest = hmac_sha256(orderCreationId + "|" + razorpayPaymentId, secret);
+    const shasum = crypto.createHmac("sha256", "w2lBtgmeuDUfnJVp43UpcaiT");
+
+    shasum.update(`${orderCreationId}|${razorpayPaymentId}`);
+
+    const digest = shasum.digest("hex");
+
+    // comaparing our digest with the actual signature
+    if (digest !== razorpaySignature)
+      return res.status(400).json({ msg: "Transaction not legit!" });
+
+    // THE PAYMENT IS LEGIT & VERIFIED
+    // YOU CAN SAVE THE DETAILS IN YOUR DATABASE IF YOU WANT
+    // TODO: update the user to a pro user later on
+    res.json({
+      msg: "success",
+      orderId: razorpayOrderId,
+      paymentId: razorpayPaymentId,
+    });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
 app.get("/error/logs", (req, res) =>
-  LoggingController.servePaginatedLogic(req, res),
+  LoggingController.servePaginatedLogic(req, res)
 );
 app.get(
   "/oauth/redirect/github",
@@ -147,7 +223,7 @@ app.get(
   }),
   function (req, res) {
     res.redirect("/");
-  },
+  }
 );
 
 // SSE ROUTING
@@ -165,7 +241,7 @@ app.post("/push/:id", async (req, res) => {
 
   if (!dbUser) throw new Error("not a registered user");
   const response = await new githubController(
-    dbUser.githubToken,
+    dbUser.githubToken
   ).commitCodeToGithub(projectId, foldername);
 
   return res.status(200).json({ message: "ok" });
@@ -174,7 +250,7 @@ const errorHandler = (
   error: any,
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   console.log({
     error: error,
