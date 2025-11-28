@@ -18,7 +18,7 @@ function OctadockAccount() {
   const [activeTab, setActiveTab] = useState("deployments");
 
   const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated
+    (state: RootState) => state.auth.isAuthenticated,
   );
   let userId;
   if (!isAuthenticated) {
