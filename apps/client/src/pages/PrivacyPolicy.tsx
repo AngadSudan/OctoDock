@@ -15,7 +15,7 @@ import {
   DatabaseZap,
   ExternalLink,
 } from "lucide-react";
-
+import { Helmet } from "react-helmet";
 export type BrandTheme = {
   primary?: string;
   primarySoft?: string;
@@ -56,7 +56,7 @@ const HudCard = ({ title, subtitle, icon }: any) => (
     className={cx(
       "relative rounded-2xl p-5 border border-rose-500/20 bg-gradient-to-b from-white/5 to-white/0",
       "shadow-[0_0_0_1px_rgba(255,255,255,0.02),0_20px_40px_-20px_rgba(0,0,0,0.6)]",
-      "overflow-hidden hover:border-rose-500/50 transition duration-300",
+      "overflow-hidden hover:border-rose-500/50 transition duration-300"
     )}
   >
     {/* Corner Brackets */}
@@ -121,6 +121,34 @@ export default function PrivacyPolicy({
       className="min-h-screen text-slate-300 antialiased font-sans"
       style={{ background: t.background }}
     >
+      <Helmet>
+        <title>
+          Privacy Policy | Octodock – Data Protection & User Security
+        </title>
+
+        <meta
+          name="description"
+          content="Read the Octodock Privacy Policy to understand how we protect your data, manage containerized environments securely, and maintain compliance across our globally distributed computing infrastructure."
+        />
+
+        <meta
+          name="keywords"
+          content="Octodock privacy policy, data protection, user privacy, security practices, compliance, data handling, distributed computing security"
+        />
+
+        {/* Allow indexing — this is a public legal page */}
+        <meta name="robots" content="index, follow" />
+
+        {/* Open Graph */}
+        <meta property="og:title" content="Octodock Privacy Policy" />
+        <meta
+          property="og:description"
+          content="Learn how Octodock safeguards user data, secures containerized workflows, and ensures compliance across global edge and distributed computing networks."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Octodock" />
+      </Helmet>
+
       {/* GLOW BACKGROUND */}
       <div
         aria-hidden

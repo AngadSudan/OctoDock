@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@react-three/fiber";
 import configuration from "@/conf/configuration";
 import axios from "axios";
-
+import { Helmet } from "react-helmet";
 const pricingData = {
   PRO: 2320,
   ENTERPRISE: 7920,
@@ -61,7 +61,7 @@ function CheckOut() {
 
   async function displayRazorpay() {
     const res = await loadScript(
-      "https://checkout.razorpay.com/v1/checkout.js",
+      "https://checkout.razorpay.com/v1/checkout.js"
     );
 
     if (!res) {
@@ -98,7 +98,7 @@ function CheckOut() {
 
         const result = await axios.post(
           "https://angadsudan.me/api/payment/success",
-          data,
+          data
         );
 
         alert(result.data.msg);
@@ -162,6 +162,30 @@ function CheckOut() {
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background animated grid */}
+      <Helmet>
+        <title>Checkout | Octodock – Secure Payment & Plan Activation</title>
+
+        <meta
+          name="description"
+          content="Complete your Octodock subscription checkout securely. Review your plan details, confirm billing information, and activate advanced containerization and distributed computing features."
+        />
+
+        {/* Protect sensitive transaction flow */}
+        <meta name="robots" content="noindex, nofollow" />
+
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content="Octodock Checkout – Secure Payment"
+        />
+        <meta
+          property="og:description"
+          content="Finish your secure Octodock checkout to unlock scalable deployment orchestration, automated workflows, and distributed computing capabilities."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Octodock" />
+      </Helmet>
+
       <div className="absolute inset-0 opacity-20">
         <div
           className="absolute inset-0"

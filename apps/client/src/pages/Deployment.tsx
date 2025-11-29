@@ -13,7 +13,7 @@ import {
   Square,
   Play,
 } from "lucide-react";
-
+import { Helmet } from "react-helmet";
 function Deployment() {
   const param = useParams();
   const [deploymetLog, setDeploymentLog] = useState([
@@ -30,10 +30,10 @@ function Deployment() {
 
   useEffect(() => {
     console.log(
-      configuration.builder_server + "/deployment-logs?projectId=" + param.id,
+      configuration.builder_server + "/deployment-logs?projectId=" + param.id
     );
     const eventSource = new EventSource(
-      configuration.builder_server + "/deployment-logs?projectId=" + param.id,
+      configuration.builder_server + "/deployment-logs?projectId=" + param.id
     );
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -60,6 +60,32 @@ function Deployment() {
   return (
     <div className="min-h-screen relative overflow-hidden bg-black">
       {/* Background effects */}
+      <Helmet>
+        <title>
+          Deployments | Octodock – Automated Orchestration & Release Management
+        </title>
+
+        <meta
+          name="description"
+          content="Monitor and manage your Octodock deployments, track release pipelines, oversee containerized rollout operations, and automate orchestration across distributed compute environments."
+        />
+
+        {/* Deployment data is private — do not index */}
+        <meta name="robots" content="noindex, nofollow" />
+
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content="Octodock Deployments – Release & Orchestration Control"
+        />
+        <meta
+          property="og:description"
+          content="View deployment statuses, pipeline activity, and release orchestration powered by Octodock’s distributed computing engine."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Octodock" />
+      </Helmet>
+
       <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black opacity-90" />
       <div className="absolute inset-0 bg-gradient-to-t from-red-900/20 via-transparent to-red-900/20" />
 
@@ -250,7 +276,7 @@ function Deployment() {
                             {logEntry.timestamp && (
                               <span className="text-gray-600 font-mono text-xs">
                                 {new Date(
-                                  logEntry.timestamp,
+                                  logEntry.timestamp
                                 ).toLocaleTimeString()}
                               </span>
                             )}
