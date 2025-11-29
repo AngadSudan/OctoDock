@@ -61,7 +61,7 @@ function CheckOut() {
 
   async function displayRazorpay() {
     const res = await loadScript(
-      "https://checkout.razorpay.com/v1/checkout.js"
+      "https://checkout.razorpay.com/v1/checkout.js",
     );
 
     if (!res) {
@@ -98,7 +98,7 @@ function CheckOut() {
 
         const result = await axios.post(
           "https://angadsudan.me/api/payment/success",
-          data
+          data,
         );
 
         alert(result.data.msg);

@@ -56,7 +56,7 @@ const HudCard = ({ title, subtitle, icon }: any) => (
     className={cx(
       "relative rounded-2xl p-5 border border-rose-500/20 bg-gradient-to-b from-white/5 to-white/0",
       "shadow-[0_0_0_1px_rgba(255,255,255,0.02),0_20px_40px_-20px_rgba(0,0,0,0.6)]",
-      "overflow-hidden hover:border-rose-500/50 transition duration-300"
+      "overflow-hidden hover:border-rose-500/50 transition duration-300",
     )}
   >
     {/* Corner Brackets */}
