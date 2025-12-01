@@ -20,11 +20,11 @@ class customModel {
   async generateFileBasedOnFeatures(
     srs: string,
     description: string,
-    gitSummary: string
+    gitSummary: string,
   ) {
     const prompt = CodeGenerationForFeature.replace(
       "{srs_documentdetails}",
-      srs
+      srs,
     )
       .replace("{current_feature}", description)
       .replace("{git_summary}", gitSummary);
@@ -42,7 +42,7 @@ class customModel {
     codefile,
     gitSummary,
     currentStatus,
-    sdd
+    sdd,
   ) {
     if (PRE_EXISTING.includes(codefile)) {
       console.log("giving cached response", codefile);
@@ -120,11 +120,11 @@ class customModel {
   async generateCorrectnessInFileOnBuggyFeature(
     srs: string,
     codefile: string,
-    gitSummary: string
+    gitSummary: string,
   ) {
     const prompt = CodeGenerationForCorrection.replace(
       "{srs_documentdetails}",
-      srs
+      srs,
     )
       .replace("{current_code}", codefile)
       .replace("{git_summary}", gitSummary);
