@@ -45,8 +45,6 @@ function Home() {
       <div className="overflow-x-hidden">
         <Header />
         <Hero />
-        {/* <Loader /> */}
-        {/* <TechDesign /> */}
         <Suspense fallback={<Loader />}>
           <AboutHero />
         </Suspense>

@@ -18,10 +18,32 @@ function Loader({ text = "Loading..." }) {
   const textRef = useRef("");
 
   useEffect(() => {
-    window.onload = () => {
-      const preloader = document.querySelector(".preloader");
+    const preloader = document.querySelector(".preloader");
+
+    // Run animation ONLY on home page
+    const isHomePage = window.location.pathname === "/";
+
+    if (!isHomePage) {
+      // If not home page, remove immediately
       if (preloader) preloader.remove();
+      return;
+    }
+
+    // HOME PAGE → show preloader until fully loaded
+    const handleLoad = () => {
+      setTimeout(() => {
+        if (preloader) preloader.remove();
+      }, 4000); // small delay for smooth animation, adjust as needed
     };
+
+    // If page is already loaded (e.g. from cache)
+    if (document.readyState === "complete") {
+      handleLoad();
+    } else {
+      window.addEventListener("load", handleLoad);
+    }
+
+    return () => window.removeEventListener("load", handleLoad);
   }, []);
 
   useGSAP(
@@ -42,7 +64,7 @@ function Loader({ text = "Loading..." }) {
             scale: 0.9,
             duration: 0.8,
           },
-          0.3,
+          0.3
         )
         // 3. Center vertical line appears
         .from(
@@ -53,7 +75,7 @@ function Loader({ text = "Loading..." }) {
             duration: 0.6,
             transformOrigin: "center center",
           },
-          0.8,
+          0.8
         )
         // 4. Outer circle appears
         .from(
@@ -63,7 +85,7 @@ function Loader({ text = "Loading..." }) {
             opacity: 0,
             duration: 0.6,
           },
-          1.0,
+          1.0
         )
         // 5. Inner circle appears
         .from(
@@ -73,7 +95,7 @@ function Loader({ text = "Loading..." }) {
             opacity: 0,
             duration: 0.5,
           },
-          1.2,
+          1.2
         )
         // 6. Blue horizontal lines appear (staggered)
         .from(
@@ -85,7 +107,7 @@ function Loader({ text = "Loading..." }) {
             stagger: 0.08,
             transformOrigin: "center center",
           },
-          1.4,
+          1.4
         )
         // 7. Diagonal red lines appear (staggered)
         .from(
@@ -97,7 +119,7 @@ function Loader({ text = "Loading..." }) {
             stagger: 0.06,
             transformOrigin: "center",
           },
-          1.6,
+          1.6
         )
         .to(centerLineRef.current, {
           width: "355px",
@@ -111,7 +133,7 @@ function Loader({ text = "Loading..." }) {
           ease: "none",
         });
     },
-    { scope: containerRef },
+    { scope: containerRef }
   );
 
   return (
