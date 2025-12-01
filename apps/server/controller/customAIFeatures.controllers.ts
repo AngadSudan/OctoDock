@@ -20,11 +20,11 @@ class customModel {
   async generateFileBasedOnFeatures(
     srs: string,
     description: string,
-    gitSummary: string,
+    gitSummary: string
   ) {
     const prompt = CodeGenerationForFeature.replace(
       "{srs_documentdetails}",
-      srs,
+      srs
     )
       .replace("{current_feature}", description)
       .replace("{git_summary}", gitSummary);
@@ -42,9 +42,12 @@ class customModel {
     codefile,
     gitSummary,
     currentStatus,
-    sdd,
+    sdd
   ) {
-    if (PRE_EXISTING.includes(codefile)) return codeMap[codefile];
+    if (PRE_EXISTING.includes(codefile)) {
+      console.log("giving cached response", codefile);
+      return codeMap[codefile];
+    }
 
     let response = "";
     const prompt = CodeGenerationForFile.replace("{srs_documentdetails}", srs)
@@ -53,42 +56,12 @@ class customModel {
       .replace("{updated_file_system}", currentStatus)
       .replace("{software_design_document}", sdd);
 
-    const packageValue = {
-      name: "backend",
-      version: "1.0.0",
-      description: "",
-      main: "index.js",
-      scripts: {
-        start: "node src/index.js",
-        dev: "nodemon src/index.js",
-        test: 'echo "Error: no test specified" && exit 1',
-      },
-      keywords: [],
-      author: "",
-      license: "ISC",
-      type: "commonjs",
-      dependencies: {
-        axios: "^1.11.0",
-        bcrypt: "^6.0.0",
-        bcryptjs: "^3.0.2",
-        cors: "^2.8.5",
-        dotenv: "^17.2.1",
-        express: "^5.1.0",
-        "express-validator": "^7.2.1",
-        helmet: "^8.1.0",
-        jsonwebtoken: "^9.0.2",
-        mongoose: "^8.18.0",
-        morgan: "^1.10.1",
-      },
-      devDependencies: {
-        nodemon: "^3.1.10",
-      },
-    };
-
     if (codefile === "package.json") {
-      return codeMap["index.js"];
+      return codeMap[codefile];
     }
+
     let retryCount = 0;
+    console.log("generating ressponse from AI", codefile);
     const openai = new OpenAI({
       baseURL: "https://api.groq.com/openai/v1",
       apiKey: openRouterKeys.getAvailableKey(),
@@ -100,9 +73,6 @@ class customModel {
         break;
       }
       try {
-        console.log({
-          message: `creating file ${codefile} ...`,
-        });
         const completion = await openai.chat.completions.create({
           model: "openai/gpt-oss-120b",
           messages: [
@@ -136,8 +106,10 @@ class customModel {
       // return something from the predefined project
       if (codefile.contains("routes")) {
         return codeMap["routes.js"];
-      } else if (codefile === "index.js") {
-        return codeMap["index.js"];
+      } else if (codefile === "src/index.js") {
+        return codeMap["src/index.js"];
+      } else if (codefile.contains("models")) {
+        return codeMap["models.js"];
       } else {
         return codeMap[codefile] || "";
       }
@@ -148,11 +120,11 @@ class customModel {
   async generateCorrectnessInFileOnBuggyFeature(
     srs: string,
     codefile: string,
-    gitSummary: string,
+    gitSummary: string
   ) {
     const prompt = CodeGenerationForCorrection.replace(
       "{srs_documentdetails}",
-      srs,
+      srs
     )
       .replace("{current_code}", codefile)
       .replace("{git_summary}", gitSummary);
