@@ -42,7 +42,7 @@ function Loader({ text = "Loading..." }) {
             scale: 0.9,
             duration: 0.8,
           },
-          0.3
+          0.3,
         )
         // 3. Center vertical line appears
         .from(
@@ -53,7 +53,7 @@ function Loader({ text = "Loading..." }) {
             duration: 0.6,
             transformOrigin: "center center",
           },
-          0.8
+          0.8,
         )
         // 4. Outer circle appears
         .from(
@@ -63,7 +63,7 @@ function Loader({ text = "Loading..." }) {
             opacity: 0,
             duration: 0.6,
           },
-          1.0
+          1.0,
         )
         // 5. Inner circle appears
         .from(
@@ -73,7 +73,7 @@ function Loader({ text = "Loading..." }) {
             opacity: 0,
             duration: 0.5,
           },
-          1.2
+          1.2,
         )
         // 6. Blue horizontal lines appear (staggered)
         .from(
@@ -85,7 +85,7 @@ function Loader({ text = "Loading..." }) {
             stagger: 0.08,
             transformOrigin: "center center",
           },
-          1.4
+          1.4,
         )
         // 7. Diagonal red lines appear (staggered)
         .from(
@@ -97,7 +97,7 @@ function Loader({ text = "Loading..." }) {
             stagger: 0.06,
             transformOrigin: "center",
           },
-          1.6
+          1.6,
         )
         .to(centerLineRef.current, {
           width: "355px",
@@ -111,7 +111,7 @@ function Loader({ text = "Loading..." }) {
           ease: "none",
         });
     },
-    { scope: containerRef }
+    { scope: containerRef },
   );
 
   return (

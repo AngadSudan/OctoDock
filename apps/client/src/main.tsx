@@ -39,8 +39,8 @@ const router = createBrowserRouter(
       <Route path="error/logs" element={<Logs />} />
       <Route path="privacy-policy" element={<PrivacyPolicy />} />
       <Route path="payment-checkout" element={<CheckOut />} />
-    </Route>
-  )
+    </Route>,
+  ),
 );
 
 createRoot(document.getElementById("root")!).render(
@@ -51,5 +51,5 @@ createRoot(document.getElementById("root")!).render(
         <RouterProvider router={router} />
       </Provider>
     </ApolloProvider>
-  </StrictMode>
+  </StrictMode>,
 );

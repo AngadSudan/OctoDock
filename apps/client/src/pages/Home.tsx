@@ -7,7 +7,7 @@ import { lazy, Suspense } from "react";
 import Loader from "@/components/Loader";
 
 const HorizontalParallax = lazy(
-  () => import("@/components/About/HorizontalParallax")
+  () => import("@/components/About/HorizontalParallax"),
 );
 const AboutHero = lazy(() => import("@/components/About/Hero"));
 function Home() {
