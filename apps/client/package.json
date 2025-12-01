@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.13.8",
+    "@gsap/react": "^2.1.2",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@react-spring/parallax": "^10.0.1",

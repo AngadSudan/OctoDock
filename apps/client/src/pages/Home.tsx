@@ -1,10 +1,15 @@
 import Hero from "@/components/Home/Hero";
 import Header from "@/components/general/Header";
 import ParallaxComponent from "@/components/About/Prallax";
-import HorizontalParallax from "@/components/About/HorizontalParallax";
 import Pricing from "@/components/Home/Pricing";
-import AboutHero from "@/components/About/Hero";
 import { Helmet } from "react-helmet";
+import { lazy, Suspense } from "react";
+import Loader from "@/components/Loader";
+
+const HorizontalParallax = lazy(
+  () => import("@/components/About/HorizontalParallax")
+);
+const AboutHero = lazy(() => import("@/components/About/Hero"));
 function Home() {
   return (
     <>
@@ -40,11 +45,16 @@ function Home() {
       <div className="overflow-x-hidden">
         <Header />
         <Hero />
+        {/* <Loader /> */}
         {/* <TechDesign /> */}
-        <AboutHero />
+        <Suspense fallback={<Loader />}>
+          <AboutHero />
+        </Suspense>
         <ParallaxComponent />
         <Pricing />
-        <HorizontalParallax />
+        <Suspense fallback={<Loader />}>
+          <HorizontalParallax />
+        </Suspense>
       </div>
     </>
   );

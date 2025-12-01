@@ -24,6 +24,7 @@ import PromptBar from "./pages/PromptBar.tsx";
 import Deployment from "./pages/Deployment.tsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
 import CheckOut from "./pages/CheckOut.tsx";
+import Loader from "./components/Loader.tsx";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
@@ -38,16 +39,17 @@ const router = createBrowserRouter(
       <Route path="error/logs" element={<Logs />} />
       <Route path="privacy-policy" element={<PrivacyPolicy />} />
       <Route path="payment-checkout" element={<CheckOut />} />
-    </Route>,
-  ),
+    </Route>
+  )
 );
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
+    <Loader text={"Welcome"} />
     <ApolloProvider client={client}>
       <Provider store={store}>
         <RouterProvider router={router} />
       </Provider>
     </ApolloProvider>
-  </StrictMode>,
+  </StrictMode>
 );

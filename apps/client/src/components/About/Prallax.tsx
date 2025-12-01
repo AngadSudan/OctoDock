@@ -67,6 +67,8 @@ export default function ParallaxComponent() {
               muted
               autoPlay
               playsInline
+              preload="none"
+              loading={"lazy"}
               className="w-full h-full object-cover"
             />
             <div className="absolute top-[40%] sm:top-[30%] left-1/2 -translate-x-1/2">
