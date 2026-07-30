@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "bunx prisma generate && bunx prisma db push "
+    "build": "bunx prisma generate --schema=./prisma/schema.prisma"
   },
   "author": "",
   "license": "ISC",
