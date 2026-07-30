@@ -3,15 +3,12 @@ import express, {
   type Request,
   type Response,
 } from "express";
-import dotenv from "dotenv";
-dotenv.config({ path: "../.env" });
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
 import hpp from "hpp";
 import createApolloServer from "./graphql/index";
-import "dotenv/config";
 import passport from "passport";
 import "./utils/passport";
 import type { Express } from "express";
