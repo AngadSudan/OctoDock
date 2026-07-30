@@ -8,4 +8,6 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   dts: true,
+  bundle: true,
+  noExternal: ["@octodock/octolog", "@octodock/prisma", "@octodock/queue"],
 });
