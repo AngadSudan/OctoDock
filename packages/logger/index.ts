@@ -44,23 +44,27 @@ class Logger {
       return;
     }
 
-    logger = winston.createLogger({
-      transports: [
-        new winston.transports.Console({
-          format: winston.format.simple(),
-        }),
+    const transports: winston.transport[] = [
+      new winston.transports.Console({
+        format: winston.format.simple(),
+      }),
+    ];
+
+    if (host && user && apiKey) {
+      transports.push(
         new LokiTransport({
-          host, // e.g. https://logs-prod3.grafana.net
-          basicAuth: `${user}:${apiKey}`, // user is usually your stack ID
-          labels: JSON.parse(labels),
+          host,
+          basicAuth: `${user}:${apiKey}`,
+          labels: JSON.parse(labels || "{}"),
           json: isJson,
           interval,
           format: winston.format.json(),
           replaceTimestamp: true,
         }),
-      ],
-    });
+      );
+    }
 
+    logger = winston.createLogger({ transports });
     this.loggerInstance = logger;
   }
 

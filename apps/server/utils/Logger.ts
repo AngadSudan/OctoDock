@@ -3,7 +3,7 @@ import createLogger from "@octodock/octolog";
 const host = process.env.LOKI_HOST!;
 const username = process.env.LOKI_USER!;
 const apiKey = process.env.LOKI_APIKEY!;
-const labels = process.env.LOKI_LABELS!;
+const labels = process.env.LOKI_LABELS! || "{}";
 const isJson = process.env.ISJSON! === "true" ? true : false;
 const interval = Number.parseInt(process.env.LOKI_INTERVAL!);
 
