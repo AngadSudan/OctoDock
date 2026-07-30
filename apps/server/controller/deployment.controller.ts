@@ -7,7 +7,11 @@ class deploymentController {
    * and implement the next service worker.
    */
 
-  async createDeployment(projectId: string) {}
+  async createDeployment(
+    dockerimage: string,
+    urlSlug: string,
+    projectId: string,
+  ) {}
   /**
    * Update the present deployment Information of the project (YAGNI)
    */
